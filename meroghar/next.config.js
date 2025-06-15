@@ -1,14 +1,28 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'standalone',
+  // Keep App Router enabled
+  experimental: {
+    appDir: true,
+  },
+
+  // Optimize for development
+  reactStrictMode: true,
+  swcMinify: true, // Use SWC for minification (faster than Terser)
+
+  // Combine image configurations
   images: {
     domains: ['firebasestorage.googleapis.com', 'lh3.googleusercontent.com'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+        port: '',
+        pathname: '/account123/**',
+      },
+    ],
   },
-  // Enable strict mode for better development experience
-  reactStrictMode: true,
-  // Enable production source maps for better debugging
-  productionBrowserSourceMaps: true,
-  // Configure security headers
+
+  // Security headers
   async headers() {
     return [
       {
@@ -32,41 +46,31 @@ const nextConfig = {
           },
         ],
       },
-    ];
+    ]
   },
-  experimental:{
-    appDir:true,
-  },
- 
 
-
-  // typescript: {
-    
-  //     // Dangerously allow production builds to successfully complete even if
-  //     // your project has type errors.
-  //     ignoreBuildErrors: true,
-  //  },
-  images: {
-    remotePatterns: [
-      {
-        protocol: 'http',
-        hostname: 'res.cloudinary.com',
-        port: '',
-        pathname: '/account123/**',
-      },
-    ],
-  },
-  //  redirect handling for routes
-   async redirects() {
+  // Route handling
+  async redirects() {
     return [
       {
         source: '/',
         destination: '/Home',
         permanent: true,
       },
-    ];
+    ]
   },
-  
+
+  // Development optimizations
+  webpack: (config, { dev, isServer }) => {
+    // Optimize development builds
+    if (dev && !isServer) {
+      config.watchOptions = {
+        poll: 1000, // Check for changes every second
+        aggregateTimeout: 300, // Delay before rebuilding
+      }
+    }
+    return config
+  },
 }
 
 module.exports = nextConfig
