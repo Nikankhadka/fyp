@@ -1,26 +1,22 @@
+import { connect } from "mongoose";
 
+import * as dotenv from "dotenv";
+dotenv.config();
+//return type of async function is promise
+// mongodb+srv://nick11444:${process.env.dbPassword}@fypnikan.bud3xcp.mongodb.net/test
 
-import {connect} from "mongoose"
+const dbConnect = async () => {
+  try {
+    //
+    await connect(
+      `mongodb+srv://khadkanikan:${process.env.dbPassword}@fyp.qyne110.mongodb.net/`
+    );
+    console.log("Database Connected");
 
-import * as dotenv from "dotenv"
-dotenv.config()
-    //return type of async function is promise 
-    // mongodb+srv://nick11444:${process.env.dbPassword}@fypnikan.bud3xcp.mongodb.net/test
-  
-const dbConnect=async()=>{
-    try{
-       // 
-         await connect(`mongodb+srv://nick11444:${process.env.dbPassword}@fypnikan.bud3xcp.mongodb.net/test`)
-         console.log("Database Connected")
-        
-         console.log("Next Called")
-          
-    }catch(e){
-        console.log(e);
-    }
-}
-
+    console.log("Next Called");
+  } catch (e) {
+    console.log(e);
+  }
+};
 
 export default dbConnect;
-
-

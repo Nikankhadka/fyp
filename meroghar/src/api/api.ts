@@ -1,3 +1,3 @@
+import { localServer, renderServer } from '@/configs/constant'
 
-// 'https://meroghar-rf5q.onrender.com'
-export const api="https://fyp-sever.onrender.com"
+export const api = localServer
