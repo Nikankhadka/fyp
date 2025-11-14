@@ -6,11 +6,13 @@ dotenv.config();
 // mongodb+srv://nick11444:${process.env.dbPassword}@fypnikan.bud3xcp.mongodb.net/test
 
 const dbConnect = async () => {
+  console.log(process.env.dbPassword);
   try {
-    //
-    await connect(
-      `mongodb+srv://khadkanikan:${process.env.dbPassword}@fyp.qyne110.mongodb.net/`
-    );
+    // Use local MongoDB container if MONGODB_URI is provided (Docker environment)
+    // Otherwise use cloud MongoDB
+    const mongoUri = process.env.MONGODB_URI || `mongodb://localhost:27017`;
+
+    await connect(mongoUri);
     console.log("Database Connected");
 
     console.log("Next Called");
