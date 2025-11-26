@@ -38,6 +38,5 @@ export const propertyOptions = [
 
 export const httpOnlyCookie = false
 
-export const renderServer = 'https://fyp-sever.onrender.com'
 
 export const localServer = 'http://localhost:2900'

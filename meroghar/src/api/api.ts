@@ -1,3 +1,3 @@
-import { localServer, renderServer } from '@/configs/constant'
+import { localServer } from '@/configs/constant'
 
 export const api = localServer
