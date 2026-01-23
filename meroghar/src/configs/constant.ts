@@ -38,5 +38,5 @@ export const propertyOptions = [
 
 export const httpOnlyCookie = false
 
-
-export const localServer = 'http://localhost:2900'
+export const localServer =
+  process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:2900'
