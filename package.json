@@ -8,6 +8,8 @@
     "build:web": "pnpm --dir apps/web build",
     "build:api": "pnpm --dir apps/api build",
     "lint:web": "pnpm --dir apps/web lint",
+    "install:api": "pnpm --dir apps/api install --frozen-lockfile",
+    "install:web": "pnpm --dir apps/web install --frozen-lockfile",
     "docker:dev": "docker compose -f infra/docker/compose.dev.yml up --build",
     "docker:prod": "docker compose -f infra/docker/compose.prod.yml up --build -d"
   }

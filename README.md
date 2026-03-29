@@ -22,6 +22,8 @@ This repository is now structured as a small monorepo for a property rental plat
 The root workspace uses `pnpm`.
 
 ```bash
+pnpm install:api
+pnpm install:web
 pnpm dev:api
 pnpm dev:web
 pnpm build:api
@@ -33,21 +35,21 @@ pnpm docker:prod
 
 ## Local App Development
 
-Install dependencies per app with your preferred package manager, then run the app directly:
+Install dependencies with `pnpm`, then run the app directly:
 
 ```bash
 cd apps/api
-npm install
-npm run dev
+pnpm install --frozen-lockfile
+pnpm dev
 ```
 
 ```bash
 cd apps/web
-npm install
-npm run dev
+pnpm install --frozen-lockfile
+pnpm dev
 ```
 
-The current repo still contains app-level lockfiles from the previous layout. The next cleanup step should standardize installs on a single package manager across the whole repo.
+This repo now treats `pnpm` as the primary package manager. App-level `pnpm-lock.yaml` files are the current source of truth.
 
 ## Docker Setup
 
@@ -79,4 +81,5 @@ Do not commit real secrets. The previous hardcoded credentials have been removed
 
 - The frontend now builds with Next.js standalone output for production containers.
 - The legacy root `docker-compose.yml` has been removed in favor of explicit dev/prod compose files.
-- A follow-up cleanup should regenerate lockfiles after standardizing on one package manager.
+- `package-lock.json` should not be reintroduced.
+- A later follow-up can consolidate app-level pnpm lockfiles into a single root workspace lockfile if you want one shared lockfile for the whole monorepo.
