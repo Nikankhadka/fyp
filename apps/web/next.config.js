@@ -4,6 +4,7 @@ const nextConfig = {
   experimental: {
     appDir: true,
   },
+  output: 'standalone',
 
   // Optimize for development
   reactStrictMode: true,

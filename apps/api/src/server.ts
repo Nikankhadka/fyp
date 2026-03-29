@@ -12,15 +12,12 @@ import passport from "passport";
 import morgan from "morgan";
 import swaggerUi from "swagger-ui-express";
 import helmet from "helmet";
-import axios from "axios";
 import YAML from "yamljs";
 
 //importing routes
 import indexRouter from "./routes/index.routes";
 import { clearUser } from "./middlewares/auth.middleware";
 import dbConnect from "./configs/db";
-import cron from "node-schedule";
-import nodeCron from "node-cron";
 // import helmet from 'helmet'
 
 //helemt

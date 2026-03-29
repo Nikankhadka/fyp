@@ -1,5 +1,5 @@
 {
-  "name": "meroghar",
+  "name": "@fyp/web",
   "version": "0.1.0",
   "private": true,
   "engines": {
@@ -13,9 +13,7 @@
   },
   "dependencies": {
     "@firebase/auth": "^0.21.5",
-    "@netlify/plugin-nextjs": "^4.39.3",
     "@paypal/react-paypal-js": "^7.8.3",
-    "@react-pdf/renderer": "^3.1.9",
     "@types/node": "18.11.9",
     "@types/react": "18.0.25",
     "@types/react-dom": "18.0.9",
@@ -27,15 +25,12 @@
     "eslint-config-prettier": "^8.5.0",
     "firebase": "^9.19.1",
     "html2canvas": "^1.4.1",
-    "http": "^0.0.1-security",
     "jspdf": "^2.5.1",
     "lodash": "^4.17.21",
     "moment": "^2.29.4",
     "next": "^13.2.4",
-    "node-fetch": "^3.3.1",
     "query-string": "^8.1.0",
     "react": "^18.2.0",
-    "react-cookie": "^4.1.1",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.43.2",
     "react-hot-toast": "^2.4.0",

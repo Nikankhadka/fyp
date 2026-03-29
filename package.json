@@ -1,0 +1,14 @@
+{
+  "name": "fyp-monorepo",
+  "private": true,
+  "packageManager": "pnpm@10.8.1",
+  "scripts": {
+    "dev:web": "pnpm --dir apps/web dev",
+    "dev:api": "pnpm --dir apps/api dev",
+    "build:web": "pnpm --dir apps/web build",
+    "build:api": "pnpm --dir apps/api build",
+    "lint:web": "pnpm --dir apps/web lint",
+    "docker:dev": "docker compose -f infra/docker/compose.dev.yml up --build",
+    "docker:prod": "docker compose -f infra/docker/compose.prod.yml up --build -d"
+  }
+}

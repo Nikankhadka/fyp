@@ -1,78 +1,82 @@
-FYP_MeroGhar
-MERN Stack Application
-This is a basic MERN (MongoDB, Express.js, Next.js, Node.js) stack application.
+# FYP Monorepo
 
-Installation
-To install and run this application locally, please follow the instructions below:
+This repository is now structured as a small monorepo for a property rental platform.
 
-Prerequisites
-Make sure you have the following software installed on your machine:
+## Layout
 
-Node.js (version 14 or above)
-MongoDB
+```text
+.
+|-- apps/
+|   |-- api/      # Express + TypeScript + MongoDB API
+|   `-- web/      # Next.js frontend
+|-- infra/
+|   `-- docker/   # Dev/prod compose files and env examples
+|-- services/
+|   `-- mongo/    # Mongo image customization and init scripts
+|-- package.json
+`-- pnpm-workspace.yaml
+```
 
+## Workspace Commands
 
-Step 1: Clone the repository
-Clone this repository to your local machine using Git:
+The root workspace uses `pnpm`.
 
+```bash
+pnpm dev:api
+pnpm dev:web
+pnpm build:api
+pnpm build:web
+pnpm lint:web
+pnpm docker:dev
+pnpm docker:prod
+```
 
-git clone <repository-url>
-  
-  
-Step 2: Install dependencies
-Navigate to the server directory and install the server-side dependencies:
+## Local App Development
 
+Install dependencies per app with your preferred package manager, then run the app directly:
 
-cd server
+```bash
+cd apps/api
 npm install
-Next, go to the client directory and install the client-side dependencies:
+npm run dev
+```
 
-
-cd meroghar
+```bash
+cd apps/web
 npm install
-  
-  
-Step 3: Configure the environment variables
-Create a .env file in the project root directory and provide the following variables:
+npm run dev
+```
 
-dotenv
-Copy code
-sessionSecret=
-saltRounds=
-accessToken=
-refreshToken=
-accessTokenExpire=
-refreshTokenExpire=
-dbPassword=
-googleClientId=
-googleClientSecret=
-facebookClientId=
-facebookClientSecret=
-user=
-pass=
-mailSecret=
-Replace <your-mongodb-connection-string> with the connection string for your MongoDB database.
+The current repo still contains app-level lockfiles from the previous layout. The next cleanup step should standardize installs on a single package manager across the whole repo.
 
-Step 4: Start the application
-Start the server by running the following command in the project root directory:
+## Docker Setup
 
+Docker orchestration now lives under [`infra/docker`](/home/nikan/projects/fyp/infra/docker).
 
-npm start
-This will start the server at http://localhost:2900.
+- Development compose: [`infra/docker/compose.dev.yml`](/home/nikan/projects/fyp/infra/docker/compose.dev.yml)
+- Production compose: [`infra/docker/compose.prod.yml`](/home/nikan/projects/fyp/infra/docker/compose.prod.yml)
+- Env examples: [`infra/docker/env`](/home/nikan/projects/fyp/infra/docker/env)
 
-In a separate terminal, navigate to the client directory and start the Next.js development server:
+Services:
 
+- `mongo`: MongoDB with persistent volume and healthcheck
+- `api`: Express API container on port `2900`
+- `web`: Next.js container on port `3000`
 
-cd meroghar
-npm run dev # for development
-npm run build # for production
-npm run start # for production
-This will start the client application at http://localhost:3000.
+## Environment Files
 
-You can now access the application in your web browser.
+Use these examples as the source of truth:
 
-Contributing
-Contributions are welcome! If you find any issues or want to add new features, please create a pull request.
+- [`apps/api/.env.example`](/home/nikan/projects/fyp/apps/api/.env.example)
+- [`apps/web/.env.example`](/home/nikan/projects/fyp/apps/web/.env.example)
+- [`infra/docker/env/api.dev.env.example`](/home/nikan/projects/fyp/infra/docker/env/api.dev.env.example)
+- [`infra/docker/env/web.dev.env.example`](/home/nikan/projects/fyp/infra/docker/env/web.dev.env.example)
+- [`infra/docker/env/mongo.dev.env.example`](/home/nikan/projects/fyp/infra/docker/env/mongo.dev.env.example)
 
-License
-This project is licensed under the Nikan Khadka
+Do not commit real secrets. The previous hardcoded credentials have been removed from the tracked setup.
+
+## Notes
+
+- The frontend now builds with Next.js standalone output for production containers.
+- The legacy root `docker-compose.yml` has been removed in favor of explicit dev/prod compose files.
+- A follow-up cleanup should regenerate lockfiles after standardizing on one package manager.
