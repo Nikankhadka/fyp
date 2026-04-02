@@ -3,12 +3,12 @@
 import { useState } from 'react'
 import { ErrorText } from '../random'
 
-import moment from 'moment'
 import useModal from '../../store/useModal'
 import { Property } from '../../interface/response'
 import useBookingStore from '../../store/bookingStore'
 import { AiFillStar } from 'react-icons/ai'
 import { toast } from 'react-hot-toast'
+import dayjs from '../../utils/dayjs'
 
 interface Booking{
   reservations:{
@@ -26,8 +26,8 @@ export function BookProperty({reservations,user,propertyData}:Booking) {
     tomorrow.setDate(tomorrow.getDate() + 1);
 
     const [date, setdate] = useState({
-      startDate: moment(tomorrow).format('YYYY-MM-DD'),
-      endDate: moment(tomorrow).format('YYYY-MM-DD')
+      startDate: dayjs(tomorrow).format('YYYY-MM-DD'),
+      endDate: dayjs(tomorrow).format('YYYY-MM-DD')
     });
  
         console.log(reservations)
@@ -45,15 +45,15 @@ maxDate.setFullYear(currentDate.getFullYear() + 1); // set the year to be one ye
 maxDate.setMonth(currentDate.getMonth()); // set the month to be the same as the current date
 maxDate.setDate(currentDate.getDate()); // set the day to be the same as the current date
 
-  const minDate = moment(tomorrow).format('YYYY-MM-DD');
-  const maxDateValue = moment(maxDate).format('YYYY-MM-DD');
+  const minDate = dayjs(tomorrow).format('YYYY-MM-DD');
+  const maxDateValue = dayjs(maxDate).format('YYYY-MM-DD');
 
 
   const onReserve=async(e:any)=>{
     const startDate = date.startDate ? new Date(`${date.startDate}T12:00:00`) : null;
     const endDate = date.endDate ? new Date(`${date.endDate}T12:00:00`) : null;
-    const momentStartDate=moment(startDate);
-    const momentEndDate=moment(endDate);
+    const bookingStartDate = dayjs(startDate);
+    const bookingEndDate = dayjs(endDate);
 
     e.preventDefault();
 
@@ -68,24 +68,24 @@ maxDate.setDate(currentDate.getDate()); // set the day to be the same as the cur
 
 
     //date setup is checked on client side
-    if(startDate==null||endDate==null||guest<=0||momentEndDate.isBefore(momentStartDate,'day')){
+    if(startDate==null||endDate==null||guest<=0||bookingEndDate.isBefore(bookingStartDate,'day')){
       return bookingStore.setError(true);
     }
 
-    if(moment(startDate).isSame(moment(),'day')){
+    if(dayjs(startDate).isSame(dayjs(),'day')){
       console.log('same date')
       return bookingStore.setError(true);
     }
 
      //now check for bookingg date to not overlap or something 
    const checkOverLap= reservations.some(({startDate,endDate})=>{
-      const startDateI = moment(startDate);
-      const endDateI = moment(endDate);
+      const startDateI = dayjs(startDate);
+      const endDateI = dayjs(endDate);
 
       return (
-        (startDateI.isSameOrBefore(momentEndDate) && endDateI.isSameOrAfter(momentEndDate)) ||
-        (startDateI.isSameOrBefore(momentStartDate) && endDateI.isSameOrAfter(momentStartDate)) ||
-        (startDateI.isSameOrAfter(momentStartDate) && endDateI.isSameOrBefore(momentEndDate))
+        (startDateI.isSameOrBefore(bookingEndDate) && endDateI.isSameOrAfter(bookingEndDate)) ||
+        (startDateI.isSameOrBefore(bookingStartDate) && endDateI.isSameOrAfter(bookingStartDate)) ||
+        (startDateI.isSameOrAfter(bookingStartDate) && endDateI.isSameOrBefore(bookingEndDate))
       );
     })
 

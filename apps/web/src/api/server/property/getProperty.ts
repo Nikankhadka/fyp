@@ -3,8 +3,6 @@ import { SearchForm } from '../../../components/modals/searchModal'
 import { Property } from '../../../interface/response'
 import { getAccessToken } from '../auth'
 
-import qs from 'query-string'
-
 //for admin verificationnpm
 export async function getPropertyRequests(
   page: number,
@@ -84,20 +82,29 @@ export async function getProperties(
   queryParams: SearchForm
 ): Promise<Partial<Property>[]> {
   try {
-    //check transform query params into url string
+    const url = new URL(`${api}/property/v1/getProperty`)
+    const params = new URLSearchParams()
+    const query = { page, limit, ...queryParams }
 
-    const url = qs.stringifyUrl(
-      {
-        url: `${api}/property/v1/getProperty`,
-        query: { page, limit, ...queryParams },
-      },
-      { skipNull: true }
-    )
+    Object.entries(query).forEach(([key, value]) => {
+      if (value == null || value === '') return
 
-    console.log('Query params and data url', url)
+      if (Array.isArray(value)) {
+        value
+          .filter((item) => item != null && item !== '')
+          .forEach((item) => params.append(key, String(item)))
+        return
+      }
+
+      params.set(key, String(value))
+    })
+
+    url.search = params.toString()
+
+    console.log('Query params and data url', url.toString())
 
     console.log(getAccessToken())
-    const res = await fetch(url, {
+    const res = await fetch(url.toString(), {
       method: 'GET',
       credentials: 'include',
       headers: { cookie: getAccessToken() },

@@ -12,13 +12,13 @@ import { FiEdit } from 'react-icons/fi'
 import { useState } from 'react'
 import ReviewInput from './reviewInput'
 import { IReview } from '../interface/response'
-import moment from 'moment'
 import useConfirm from '../store/useConfirm'
 import useModal from '../store/useModal'
 import Api from '../api/client/axios'
 import { toast } from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
+import dayjs from '../utils/dayjs'
 
 interface Props {
   reviewData: IReview
@@ -58,7 +58,7 @@ export default function Review({ reviewData, currentUser,key}: Props) {
                   {reviewData.userId.userName}
                 </span>
                 <span className="text-sm text-gray-800 ">
-                  Date: {moment(reviewData.createdAt).format('MM/YY/DD')}
+                  Date: {dayjs(reviewData.createdAt).format('MM/YY/DD')}
                 </span>
               </p>
             </div>

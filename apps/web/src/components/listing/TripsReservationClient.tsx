@@ -13,7 +13,6 @@ import {
 
 import {BiCalendarEdit} from 'react-icons/bi'
 import {BsHouseCheckFill,BsFillHouseSlashFill} from 'react-icons/bs'
-import moment from 'moment'
 import Api from '../../api/client/axios'
 import { toast } from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
@@ -21,6 +20,7 @@ import useConfirm from '../../store/useConfirm'
 import useModal from '../../store/useModal'
 import * as lodash from 'lodash'
 import Image from 'next/image'
+import dayjs from '../../utils/dayjs'
 
 
 
@@ -225,10 +225,10 @@ export default function TripBookingClient({trips,bookings,is_Admin}:Props) {
                </td>}
 
                 <td className="whitespace-nowrap p-4 text-base font-normal text-gray-900 dark:text-white">
-                  {moment(data.startDate).format('DD/MM/YY')}
+                  {dayjs(data.startDate).format('DD/MM/YY')}
                 </td>
                 <td className="whitespace-nowrap p-4 text-base font-normal text-gray-900 dark:text-white">
-                {moment(data.endDate).format('DD/MM/YY')}
+                {dayjs(data.endDate).format('DD/MM/YY')}
                 </td>
                 <td className="whitespace-nowrap p-4 text-base font-normal text-gray-900 dark:text-white">
                  $ {data.paymentId?.totalAmount}

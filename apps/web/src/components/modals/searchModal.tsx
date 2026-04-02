@@ -10,7 +10,6 @@ import useCountry from "../../store/useCountry"
 import { useState } from "react"
 import { ICountry } from "country-state-city"
 import { amenities } from "../../configs/constant"
-import qs from "query-string"
 
 export interface SearchForm{
   minRate:number,
@@ -91,10 +90,22 @@ export function SearchModal(){
         //   query.endDate! = formatISO(query.endDate);
         // }
 
-        const url = qs.stringifyUrl({
-          url: '/Home',
-          query:query,
-        }, { skipNull: true });
+        const params = new URLSearchParams();
+
+        Object.entries(query).forEach(([key, value]) => {
+          if (value == null || value === '') return;
+
+          if (Array.isArray(value)) {
+            value
+              .filter((item) => item != null && item !== '')
+              .forEach((item) => params.append(key, String(item)));
+            return;
+          }
+
+          params.set(key, String(value));
+        });
+
+        const url = params.toString() ? `/Home?${params.toString()}` : '/Home';
 
         modal.onClose();
         return router.push(url);

@@ -7,8 +7,8 @@ import useBookingStore from '../../store/bookingStore';
 import { jsPDF } from 'jspdf';
 import toast from 'react-hot-toast'
 import Api from '../../api/client/axios';
-import moment from 'moment';
 import { useRouter } from 'next/navigation';
+import dayjs from '../../utils/dayjs';
 
 interface InvoiceProps {
     tennantId: string;
@@ -112,7 +112,7 @@ const Invoice =(props:InvoiceProps) => {
           <Image src="/airbnb.png" alt="airbnb" height={56} width={56}  />
         <div className='flex items-center gap-x-1'>
         <div className="font-semibold ">Date:</div>
-        <div>{moment().format("MM/DD/YYYY")}</div>
+        <div>{dayjs().format("MM/DD/YYYY")}</div>
       </div>
         </div>
 
@@ -141,13 +141,13 @@ const Invoice =(props:InvoiceProps) => {
     <div className='my-3 flex items-center gap-x-5'>
     <div >
         <div className="font-semibold ">startDate:</div>
-        <div>{moment(bookingStore.bookingInfo.startDate).format('MM/DD/YYYY')}</div>
+        <div>{dayjs(bookingStore.bookingInfo.startDate).format('MM/DD/YYYY')}</div>
       </div>
 
 
       <div>
         <div className="font-semibold ">endDate:</div>
-        <div>{moment(bookingStore.bookingInfo.endDate).format('MM/DD/YYYY')}</div>
+        <div>{dayjs(bookingStore.bookingInfo.endDate).format('MM/DD/YYYY')}</div>
       </div>
     </div>
      
