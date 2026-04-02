@@ -14,6 +14,7 @@ import * as _ from 'lodash'
 import { AiFillStar } from 'react-icons/ai'
 
 import ReviewInput from '../../../../components/reviewInput'
+import { SafeImage } from '../../../../components/common/SafeImage'
 
 
 interface RoomProps {
@@ -117,10 +118,15 @@ export function RoomClient({
               </div>
 
               <Link href={`/Home/user/${(userId as FetchedMe)._id}`} className="block" target='_blank'>
-                <img
-                src={`${(userId as FetchedMe).profileImg!.imgUrl}`}
+                <SafeImage
+                  src={(userId as FetchedMe).profileImg?.imgUrl}
                   alt="userProfile"
+                  height={56}
+                  width={56}
+                  fallbackSrc="/user.png"
+                  fallbackText="Profile image unavailable"
                   className="h-14 w-14 rounded-full  border-2 border-gray-300"
+                  fallbackClassName="flex h-14 w-14 items-center justify-center rounded-full border-2 border-gray-300 bg-gray-100 text-center text-xs text-gray-500"
                 />
               </Link>
             </div>

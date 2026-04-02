@@ -5,8 +5,6 @@ import { FetchedMe, IBooking, Property } from "../../interface/response"
 import Api from "../../api/client/axios"
 import TripBookingClient from "../listing/TripsReservationClient"
 import {BsFillHouseCheckFill,BsFillHouseSlashFill} from 'react-icons/bs'
-import Image from 'next/image'
-
 import{FaUserCheck,FaUserTimes} from 'react-icons/fa'
 import Link from "next/link"
 import * as lodash from 'lodash'
@@ -15,6 +13,7 @@ import useModal from "../../store/useModal"
 import { toast } from "react-hot-toast"
 import { useRouter } from "next/navigation"
 import useConfirm from "../../store/useConfirm"
+import { SafeImage } from "../common/SafeImage"
 
 interface AdminTable{
     use?:string,
@@ -271,7 +270,15 @@ export default function AdminTable({use,users,properties,bookings}:AdminTable) {
                 </td>
                 
                 <Link href={`/Home/rooms/${data._id}` } target='_space' ><td className="mr-12 flex items-center space-x-3 whitespace-nowrap p-4">
-                  <Image alt="RoomImage" fill={false} height={64} width={80}  className="rounded-lg" src={data.images![0]!.imgUrl} />
+                  <SafeImage
+                    alt="RoomImage"
+                    height={64}
+                    width={80}
+                    className="rounded-lg"
+                    src={data.images?.[0]?.imgUrl}
+                    fallbackSrc="/house.png"
+                    fallbackText="Property image unavailable"
+                  />
 
                   <div className="text-base font-semibold  text-gray-800 dark:text-white">
                     {data.name}
@@ -331,7 +338,15 @@ export default function AdminTable({use,users,properties,bookings}:AdminTable) {
                     </td>
                     
                     <Link href={`/Home/user/${data._id}` } target='_space' ><td className="mr-12 flex items-center space-x-3 whitespace-nowrap p-4">
-                      <Image  alt='ProfileImage' height={48} width={48} className="rounded-full" src={data.profileImg!.imgUrl==''?'/user.png':data.profileImg!.imgUrl} />
+                      <SafeImage
+                        alt='ProfileImage'
+                        height={48}
+                        width={48}
+                        className="rounded-full"
+                        src={data.profileImg?.imgUrl}
+                        fallbackSrc="/user.png"
+                        fallbackText="Profile image unavailable"
+                      />
     
                       <div className="text-base font-semibold  text-gray-800 dark:text-white">
                         {data.userName}

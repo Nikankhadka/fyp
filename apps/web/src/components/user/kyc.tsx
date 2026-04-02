@@ -286,7 +286,7 @@ useEffect(()=>{
               <div   className={
                 imageUrl() == ''
                   ? 'hidden'
-                  : 'h-[200px] w-full rounded-lg  sm:h-[270px] md:h-[300px] md:w-[80%] lg:h-[350px]'
+                  : 'relative h-[200px] w-full rounded-lg sm:h-[270px] md:h-[300px] md:w-[80%] lg:h-[350px]'
               }>
 
             <Image

@@ -16,7 +16,7 @@ import { ErrorText } from '../random'
 import { PhoneComp } from './phone'
 import EmailComp from './emailcomp'
 import { RxCrossCircled } from 'react-icons/rx'
-import Image from 'next/image'
+import { SafeImage } from '../common/SafeImage'
 interface props {
   userId?:string
   userData: Partial<FetchedMe>,
@@ -160,12 +160,15 @@ export default function AccountComponent({ userData,is_Admin,userId}: props) {
               <div className=" flex items-center justify-between p-3">
                 <p>
                   <h1 className="my-2 font-semibold">Id</h1>
-                  <div className="my-2 block h-auto  w-[85%] rounded-lg sm:w-[60%]">
-                  <Image
-                    fill={true}
-                    src={kycInfo!.img.imgUrl}
-                    alt="imghere"
-                    
+                  <div className="my-2 block w-[85%] rounded-lg sm:w-[60%]">
+                  <SafeImage
+                    width={720}
+                    height={480}
+                    src={kycInfo?.img?.imgUrl}
+                    alt="KYC document"
+                    fallbackSrc="/profile.png"
+                    fallbackText="KYC image unavailable"
+                    className="h-auto w-full rounded-lg object-contain"
                   />
                   </div>
                   

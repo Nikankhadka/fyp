@@ -11,7 +11,7 @@ import { toast } from "react-hot-toast"
 import { useRouter } from "next/navigation"
 import useReject from "../../store/useReject"
 import * as _ from 'lodash'
-import Image from "next/image"
+import { SafeImage } from "../common/SafeImage"
 
 interface UserProps{
   userData:kycRequests
@@ -31,7 +31,15 @@ export default function UserCard({userData}:UserProps){
      
       <Link href={`/Home/user/${_id}`} target="_space">
       <div className="mt-2 mb-4 w-fit">
-        <Image src={profileImg.imgUrl!=''?profileImg.imgUrl:'/user.png'} alt="property" height={112} width={112}  className="  rounded-full" />
+        <SafeImage
+          src={profileImg.imgUrl}
+          alt="property"
+          height={112}
+          width={112}
+          fallbackSrc="/user.png"
+          fallbackText="Profile image unavailable"
+          className="rounded-full"
+        />
       </div>
       </Link>
 

@@ -25,6 +25,7 @@ import { RxCrossCircled } from 'react-icons/rx'
 import { Payment } from '../../interface/response'
 import useReject from '../../store/useReject'
 import Image from 'next/image'
+import { SafeImage } from '../common/SafeImage'
 
 //admin card
 interface props {
@@ -61,11 +62,13 @@ export default function Card({ use, data, key,wish,user,index}: props) {
   <div className="relative group ">
   <Link href={`/Home/rooms/${_id}`} target="_blank">
     <div  className="w-full h-56 object-cover ">
-    <Image
-     fill={true}
-      src={images![img]!.imgUrl}
+    <SafeImage
+      fill={true}
+      src={images?.[img]?.imgUrl}
       alt="property"
-     
+      fallbackSrc="/house.png"
+      fallbackText="Property image unavailable"
+      fallbackClassName="absolute inset-0 flex items-center justify-center rounded-none bg-gray-100 text-sm text-gray-500"
     />
     </div>
    
@@ -355,7 +358,6 @@ export default function Card({ use, data, key,wish,user,index}: props) {
 
   )
 }
-
 
 
 

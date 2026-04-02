@@ -1,7 +1,7 @@
 'use client'
 
-import Image from 'next/image'
 import {useState} from 'react'
+import { SafeImage } from './common/SafeImage'
 interface Props{
     images:{
         imgId:string,
@@ -19,7 +19,15 @@ export default function Carousel({images}:Props){
     <div className="relative h-[250px] sm:h-[324px] overflow-hidden rounded-lg md:h-96 ">
         
         <div className="duration-700 ease-in-out " >
-            <Image fill={true} src={images[img]!.imgUrl} className="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="..." />
+            <SafeImage
+              fill={true}
+              src={images?.[img]?.imgUrl}
+              className="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+              alt="Property image"
+              fallbackSrc="/house.png"
+              fallbackText="Property image unavailable"
+              fallbackClassName="absolute inset-0 flex items-center justify-center rounded-lg bg-gray-100 text-sm text-gray-500"
+            />
         </div>
     </div>
    
@@ -42,7 +50,7 @@ export default function Carousel({images}:Props){
     </button>
 
     <button onClick={() => {
-            if (img == images?.length! - 1) {
+            if (img === images.length - 1) {
               return console.log('o here')
             }
             return setimg(img + 1)

@@ -17,7 +17,7 @@ import Modal from "./modal"
 import Invoice from "../listing/invoiceUI"
 import {createRef, useState} from 'react'
 import { toast } from "react-hot-toast"
-import Image from "next/image"
+import { SafeImage } from "../common/SafeImage"
 
 
 
@@ -75,8 +75,15 @@ export function BookingModal(){
 
            <div className={`w-full p-4  `}>
                 <div className="flex flex-col items-center justify-center" >
-                    <div className="w-[95%] sm:m-0 h-40 sm:h-48  rounded-lg">
-                    <Image fill src={images![0]!.imgUrl} alt="propertyImage"  />
+                    <div className="relative w-[95%] sm:m-0 h-40 sm:h-48 rounded-lg">
+                    <SafeImage
+                      fill
+                      src={images?.[0]?.imgUrl}
+                      alt="propertyImage"
+                      fallbackSrc="/house.png"
+                      fallbackText="Property image unavailable"
+                      fallbackClassName="absolute inset-0 flex items-center justify-center rounded-lg bg-gray-100 text-sm text-gray-500"
+                    />
                     </div>
                     
                     

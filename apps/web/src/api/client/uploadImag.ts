@@ -26,7 +26,7 @@ export async function uploadImage(image:any):Promise<imageUpload>{
     const response = await res.json()
     return{
         imgId:response.public_id,
-        imgUrl:response.url
+        imgUrl:response.secure_url ?? response.url
     }
 
     }catch(e){
@@ -66,4 +66,3 @@ export async function deleteImage(imgId: string): Promise<boolean> {
     return false
   }
 }
-

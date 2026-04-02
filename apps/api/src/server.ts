@@ -10,6 +10,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import passport from "passport";
 import morgan from "morgan";
+import path from "path";
 import swaggerUi from "swagger-ui-express";
 import helmet from "helmet";
 import YAML from "yamljs";
@@ -75,7 +76,8 @@ dbConnect();
 app.use(morgan("dev"));
 
 //for swagger APi documentation
-const apiDocumentation = YAML.load("./src/utils/swagger.yml");
+const swaggerDocumentPath = path.resolve(__dirname, "utils", "swagger.yml");
+const apiDocumentation = YAML.load(swaggerDocumentPath);
 app.use("/apiDocs", swaggerUi.serve, swaggerUi.setup(apiDocumentation)); //the obj returned by docs using option will  be used ot loap apiDocumentation
 
 //custom middle ware function which will clear req obj on evry api request before storing the actual data

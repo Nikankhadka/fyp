@@ -8,13 +8,17 @@ const nextConfig = {
 
   // Combine image configurations
   images: {
-    domains: ['firebasestorage.googleapis.com', 'lh3.googleusercontent.com'],
+    domains: [
+      'firebasestorage.googleapis.com',
+      'lh3.googleusercontent.com',
+      'res.cloudinary.com',
+    ],
     remotePatterns: [
       {
         protocol: 'https',
         hostname: 'res.cloudinary.com',
         port: '',
-        pathname: '/account123/**',
+        pathname: '/**',
       },
     ],
   },

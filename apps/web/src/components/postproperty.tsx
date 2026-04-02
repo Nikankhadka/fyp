@@ -270,7 +270,7 @@ export default function PostPropertyForm({
                 <div  className={
                     imageUrl(index) == ''
                       ? 'hidden'
-                      : 'h-[200px] w-full rounded-lg  sm:h-[270px] md:h-[320px] md:w-[80%] lg:h-[400px]'
+                      : 'relative h-[200px] w-full rounded-lg sm:h-[270px] md:h-[320px] md:w-[80%] lg:h-[400px]'
                   }>
                 <Image
                   fill={true}

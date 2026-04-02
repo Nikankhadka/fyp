@@ -6,13 +6,13 @@ import { HiStar, HiMinus } from 'react-icons/hi'
 import { HiCheck } from 'react-icons/hi'
 import { EditBasic } from './editProfile'
 
-import Image from 'next/image'
 import Card from '../card/card'
 import { FetchedMe, Property } from '../../interface/response'
 import { bg } from '../../styles/variants'
 import useAccount from '../../store/AccountState'
 import AccountComponent from './account'
 import Password from './pasword'
+import { SafeImage } from '../common/SafeImage'
 interface ProfileProps {
   userId: string
   profileData: Partial<FetchedMe>,
@@ -47,11 +47,13 @@ export default function Profile({ userId, profileData,listings,is_Admin}: Profil
               Joined in {new Date(createdAt!).getFullYear()}{' '}
             </p>
           </div>
-          <Image
+          <SafeImage
             height={150}
             width={150}
-            src={profileImg!.imgUrl == '' ? '/user.png' : profileImg!.imgUrl}
+            src={profileImg?.imgUrl}
             alt="user"
+            fallbackSrc="/user.png"
+            fallbackText="Profile image unavailable"
             className="my-2 h-[100px] w-[100px] rounded-full border-2 border-gray-300 p-1 shadow-lg md:h-[150px] md:w-[150px]"
           />
         </div>
