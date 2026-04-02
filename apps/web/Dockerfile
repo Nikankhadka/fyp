@@ -7,7 +7,7 @@ RUN corepack enable
 
 FROM base AS deps
 COPY apps/web/package.json apps/web/pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile
+RUN pnpm install --no-frozen-lockfile
 
 FROM deps AS dev
 ENV NODE_ENV=development

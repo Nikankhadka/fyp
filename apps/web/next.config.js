@@ -1,9 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Keep App Router enabled
-  experimental: {
-    appDir: true,
-  },
   output: 'standalone',
 
   // Optimize for development

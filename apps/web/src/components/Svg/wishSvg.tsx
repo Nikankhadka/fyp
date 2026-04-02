@@ -38,7 +38,7 @@ export default function Wish({active,id,user}:WishProps){
           }
 
          // for deleting wishlist
-          if(active){
+          if(isActive){
             console.log('inside active')
             const res=Api.delete(`/property/v1/wishList/${id}`,{withCredentials:true}).then((res)=>{
               console.log("Wishlist removed");

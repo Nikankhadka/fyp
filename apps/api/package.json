@@ -3,7 +3,7 @@
   "scripts": {
     "dev": "tsnd ./src/server.ts --respawn  --transpile-only --exit-child",
     "build": "tsc",
-    "seed": "ts-node ./src/scripts/seedDemoData.ts",
+    "seed": "tsnd ./src/scripts/seedDemoData.ts --transpile-only --exit-child",
     "start": " tsc &&node dist/server.js"
   },
   "devDependencies": {
@@ -43,5 +43,6 @@
     "passport-google-oauth20": "^2.0.0",
     "swagger-ui-express": "^4.6.0",
     "yamljs": "^0.3.0"
-  }
+  },
+  "packageManager": "pnpm@10.33.0+sha512.10568bb4a6afb58c9eb3630da90cc9516417abebd3fabbe6739f0ae795728da1491e9db5a544c76ad8eb7570f5c4bb3d6c637b2cb41bfdcdb47fa823c8649319"
 }

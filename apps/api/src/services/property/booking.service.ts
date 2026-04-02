@@ -38,7 +38,7 @@ export const checkBookingS=async(propId:string,startDate:Date,endDate:Date)=>{
 //modify query later to only work on verified proeprty and verified user
 export const postBookingS=async(propId:string,userId:string,bookingDetail:Partial<BookingInput>):Promise<boolean>=>{
     try{
-        const{startDate,endDate,guest,payerId,initialAmount,serviceCharge,totalAmount,paymentId,Stay,bill}=bookingDetail
+        const{startDate,endDate,guest,payerId,initialAmount,serviceCharge,totalAmount,paymentId,stay,bill}=bookingDetail
         const checkProperty=await propertyModel.findOne({_id:propId});
         if(!checkProperty) throw new Error("invalid Property Id/Does not Exist");
         
@@ -76,7 +76,7 @@ export const postBookingS=async(propId:string,userId:string,bookingDetail:Partia
         const newPayment=await paymentModel.create({
           bookingId:newBooking._id,
           payerId,
-          Stay,
+          stay,
           paymentDate:new Date(),
           initialAmount,
           serviceCharge,

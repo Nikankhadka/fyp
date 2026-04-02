@@ -77,6 +77,31 @@ Use these examples as the source of truth:
 
 Do not commit real secrets. The previous hardcoded credentials have been removed from the tracked setup.
 
+## Demo Seed Data
+
+The API includes a demo reset-and-seed script that loads a coherent development dataset for:
+
+- admin moderation
+- verified and pending KYC profiles
+- verified, pending, and rejected property listings
+- completed, upcoming, and cancelled bookings
+- payments, reviews, wishlists, and viewed-property history
+
+Run it against the dev stack with:
+
+```bash
+docker compose -f infra/docker/compose.dev.yml exec -T api pnpm seed
+```
+
+Demo logins:
+
+- `admin` / `admin1234`
+- `host.sita` / `host1234`
+- `host.bikash` / `host1234`
+- `guest.asha` / `guest1234`
+- `guest.noel` / `guest1234`
+- `guest.mina` / `guest1234`
+
 ## Notes
 
 - The frontend now builds with Next.js standalone output for production containers.

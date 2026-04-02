@@ -1,8 +1,6 @@
 'use client'
 
-import Datepicker from 'react-tailwindcss-datepicker'
 import { useState } from 'react'
-import Link from 'next/link'
 import { ErrorText } from '../random'
 
 import moment from 'moment'
@@ -24,10 +22,13 @@ interface Booking{
 }
 
 export function BookProperty({reservations,user,propertyData}:Booking) {
-    const [date, setdate] = useState({ 
-        startDate:new Date(), 
-        endDate: new Date()
-        });
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const [date, setdate] = useState({
+      startDate: moment(tomorrow).format('YYYY-MM-DD'),
+      endDate: moment(tomorrow).format('YYYY-MM-DD')
+    });
  
         console.log(reservations)
 
@@ -44,16 +45,15 @@ maxDate.setFullYear(currentDate.getFullYear() + 1); // set the year to be one ye
 maxDate.setMonth(currentDate.getMonth()); // set the month to be the same as the current date
 maxDate.setDate(currentDate.getDate()); // set the day to be the same as the current date
 
-  const handleValueChange = (newValue:any) => {
-    console.log('newValue:', newValue)
-    
-    setdate(newValue)
-  }
+  const minDate = moment(tomorrow).format('YYYY-MM-DD');
+  const maxDateValue = moment(maxDate).format('YYYY-MM-DD');
 
 
   const onReserve=async(e:any)=>{
-    const momentStartDate=moment(date.startDate);
-    const momentEndDate=moment(date.endDate);
+    const startDate = date.startDate ? new Date(`${date.startDate}T12:00:00`) : null;
+    const endDate = date.endDate ? new Date(`${date.endDate}T12:00:00`) : null;
+    const momentStartDate=moment(startDate);
+    const momentEndDate=moment(endDate);
 
     e.preventDefault();
 
@@ -68,11 +68,11 @@ maxDate.setDate(currentDate.getDate()); // set the day to be the same as the cur
 
 
     //date setup is checked on client side
-    if(date.startDate==null||date.endDate==null||guest<=0){
+    if(startDate==null||endDate==null||guest<=0||momentEndDate.isBefore(momentStartDate,'day')){
       return bookingStore.setError(true);
     }
 
-    if(moment(date.startDate).isSame(moment(),'day')){
+    if(moment(startDate).isSame(moment(),'day')){
       console.log('same date')
       return bookingStore.setError(true);
     }
@@ -98,8 +98,8 @@ maxDate.setDate(currentDate.getDate()); // set the day to be the same as the cur
     bookingStore.setPropertyData(propertyData);
     bookingStore.setbookingInfo({
       guest:guest,
-      startDate:date.startDate,
-      endDate:date.endDate
+      startDate,
+      endDate
     })
     modal.onOpen("booking")
 
@@ -122,13 +122,42 @@ maxDate.setDate(currentDate.getDate()); // set the day to be the same as the cur
     
     <div className='w-[90%] mx-auto my-2 rounded-lg '>
     <div className='border-2 border-gray-300 rounded-lg my-2'>
+      <div className='grid gap-2 p-3 sm:grid-cols-2'>
+        <label className='text-sm font-semibold text-gray-700'>
+          Check in
+          <input
+            type="date"
+            min={minDate}
+            max={maxDateValue}
+            value={date.startDate}
+            onChange={(e) =>
+              setdate((prev) => ({
+                ...prev,
+                startDate: e.target.value,
+                endDate: prev.endDate < e.target.value ? e.target.value : prev.endDate
+              }))
+            }
+            className="mt-1 block h-11 w-full rounded-md border-2 border-gray-300 p-2 text-sm text-gray-700 hover:bg-hoverColor"
+          />
+        </label>
 
-
-{/* an array with start and end date for the dates to be disabled is passed */}
-    <Datepicker value={date} onChange={handleValueChange}
-    minDate={currentDate} 
-    maxDate={maxDate} 
-    disabledDates={reservations}/>
+        <label className='text-sm font-semibold text-gray-700'>
+          Check out
+          <input
+            type="date"
+            min={date.startDate || minDate}
+            max={maxDateValue}
+            value={date.endDate}
+            onChange={(e) =>
+              setdate((prev) => ({
+                ...prev,
+                endDate: e.target.value
+              }))
+            }
+            className="mt-1 block h-11 w-full rounded-md border-2 border-gray-300 p-2 text-sm text-gray-700 hover:bg-hoverColor"
+          />
+        </label>
+      </div>
     </div>
    
     

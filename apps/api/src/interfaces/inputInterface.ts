@@ -34,13 +34,14 @@ export interface KycData{
 export interface BookingInput {
     startDate: Date;
     endDate: Date;
-    guest: string;
+    guest: number;
     payerId: string;
     initialAmount: number;
     serviceCharge: number;
     totalAmount: number;
     paymentId: string;
-    Stay: number;
-    bill:string
-  }
+    stay: number;
+    Stay?: number;
+    bill: string;
+}
   

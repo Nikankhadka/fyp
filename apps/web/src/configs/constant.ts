@@ -38,5 +38,10 @@ export const propertyOptions = [
 
 export const httpOnlyCookie = false
 
-export const localServer =
+const publicApiBaseUrl =
   process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:2900'
+
+const serverApiBaseUrl = process.env.API_BASE_URL || publicApiBaseUrl
+
+export const localServer =
+  typeof window === 'undefined' ? serverApiBaseUrl : publicApiBaseUrl

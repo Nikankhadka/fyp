@@ -10,7 +10,11 @@
     "lint:web": "pnpm --dir apps/web lint",
     "install:api": "pnpm --dir apps/api install --frozen-lockfile",
     "install:web": "pnpm --dir apps/web install --frozen-lockfile",
+    "seed:demo": "docker compose -f infra/docker/compose.dev.yml exec -T api pnpm seed",
     "docker:dev": "docker compose -f infra/docker/compose.dev.yml up --build",
     "docker:prod": "docker compose -f infra/docker/compose.prod.yml up --build -d"
+  },
+  "devDependencies": {
+    "playwright-core": "1.59.1"
   }
 }
