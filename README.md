@@ -273,11 +273,11 @@ The project includes a dedicated demo seed script at [apps/api/src/scripts/seedD
 What the seed script does:
 
 - connects to the configured `MONGODB_URI`
-- clears existing demo records from the main collections
-- inserts a coherent demo dataset for users, properties, bookings, payments, reviews, and conversations
-- creates realistic admin, host, guest, verified, pending, approved, rejected, completed, upcoming, and cancelled states
+- seeds a launch-ready catalog with realistic host, guest, booking, payment, and review records
+- supports a destructive `reset` mode for local development and a production-safe `bootstrap` mode for initial deployment
+- references curated launch images stored in `apps/web/public/seed`
 
-Run the seed script against the Docker dev stack:
+Run the destructive reset seed against the Docker dev stack:
 
 ```bash
 pnpm seed:demo
@@ -286,21 +286,35 @@ pnpm seed:demo
 Equivalent command:
 
 ```bash
-docker compose -f infra/docker/compose.dev.yml exec -T api pnpm seed
+docker compose -f infra/docker/compose.dev.yml exec -T api pnpm seed:reset
 ```
 
 If you are running MongoDB outside Docker and have the API dependencies installed locally, you can also run:
 
 ```bash
 cd apps/api
-pnpm seed
+pnpm seed:reset
+```
+
+Run the production-safe bootstrap seed:
+
+```bash
+pnpm seed:bootstrap
+```
+
+Or directly from the API app:
+
+```bash
+cd apps/api
+pnpm seed:bootstrap
 ```
 
 Important seed behavior:
 
-- the script is a reset-and-seed workflow, not an additive seed
-- existing data in the targeted collections is deleted before demo data is inserted
-- use it for local development and demo environments, not against production data
+- `seed:reset` clears existing users, properties, bookings, payments, reviews, and conversations before inserting launch data
+- `seed:bootstrap` upserts only the curated launch catalog and accounts so later real users can continue adding data
+- the root `pnpm seed:bootstrap` command targets the compiled seed inside the production API container runtime image
+- seeded images use direct repo-served paths like `/seed/profiles/...` and `/seed/properties/...`
 
 ### Demo Accounts
 

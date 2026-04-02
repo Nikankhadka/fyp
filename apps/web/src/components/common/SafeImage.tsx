@@ -22,6 +22,12 @@ function normalizeImageSrc(
   }
 
   if (trimmedSrc.startsWith('http://')) {
+    if (
+      trimmedSrc.startsWith('http://localhost') ||
+      trimmedSrc.startsWith('http://127.0.0.1')
+    ) {
+      return trimmedSrc
+    }
     return trimmedSrc.replace(/^http:\/\//, 'https://')
   }
 
