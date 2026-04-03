@@ -12,10 +12,8 @@ import {BsHouses} from 'react-icons/bs'
 import {HiOutlineMapPin} from 'react-icons/hi2'
 import * as _ from 'lodash'
 import { AiFillStar } from 'react-icons/ai'
-import Image from 'next/image'
-
 import ReviewInput from '../../../../components/reviewInput'
-import { normalizeImageSrc } from '../../../../components/common/normalizeImageSrc'
+import SafeImage from '../../../../components/common/SafeImage'
 
 
 interface RoomProps {
@@ -65,8 +63,6 @@ export function RoomClient({
   
     _id
   } = propertyData
-  const hostProfileImageSrc = normalizeImageSrc((userId as FetchedMe)?.profileImg?.imgUrl)
- 
     console.log("userType",user)
   return (
     <main className="w-full bg-white ">
@@ -91,10 +87,10 @@ export function RoomClient({
             </div>
 
             <div className="flex items-center gap-x-3">
-             {!(is_Admin||user=='owner')&&<button className="flex items-center gap-1 rounded-lg p-1 hover:bg-hoverColor ">
+             {!(is_Admin||user=='owner')&&<div className="flex items-center gap-1 rounded-lg p-1 hover:bg-hoverColor ">
                 <Wish active={inWishList} id={_id!} user={user}/>
                 <span className="text-sm font-semibold underline">Save</span>
-              </button>}
+              </div>}
 
               {user == 'owner' && (
                 <Link href="/Home/Account/listings" className="text-sm font-semibold underline">
@@ -120,19 +116,14 @@ export function RoomClient({
               </div>
 
               <Link href={`/Home/user/${(userId as FetchedMe)._id}`} className="block" target='_blank'>
-                {hostProfileImageSrc ? (
-                  <Image
-                    src={hostProfileImageSrc}
-                    alt="userProfile"
-                    height={56}
-                    width={56}
-                    className="h-14 w-14 rounded-full  border-2 border-gray-300"
-                  />
-                ) : (
-                  <div className="flex h-14 w-14 items-center justify-center rounded-full border-2 border-gray-300 bg-gray-100 text-center text-xs text-gray-500">
-                    No image
-                  </div>
-                )}
+                <SafeImage
+                  src={(userId as FetchedMe)?.profileImg?.imgUrl}
+                  alt="userProfile"
+                  height={56}
+                  width={56}
+                  className="h-14 w-14 rounded-full border-2 border-gray-300"
+                  fallbackText="No image"
+                />
               </Link>
             </div>
 

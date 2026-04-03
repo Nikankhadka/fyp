@@ -36,7 +36,19 @@ export const propertyOptions = [
   'Beach Resort',
 ]
 
-export const httpOnlyCookie = false
+export const httpOnlyCookie = true
+
+export const demoPaymentMode =
+  process.env.NEXT_PUBLIC_DEMO_PAYMENT_MODE !== 'false'
+
+export const paypalClientId =
+  process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || ''
+
+export const cloudinaryCloudName =
+  process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || ''
+
+export const cloudinaryUploadPreset =
+  process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || ''
 
 const publicApiBaseUrl =
   process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:2900'

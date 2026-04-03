@@ -2,6 +2,7 @@
 import passport from "passport";
 import { Strategy as googleStrategy } from "passport-google-oauth20";
 import { Strategy as facebookStrategy } from "passport-facebook";
+import { apiBaseUrl } from "./constant";
 
 import * as dotenv from "dotenv";
 dotenv.config();
@@ -11,7 +12,7 @@ passport.use(
     {
       clientID: process.env.googleClientId!,
       clientSecret: process.env.googleClientSecret!,
-      callbackURL: "https://fyp-sever.onrender.com/auth/v1/google-callback",
+      callbackURL: `${apiBaseUrl}/auth/v1/google-callback`,
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
@@ -33,7 +34,7 @@ passport.use(
     {
       clientID: process.env.facebookClientId!,
       clientSecret: process.env.facebookClientSecret!,
-      callbackURL: "https://fyp-sever.onrender.com/auth/v1/facebook-callback",
+      callbackURL: `${apiBaseUrl}/auth/v1/facebook-callback`,
       profileFields: ["id", "displayName", "photos", "email"],
     },
     async (accessToken, refreshToken, profile, done) => {

@@ -19,6 +19,7 @@ import YAML from "yamljs";
 import indexRouter from "./routes/index.routes";
 import { clearUser } from "./middlewares/auth.middleware";
 import dbConnect from "./configs/db";
+import { corsOrigins } from "./configs/constant";
 // import helmet from 'helmet'
 
 //helemt
@@ -32,11 +33,7 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use(
   cors({
     //defines the origin of the request
-    origin: [
-      "https://fyp-mero-ghar.vercel.app",
-      "https://fyp-sever.onrender.com",
-      "http://localhost:3000",
-    ],
+    origin: corsOrigins,
     //headers can be accessed and modified else cant
     credentials: true,
   })
@@ -110,4 +107,5 @@ app.use(indexRouter);
 // });
 
 //listen to server on ports
-app.listen(2900, async () => console.log("server started at port 2900"));
+const port = Number(process.env.PORT || 2900);
+app.listen(port, async () => console.log(`server started at port ${port}`));

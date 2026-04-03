@@ -23,5 +23,4 @@ export default function ClientComp({children}:ClientOnlyProps){
       {children}
     </>
   );
-};
-
+}

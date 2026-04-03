@@ -1,6 +1,6 @@
 'use client'
 
-import { SessionUser, sessionData } from "../../api/server/auth"
+import { SessionUser } from "../../api/server/auth"
 import Card from "../../components/card/card"
 import { Property, wishlist } from "../../interface/response"
 interface HomeProps{
@@ -8,18 +8,7 @@ interface HomeProps{
     wishList?:wishlist,
     userData:SessionUser
 }
-import { useRouter } from "next/navigation"
-import { useEffect } from "react"
-
-
 export function HomeClient({properties,wishList,userData}:HomeProps){
-    const router=useRouter();
-
-    useEffect(()=>{
-        return router.refresh();
-    },[])
-
-
     if(wishList){
         return (
             <main className="w-full    ">

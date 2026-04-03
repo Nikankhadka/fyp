@@ -1,10 +1,5 @@
 
 import '../styles/globals.css'
-
-
-
-
-import { Nunito } from 'next/font/google'
 import ClientComp from '../components/clientComp';
 
 import { LoginModal } from '../components/modals/loginModal';
@@ -17,11 +12,6 @@ import { BookingModal } from '../components/modals/bookingBillModal';
 import ResetPassword from '../components/modals/forgotpassword';
 import { SearchModal } from '../components/modals/searchModal';
 
-
-const font = Nunito({ 
-  subsets: ['latin'], 
-});
-
 export default async function RootLayout({children}: {children: React.ReactNode}) {
 
 
@@ -31,7 +21,7 @@ export default async function RootLayout({children}: {children: React.ReactNode}
     <html>
       <head />
       {/* body sets the root layout for entire application */}
-      <body className={` flex flex-col ${font.className}`}>
+      <body className="flex flex-col font-sans">
         
 
         {/* conditionally render navbar  */}

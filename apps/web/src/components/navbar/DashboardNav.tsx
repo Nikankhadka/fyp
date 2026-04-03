@@ -48,7 +48,7 @@ export default function DashboardNav(){
             </div>
            
         <Link
-          href="http://localhost:3000"
+          href="/"
           className=" flex items-center gap-2  "
         >
           <Image height={40} width={40} src="/airbnb.png" alt="logo" className="block" />

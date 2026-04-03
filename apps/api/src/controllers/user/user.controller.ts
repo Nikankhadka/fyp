@@ -2,6 +2,7 @@ import { Request,Response } from "express"
 import joi from "joi"
 import {addEmailS,getMeS, verifyEmailS,updateProfileS,postKycS, getUserS, getPhoneS,postPhoneS} from "../../services/user/user.service"
 import { refreshTokenC } from "../auth/auth.controller";
+import { webAppUrl } from "../../configs/constant";
 
 
 
@@ -50,7 +51,7 @@ export const addEmailC=async(req:Request,res:Response)=>{
 export const verifyEmailC=async(req:Request,res:Response)=>{
     try{
         const emailVerified=await verifyEmailS(req.params.token);
-        if(emailVerified) return res.status(200).redirect("http://localhost:3000/Home")
+        if(emailVerified) return res.status(200).redirect(`${webAppUrl}/Home`)
 
     }catch(e:any){
         console.log(e)
@@ -111,6 +112,5 @@ export const postPhoneC=async(req:Request,res:Response)=>{
         return res.status(409).json({success:false,error:e.message})
     }
 }
-
 
 

@@ -24,8 +24,7 @@ import{AiFillStar ,AiFillHourglass,AiFillCheckCircle,AiOutlineCheckCircle} from 
 import { RxCrossCircled } from 'react-icons/rx'
 import { Payment } from '../../interface/response'
 import useReject from '../../store/useReject'
-import Image from 'next/image'
-import { normalizeImageSrc } from '../common/normalizeImageSrc'
+import SafeImage from '../common/SafeImage'
 
 //admin card
 interface props {
@@ -33,17 +32,15 @@ interface props {
   data?: Partial<Property>,
   booking?:Partial<IBooking>
   payment?:Partial<Payment>
-  key: number
   index?:number,
   wish?:boolean
   user?:string
 }
-export default function Card({ use, data, key,wish,user,index}: props) {
+export default function Card({ use, data, wish, user, index}: props) {
   const [img,setimg] = useState(0);
   
  
   const {images,_id,avgRating,country,city,rate,name,isVerified,isBanned } = data!
-  const imageSrc = normalizeImageSrc(images?.[img]?.imgUrl)
 
   const modal = useModal()
   const confirm = useConfirm()
@@ -59,21 +56,16 @@ export default function Card({ use, data, key,wish,user,index}: props) {
     </div>} */}
 
 
-    <div key={key} className="mx-auto  my-auto h-fit w-[98%] rounded-xl border-[1px] border-gray-100 bg-white duration-300  overflow-hidden shadow-md  hover:shadow-xl">
+    <div className="mx-auto  my-auto h-fit w-[98%] rounded-xl border-[1px] border-gray-100 bg-white duration-300  overflow-hidden shadow-md  hover:shadow-xl">
   <div className="relative group ">
   <Link href={`/Home/rooms/${_id}`} target="_blank">
     <div  className="w-full h-56 object-cover ">
-    {imageSrc ? (
-      <Image
-        fill={true}
-        src={imageSrc}
-        alt="property"
-      />
-    ) : (
-      <div className="absolute inset-0 flex items-center justify-center rounded-none bg-gray-100 text-sm text-gray-500">
-        Property image unavailable
-      </div>
-    )}
+    <SafeImage
+      fill
+      src={images?.[img]?.imgUrl}
+      alt="property"
+      fallbackText="Property image unavailable"
+    />
     </div>
    
   </Link>
@@ -89,7 +81,7 @@ export default function Card({ use, data, key,wish,user,index}: props) {
       }}
       className=" absolute top-[45%]  rounded-full opacity-0 group-hover:opacity-100 bg-gray-100 bg-opacity-70 p-3 transition-all hover:bg-white hover:bg-opacity-100 hover:drop-shadow-lg"
     >
-      <Image src="/left.png" alt="arrow" height={9} width={9} />
+      <SafeImage src="/left.png" alt="arrow" height={9} width={9} fallbackText="" />
     </button>
 
     <button
@@ -102,7 +94,7 @@ export default function Card({ use, data, key,wish,user,index}: props) {
       }}
       className="absolute top-[45%] right-0 rounded-full opacity-0 group-hover:opacity-100 bg-gray-100 bg-opacity-70 p-3 transition-all hover:bg-white hover:bg-opacity-100 hover:drop-shadow-lg"
     >
-      <Image src="/arrow.png" alt="arrow" height={9} width={9} />
+      <SafeImage src="/arrow.png" alt="arrow" height={9} width={9} fallbackText="" />
     </button>
 
 
@@ -315,7 +307,7 @@ export default function Card({ use, data, key,wish,user,index}: props) {
             className="focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 inline-flex items-center rounded-lg bg-themeColor px-3 py-2 text-center text-sm font-medium text-white hover:bg-mainColor focus:ring-4"
             onClick={(e) => {
               e.preventDefault()
-              list.setIndex(key)
+              list.setIndex(index ?? 0)
               list.onList('edit')
             }}
           >

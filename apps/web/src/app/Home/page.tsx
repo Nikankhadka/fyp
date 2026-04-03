@@ -5,6 +5,8 @@ import { getProperties } from "../../api/server/property/getProperty"
 import { getFavourites } from "../../api/server/property/getwishlist"
 import { HomeClient } from "./HomeClient"
 
+export const dynamic = 'force-dynamic'
+
 // this is not route parameters hai 
 interface HomeProps{
   searchParams:SearchForm

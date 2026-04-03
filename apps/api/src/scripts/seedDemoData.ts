@@ -62,11 +62,11 @@ const image = (path: string, imgId: string) => ({
   imgUrl: path,
 });
 
-const profileImage = (fileName: string, imgId: string) =>
-  image(`/seed/profiles/${fileName}`, imgId);
+const emptySeedImage = (imgId: string) => image("", imgId);
 
-const propertyImage = (fileName: string, imgId: string) =>
-  image(`/seed/properties/${fileName}`, imgId);
+const profileImage = (_fileName: string, imgId: string) => emptySeedImage(imgId);
+
+const propertyImage = (_fileName: string, imgId: string) => emptySeedImage(imgId);
 
 const userSeedConfig = [
   {
@@ -1220,7 +1220,7 @@ async function main() {
   mongoose.set("strictQuery", true);
   console.log(`Connecting to ${mongoUri}`);
   console.log(`Seed mode: ${seedMode}`);
-  console.log("Using repo-served relative /seed/... image paths.");
+  console.log("Seed images are disabled; image URLs will be empty strings.");
 
   await mongoose.connect(mongoUri);
 

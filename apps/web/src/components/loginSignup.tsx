@@ -13,6 +13,7 @@ import useModal from '../store/useModal'
 import { toast } from 'react-hot-toast'
 import Api from '../api/client/axios'
 import Image from 'next/image'
+import { api } from '../api/api'
 
 
 //since this component will be used multiple places always check the page before rendering the component
@@ -150,12 +151,12 @@ export default function LoginSignup({ login,modal }: loginSignupModal): JSX.Elem
 
           <SocialLogin
             placeholder="Continue with Google"
-            url="https://fyp-sever.onrender.com/auth/v1/google-login"
+            url={`${api}/auth/v1/google-login`}
             img="/google.png"
           />
           <SocialLogin
             placeholder="Continue with Facebook"
-            url="https://fyp-sever.onrender.com/auth/v1/facebook-login"
+            url={`${api}/auth/v1/facebook-login`}
             img="/facebook.png"
           />
           <div className="my-1  flex w-full items-center justify-center">

@@ -17,8 +17,8 @@ import Modal from "./modal"
 import Invoice from "../listing/invoiceUI"
 import {createRef, useState} from 'react'
 import { toast } from "react-hot-toast"
-import Image from "next/image"
-import { normalizeImageSrc } from "../common/normalizeImageSrc"
+import SafeImage from "../common/SafeImage"
+import { demoPaymentMode, paypalClientId } from "../../configs/constant"
 
 
 
@@ -38,7 +38,8 @@ export function BookingModal(){
     const  basePrice=totalDays*rate!
     const taxPrice=(basePrice/100)*18;
     const totalCost=basePrice+taxPrice;
-    const imageSrc = normalizeImageSrc(images?.[0]?.imgUrl)
+
+    const useDemoCheckout = demoPaymentMode || !paypalClientId
    
    
 
@@ -66,6 +67,15 @@ export function BookingModal(){
         bookingStore.setError(false)
         return router.refresh();
       };
+
+    const handleDemoCheckout = () => {
+        bookingStore.setBillData({
+            payerId: 'demo-payer',
+            paymentId: `demo-${Date.now()}`
+        });
+        toast.success("Demo payment completed successfully");
+        bookingModal.onOpen('bill')
+    };
     
 
 
@@ -78,17 +88,12 @@ export function BookingModal(){
            <div className={`w-full p-4  `}>
                 <div className="flex flex-col items-center justify-center" >
                     <div className="relative w-[95%] sm:m-0 h-40 sm:h-48 rounded-lg">
-                    {imageSrc ? (
-                      <Image
-                        fill
-                        src={imageSrc}
-                        alt="propertyImage"
-                      />
-                    ) : (
-                      <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-gray-100 text-sm text-gray-500">
-                        Property image unavailable
-                      </div>
-                    )}
+                    <SafeImage
+                      fill
+                      src={images?.[0]?.imgUrl}
+                      alt="propertyImage"
+                      fallbackText="Property image unavailable"
+                    />
                     </div>
                     
                     
@@ -133,7 +138,16 @@ export function BookingModal(){
 
                 <div className="mt-5">
                
-                <PayPalScriptProvider options={{ "client-id":'AQBVm0xUYDKKY-d-Jf3xUHDSgGpDkw2N_9cvIXP_ty4BQZ_GWJidp5fWZRDgwjlSDsYq1Wv9SBJnbK-d'}}>
+                {useDemoCheckout ? (
+                <button
+                  type="button"
+                  className="block w-full rounded-lg bg-themeColor p-3 text-center text-sm font-semibold text-white transition-all hover:bg-mainColor"
+                  onClick={handleDemoCheckout}
+                >
+                  Complete Demo Checkout
+                </button>
+                ) : (
+                <PayPalScriptProvider options={{ "client-id": paypalClientId }}>
                 <PayPalButtons style={{ layout: "horizontal",color:"blue" ,height:40,tagline:false }} createOrder={(data, actions) => {
                     return actions.order.create({
                         purchase_units: [
@@ -164,6 +178,13 @@ export function BookingModal(){
                     });
                 }} />
         </PayPalScriptProvider>
+                )}
+
+                {useDemoCheckout && (
+                  <p className="mt-3 text-xs text-gray-500">
+                    Demo mode is enabled. No real payment provider is contacted.
+                  </p>
+                )}
 
       
                 </div>

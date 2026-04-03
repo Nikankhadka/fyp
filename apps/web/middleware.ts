@@ -40,6 +40,7 @@ const refreshTokenS=async(req:NextRequest,res:NextResponse)=>{
     
     const cookieStore = req.cookies
     const refreshToken = cookieStore.get('refreshToken')?.value
+    const accessToken = cookieStore.get('accessToken')?.value
     const session=cookieStore.get('session')?.value
     
 
@@ -47,7 +48,7 @@ const refreshTokenS=async(req:NextRequest,res:NextResponse)=>{
     const cookies=`refreshToken=${refreshToken}`
     console.log('session in middleware',session)
     if(!refreshToken) return NextResponse.redirect('/Home/login')
-    if(session){
+    if(session && accessToken){
       console.log("We have token and session both")
     return res;  
     }
@@ -59,7 +60,7 @@ const refreshTokenS=async(req:NextRequest,res:NextResponse)=>{
       //if user has refresh token then send api request to verify the token data
       console.log('refresh request')
       const jsonData = await fetch(
-        '${api}/auth/v1/refreshToken',
+        `${api}/auth/v1/refreshToken`,
         {
           method: 'POST',
           credentials: 'include',
@@ -98,4 +99,8 @@ const refreshTokenS=async(req:NextRequest,res:NextResponse)=>{
    
     return NextResponse.redirect('http://localhost:3000/Home/login')
   }
+}
+
+export const config = {
+  matcher: ['/Home/:path*', '/Admin/:path*'],
 }

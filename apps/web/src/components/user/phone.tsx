@@ -12,6 +12,7 @@ import OtpInput from 'react-otp-input'
 import { checkPhone,postPhone } from '../../api/client/user'
 import { toast } from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
+import { isFirebaseConfigured } from '../../configs/firebase'
 
 
 interface phone {
@@ -30,6 +31,10 @@ interface phone {
   
     function onCaptchVerify() {
       try {
+        if (!auth || !isFirebaseConfigured) {
+          seterror('config')
+          return
+        }
         console.log('this on captha verifiy is called')
   
         window.recaptchaVerifier = new RecaptchaVerifier(
@@ -62,6 +67,11 @@ interface phone {
       onCaptchVerify()
   
       const appVerifier = window.recaptchaVerifier
+      if (!auth || !appVerifier) {
+        setLoading(false)
+        seterror('config')
+        return
+      }
   
       const formatPh = '+' + ph
       console.log(formatPh)
@@ -82,7 +92,7 @@ interface phone {
       console.log('verify otp')
       console.log(otp)
       setLoading(true)
-      window.confirmationResult
+          window.confirmationResult
         .confirm(otp)
         .then(async (res: any) => {
           console.log(res)
@@ -127,6 +137,9 @@ interface phone {
                     )}
                     {error == 'reuse' && (
                       <ErrorText text="Phone Number Already used by user" />
+                    )}
+                    {error == 'config' && (
+                      <ErrorText text="Phone verification is not configured for this demo deployment" />
                     )}
                   </div>
                 </div>

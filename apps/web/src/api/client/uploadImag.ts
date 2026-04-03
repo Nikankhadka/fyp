@@ -1,5 +1,10 @@
 
 
+import {
+  cloudinaryCloudName,
+  cloudinaryUploadPreset,
+} from '../../configs/constant'
+
 interface imageUpload{
     imgId:string
     imgUrl:string
@@ -8,16 +13,19 @@ interface imageUpload{
 
 export async function uploadImage(image:any):Promise<imageUpload>{
     try{
+    if (!cloudinaryCloudName || !cloudinaryUploadPreset) {
+      throw new Error('Cloudinary upload is not configured')
+    }
         
     //there might be multiple image upload so
     const imageData = new FormData()
     //first upload image
     imageData.append('file',image)
-    imageData.append('cloud_name', 'drpojzybw')
-    imageData.append('upload_preset', 'FypMeroGhar')
+    imageData.append('cloud_name', cloudinaryCloudName)
+    imageData.append('upload_preset', cloudinaryUploadPreset)
 
     const res = await fetch(
-      'https://api.cloudinary.com/v1_1/drpojzybw/image/upload',
+      `https://api.cloudinary.com/v1_1/${cloudinaryCloudName}/image/upload`,
       {
         method: 'POST',
         body: imageData,
@@ -36,33 +44,6 @@ export async function uploadImage(image:any):Promise<imageUpload>{
 }
 
 export async function deleteImage(imgId: string): Promise<boolean> {
-  try {
-    const cloudName ='drpojzybw';
-    const apiKey='842872465112638';
-    const apiSecret='0Enpr1Xhc7O8brOPk57HjxCQDHU';
-
-    const deleteUrl = `https://api.cloudinary.com/v1_1/${cloudName}/delete_by_token`;
-
-    const payload = {
-      public_id: imgId,
-      api_key:apiKey,
-      api_secret:apiSecret,
-    };
-
-    const res = await fetch(deleteUrl,{
-      method: 'POST',
-      body: JSON.stringify(payload),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    const response = await res.json();
-    console.log(response);
-
-    return true;
-  } catch (e) {
-    console.log(e);
-    return false
-  }
+  console.warn(`Cloudinary delete is disabled in demo mode for asset ${imgId}.`)
+  return false
 }
