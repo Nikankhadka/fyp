@@ -5,9 +5,7 @@ import { inputStyle } from '../styles/variants'
 import { loginSignupModal } from '../interface/buttons'
 import { LoginRegisterInput } from '../interface/request'
 import { ErrorText } from './random'
-import axios from 'axios'
 import Link from 'next/link'
-import {useState} from 'react'
 import { useRouter } from 'next/navigation'
 import useModal from '../store/useModal'
 import { toast } from 'react-hot-toast'
@@ -19,6 +17,7 @@ import { api } from '../api/api'
 //since this component will be used multiple places always check the page before rendering the component
 
 export default function LoginSignup({ login,modal }: loginSignupModal): JSX.Element {
+  const showSocialLogin = false
   
   const {register,handleSubmit,formState: { errors }} = useForm<LoginRegisterInput>()
 
@@ -143,22 +142,27 @@ export default function LoginSignup({ login,modal }: loginSignupModal): JSX.Elem
             value={login ? 'Log in' : 'Sign up'}
           />
 
-          <div className="flex w-full items-center justify-center">
-            <hr className="my-4 w-[44%] border-[1px] border-gray-400" />
-            <span className="text-md mx-1">or</span>
-            <hr className="my-4 w-[44%] border-[1px] border-gray-400" />
-          </div>
+          {showSocialLogin && (
+            <>
+              <div className="flex w-full items-center justify-center">
+                <hr className="my-4 w-[44%] border-[1px] border-gray-400" />
+                <span className="text-md mx-1">or</span>
+                <hr className="my-4 w-[44%] border-[1px] border-gray-400" />
+              </div>
 
-          <SocialLogin
-            placeholder="Continue with Google"
-            url={`${api}/auth/v1/google-login`}
-            img="/google.png"
-          />
-          <SocialLogin
-            placeholder="Continue with Facebook"
-            url={`${api}/auth/v1/facebook-login`}
-            img="/facebook.png"
-          />
+              <SocialLogin
+                placeholder="Continue with Google"
+                url={`${api}/auth/v1/google-login`}
+                img="/google.png"
+              />
+              <SocialLogin
+                placeholder="Continue with Facebook"
+                url={`${api}/auth/v1/facebook-login`}
+                img="/facebook.png"
+              />
+            </>
+          )}
+
           <div className="my-1  flex w-full items-center justify-center">
             <span className="text-md my-2">
               {login ? 'Dont Have Account ?' : 'Have Account ?'}{' '}
