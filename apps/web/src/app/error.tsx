@@ -3,8 +3,8 @@
 
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useEffect } from 'react';
-import { SafeImage } from '../components/common/SafeImage';
  
 export default function Error({
   error,
@@ -23,13 +23,11 @@ export default function Error({
      <div className="flex flex-col justify-center items-center px-6 mx-auto h-screen xl:px-0 dark:bg-gray-900">
     <div className="block md:max-w-lg">
       
-        <SafeImage
+        <Image
           height={400}
           width={500}
           src="/house.png"
           alt="Error illustration"
-          fallbackSrc="/airbnb.png"
-          fallbackText="Error illustration unavailable"
         />
     </div>
     <div className="text-center xl:max-w-4xl">

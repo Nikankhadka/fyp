@@ -19,7 +19,7 @@ import { toast } from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import dayjs from '../utils/dayjs'
-import { SafeImage } from './common/SafeImage'
+import { normalizeImageSrc } from './common/normalizeImageSrc'
 
 interface Props {
   reviewData: IReview
@@ -28,6 +28,7 @@ interface Props {
 }
 export default function Review({ reviewData, currentUser,key}: Props) {
   const [Edit, setEdit] = useState('')
+  const profileImageSrc = normalizeImageSrc(reviewData.userId.profileImg?.imgUrl)
   const confirm=useConfirm();
   const modal=useModal()
   const router=useRouter();
@@ -41,15 +42,19 @@ export default function Review({ reviewData, currentUser,key}: Props) {
                 href={`/Home/user/${reviewData.userId._id}`}
                 target="_space"
               >
-                <SafeImage
-                  src={reviewData.userId.profileImg?.imgUrl}
-                  alt="User"
-                  height={48}
-                  width={48}
-                  fallbackSrc="/user.png"
-                  fallbackText="Profile image unavailable"
-                  className="b-2 block h-12 w-12 rounded-lg border-gray-300"
-                />
+                {profileImageSrc ? (
+                  <Image
+                    src={profileImageSrc}
+                    alt="User"
+                    height={48}
+                    width={48}
+                    className="b-2 block h-12 w-12 rounded-lg border-gray-300"
+                  />
+                ) : (
+                  <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gray-100 text-center text-[10px] text-gray-500">
+                    No image
+                  </div>
+                )}
               </Link>
 
               <p>

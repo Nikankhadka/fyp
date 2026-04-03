@@ -12,9 +12,10 @@ import {BsHouses} from 'react-icons/bs'
 import {HiOutlineMapPin} from 'react-icons/hi2'
 import * as _ from 'lodash'
 import { AiFillStar } from 'react-icons/ai'
+import Image from 'next/image'
 
 import ReviewInput from '../../../../components/reviewInput'
-import { SafeImage } from '../../../../components/common/SafeImage'
+import { normalizeImageSrc } from '../../../../components/common/normalizeImageSrc'
 
 
 interface RoomProps {
@@ -64,6 +65,7 @@ export function RoomClient({
   
     _id
   } = propertyData
+  const hostProfileImageSrc = normalizeImageSrc((userId as FetchedMe)?.profileImg?.imgUrl)
  
     console.log("userType",user)
   return (
@@ -118,16 +120,19 @@ export function RoomClient({
               </div>
 
               <Link href={`/Home/user/${(userId as FetchedMe)._id}`} className="block" target='_blank'>
-                <SafeImage
-                  src={(userId as FetchedMe).profileImg?.imgUrl}
-                  alt="userProfile"
-                  height={56}
-                  width={56}
-                  fallbackSrc="/user.png"
-                  fallbackText="Profile image unavailable"
-                  className="h-14 w-14 rounded-full  border-2 border-gray-300"
-                  fallbackClassName="flex h-14 w-14 items-center justify-center rounded-full border-2 border-gray-300 bg-gray-100 text-center text-xs text-gray-500"
-                />
+                {hostProfileImageSrc ? (
+                  <Image
+                    src={hostProfileImageSrc}
+                    alt="userProfile"
+                    height={56}
+                    width={56}
+                    className="h-14 w-14 rounded-full  border-2 border-gray-300"
+                  />
+                ) : (
+                  <div className="flex h-14 w-14 items-center justify-center rounded-full border-2 border-gray-300 bg-gray-100 text-center text-xs text-gray-500">
+                    No image
+                  </div>
+                )}
               </Link>
             </div>
 

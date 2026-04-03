@@ -12,7 +12,8 @@ import { bg } from '../../styles/variants'
 import useAccount from '../../store/AccountState'
 import AccountComponent from './account'
 import Password from './pasword'
-import { SafeImage } from '../common/SafeImage'
+import Image from 'next/image'
+import { normalizeImageSrc } from '../common/normalizeImageSrc'
 interface ProfileProps {
   userId: string
   profileData: Partial<FetchedMe>,
@@ -33,6 +34,7 @@ export default function Profile({ userId, profileData,listings,is_Admin}: Profil
     userName,
     password
   } = profileData
+  const profileImageSrc = normalizeImageSrc(profileImg?.imgUrl)
 
     const account=useAccount();
 
@@ -47,15 +49,19 @@ export default function Profile({ userId, profileData,listings,is_Admin}: Profil
               Joined in {new Date(createdAt!).getFullYear()}{' '}
             </p>
           </div>
-          <SafeImage
-            height={150}
-            width={150}
-            src={profileImg?.imgUrl}
-            alt="user"
-            fallbackSrc="/user.png"
-            fallbackText="Profile image unavailable"
-            className="my-2 h-[100px] w-[100px] rounded-full border-2 border-gray-300 p-1 shadow-lg md:h-[150px] md:w-[150px]"
-          />
+          {profileImageSrc ? (
+            <Image
+              height={150}
+              width={150}
+              src={profileImageSrc}
+              alt="user"
+              className="my-2 h-[100px] w-[100px] rounded-full border-2 border-gray-300 p-1 shadow-lg md:h-[150px] md:w-[150px]"
+            />
+          ) : (
+            <div className="my-2 flex h-[100px] w-[100px] items-center justify-center rounded-full border-2 border-gray-300 bg-gray-100 p-1 text-center text-xs text-gray-500 shadow-lg md:h-[150px] md:w-[150px]">
+              No image available
+            </div>
+          )}
         </div>
 
         <div className="my-3 flex flex-col gap-2">

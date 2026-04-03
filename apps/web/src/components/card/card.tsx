@@ -25,7 +25,7 @@ import { RxCrossCircled } from 'react-icons/rx'
 import { Payment } from '../../interface/response'
 import useReject from '../../store/useReject'
 import Image from 'next/image'
-import { SafeImage } from '../common/SafeImage'
+import { normalizeImageSrc } from '../common/normalizeImageSrc'
 
 //admin card
 interface props {
@@ -43,6 +43,7 @@ export default function Card({ use, data, key,wish,user,index}: props) {
   
  
   const {images,_id,avgRating,country,city,rate,name,isVerified,isBanned } = data!
+  const imageSrc = normalizeImageSrc(images?.[img]?.imgUrl)
 
   const modal = useModal()
   const confirm = useConfirm()
@@ -62,14 +63,17 @@ export default function Card({ use, data, key,wish,user,index}: props) {
   <div className="relative group ">
   <Link href={`/Home/rooms/${_id}`} target="_blank">
     <div  className="w-full h-56 object-cover ">
-    <SafeImage
-      fill={true}
-      src={images?.[img]?.imgUrl}
-      alt="property"
-      fallbackSrc="/house.png"
-      fallbackText="Property image unavailable"
-      fallbackClassName="absolute inset-0 flex items-center justify-center rounded-none bg-gray-100 text-sm text-gray-500"
-    />
+    {imageSrc ? (
+      <Image
+        fill={true}
+        src={imageSrc}
+        alt="property"
+      />
+    ) : (
+      <div className="absolute inset-0 flex items-center justify-center rounded-none bg-gray-100 text-sm text-gray-500">
+        Property image unavailable
+      </div>
+    )}
     </div>
    
   </Link>
@@ -358,6 +362,3 @@ export default function Card({ use, data, key,wish,user,index}: props) {
 
   )
 }
-
-
-

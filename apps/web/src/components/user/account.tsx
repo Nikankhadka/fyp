@@ -16,7 +16,8 @@ import { ErrorText } from '../random'
 import { PhoneComp } from './phone'
 import EmailComp from './emailcomp'
 import { RxCrossCircled } from 'react-icons/rx'
-import { SafeImage } from '../common/SafeImage'
+import Image from 'next/image'
+import { normalizeImageSrc } from '../common/normalizeImageSrc'
 interface props {
   userId?:string
   userData: Partial<FetchedMe>,
@@ -29,6 +30,7 @@ export default function AccountComponent({ userData,is_Admin,userId}: props) {
   const confirmModal = useModal()
 
   const { kycInfo, kyc, email } = userData!
+  const kycImageSrc = normalizeImageSrc(kycInfo?.img?.imgUrl)
 
   console.log("kyc",kycInfo);
   const kycinfo = (kyc!.isVerified || kyc!.pending)
@@ -161,15 +163,19 @@ export default function AccountComponent({ userData,is_Admin,userId}: props) {
                 <p>
                   <h1 className="my-2 font-semibold">Id</h1>
                   <div className="my-2 block w-[85%] rounded-lg sm:w-[60%]">
-                  <SafeImage
-                    width={720}
-                    height={480}
-                    src={kycInfo?.img?.imgUrl}
-                    alt="KYC document"
-                    fallbackSrc="/profile.png"
-                    fallbackText="KYC image unavailable"
-                    className="h-auto w-full rounded-lg object-contain"
-                  />
+                  {kycImageSrc ? (
+                    <Image
+                      width={720}
+                      height={480}
+                      src={kycImageSrc}
+                      alt="KYC document"
+                      className="h-auto w-full rounded-lg object-contain"
+                    />
+                  ) : (
+                    <div className="flex min-h-[180px] w-full items-center justify-center rounded-lg bg-gray-100 px-4 text-center text-sm text-gray-500">
+                      KYC image unavailable
+                    </div>
+                  )}
                   </div>
                   
                 </p>

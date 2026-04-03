@@ -13,7 +13,8 @@ import useModal from "../../store/useModal"
 import { toast } from "react-hot-toast"
 import { useRouter } from "next/navigation"
 import useConfirm from "../../store/useConfirm"
-import { SafeImage } from "../common/SafeImage"
+import Image from "next/image"
+import { normalizeImageSrc } from "../common/normalizeImageSrc"
 
 interface AdminTable{
     use?:string,
@@ -261,6 +262,7 @@ export default function AdminTable({use,users,properties,bookings}:AdminTable) {
         
         use=='property'&& stateProperties!.map((data,index)=>{
             console.log(data);
+            const propertyImageSrc = normalizeImageSrc(data.images?.[0]?.imgUrl)
             return(
               <tbody key={index} className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
               <tr className="hover:bg-gray-100 dark:hover:bg-gray-700">
@@ -270,15 +272,19 @@ export default function AdminTable({use,users,properties,bookings}:AdminTable) {
                 </td>
                 
                 <Link href={`/Home/rooms/${data._id}` } target='_space' ><td className="mr-12 flex items-center space-x-3 whitespace-nowrap p-4">
-                  <SafeImage
-                    alt="RoomImage"
-                    height={64}
-                    width={80}
-                    className="rounded-lg"
-                    src={data.images?.[0]?.imgUrl}
-                    fallbackSrc="/house.png"
-                    fallbackText="Property image unavailable"
-                  />
+                  {propertyImageSrc ? (
+                    <Image
+                      alt="RoomImage"
+                      height={64}
+                      width={80}
+                      className="rounded-lg"
+                      src={propertyImageSrc}
+                    />
+                  ) : (
+                    <div className="flex h-16 w-20 items-center justify-center rounded-lg bg-gray-100 text-center text-xs text-gray-500">
+                      No image available
+                    </div>
+                  )}
 
                   <div className="text-base font-semibold  text-gray-800 dark:text-white">
                     {data.name}
@@ -329,6 +335,7 @@ export default function AdminTable({use,users,properties,bookings}:AdminTable) {
           {
             use=='user'&& stateUsers!.map((data,index)=>{
                 console.log(data);
+                const profileImageSrc = normalizeImageSrc(data.profileImg?.imgUrl)
                 return(
                   <tbody key={index} className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
                   <tr className="hover:bg-gray-100 dark:hover:bg-gray-700">
@@ -338,15 +345,19 @@ export default function AdminTable({use,users,properties,bookings}:AdminTable) {
                     </td>
                     
                     <Link href={`/Home/user/${data._id}` } target='_space' ><td className="mr-12 flex items-center space-x-3 whitespace-nowrap p-4">
-                      <SafeImage
-                        alt='ProfileImage'
-                        height={48}
-                        width={48}
-                        className="rounded-full"
-                        src={data.profileImg?.imgUrl}
-                        fallbackSrc="/user.png"
-                        fallbackText="Profile image unavailable"
-                      />
+                      {profileImageSrc ? (
+                        <Image
+                          alt='ProfileImage'
+                          height={48}
+                          width={48}
+                          className="rounded-full"
+                          src={profileImageSrc}
+                        />
+                      ) : (
+                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 text-center text-[10px] text-gray-500">
+                          No image
+                        </div>
+                      )}
     
                       <div className="text-base font-semibold  text-gray-800 dark:text-white">
                         {data.userName}

@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { BsFillHouseCheckFill } from 'react-icons/bs'
 import { dashData } from '../../api/server/property/getdashboard'
 import Image from 'next/image'
-import { SafeImage } from '../../components/common/SafeImage'
+import { normalizeImageSrc } from '../../components/common/normalizeImageSrc'
 
 export default function DashClient({
   totalBookings,
@@ -127,6 +127,7 @@ export default function DashClient({
 
                 {properties!.map((data, index) => {
                   console.log(data)
+                  const propertyImageSrc = normalizeImageSrc(data.images?.[0]?.imgUrl)
                   return (
                     <tbody
                       key={index}
@@ -139,16 +140,19 @@ export default function DashClient({
 
                         <Link href={`/Home/rooms/${data._id}`} target="_space">
                           <td className="mr-12 flex items-center space-x-3 whitespace-nowrap p-4">
-                            <SafeImage
-                              className="h-16 w-20 rounded-lg"
-                              src={data.images?.[0]?.imgUrl}
-                              alt="Property"
-                              height={64}
-                              width={80}
-                              fallbackSrc="/house.png"
-                              fallbackText="Property image unavailable"
-                              fallbackClassName="flex h-16 w-20 items-center justify-center rounded-lg bg-gray-100 text-center text-xs text-gray-500"
-                            />
+                            {propertyImageSrc ? (
+                              <Image
+                                className="h-16 w-20 rounded-lg"
+                                src={propertyImageSrc}
+                                alt="Property"
+                                height={64}
+                                width={80}
+                              />
+                            ) : (
+                              <div className="flex h-16 w-20 items-center justify-center rounded-lg bg-gray-100 text-center text-xs text-gray-500">
+                                No image available
+                              </div>
+                            )}
 
                             <div className="text-base font-semibold  text-gray-800 dark:text-white">
                               {data.name}

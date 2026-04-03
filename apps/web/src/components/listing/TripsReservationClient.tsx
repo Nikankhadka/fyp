@@ -20,7 +20,8 @@ import useConfirm from '../../store/useConfirm'
 import useModal from '../../store/useModal'
 import * as lodash from 'lodash'
 import dayjs from '../../utils/dayjs'
-import { SafeImage } from '../common/SafeImage'
+import Image from 'next/image'
+import { normalizeImageSrc } from '../common/normalizeImageSrc'
 
 
 
@@ -195,6 +196,7 @@ export default function TripBookingClient({trips,bookings,is_Admin}:Props) {
         {
           bookings.map((data,index)=>{
             console.log(data);
+            const propertyImageSrc = normalizeImageSrc(data.propertyId?.images?.[0]?.imgUrl)
             return(
               <tbody key={index} className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
               <tr className="hover:bg-gray-100 dark:hover:bg-gray-700">
@@ -204,15 +206,19 @@ export default function TripBookingClient({trips,bookings,is_Admin}:Props) {
                 </td>
                 
                 <Link href={`/Home/rooms/${data.propertyId?._id}` } target='_space' ><td className="mr-12 flex items-center space-x-3 whitespace-nowrap p-4">
-                  <SafeImage
-                    alt='propertyimage'
-                    height={64}
-                    width={80}
-                    className="rounded-lg"
-                    src={data.propertyId?.images?.[0]?.imgUrl}
-                    fallbackSrc="/house.png"
-                    fallbackText="Property image unavailable"
-                  />
+                  {propertyImageSrc ? (
+                    <Image
+                      alt='propertyimage'
+                      height={64}
+                      width={80}
+                      className="rounded-lg"
+                      src={propertyImageSrc}
+                    />
+                  ) : (
+                    <div className="flex h-16 w-20 items-center justify-center rounded-lg bg-gray-100 text-center text-xs text-gray-500">
+                      No image available
+                    </div>
+                  )}
 
                   <div className="text-base font-semibold  text-gray-800 dark:text-white">
                     {data.propertyId?.name}

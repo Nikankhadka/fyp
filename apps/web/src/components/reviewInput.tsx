@@ -9,7 +9,8 @@ import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import useConfirm from '../store/useConfirm';
 import useModal from '../store/useModal';
-import { SafeImage } from './common/SafeImage';
+import Image from 'next/image';
+import { normalizeImageSrc } from './common/normalizeImageSrc';
 
 
 interface Props{
@@ -26,6 +27,7 @@ export default function ReviewInput({userData,propertyId,edit,rating,Review,setE
   const [rate, setrate] = useState(rating-1)
   const [review,setreview]=useState(Review);
   const [err,seterr]=useState(false);
+  const profileImageSrc = normalizeImageSrc(userData.profileImg?.imgUrl)
   const router=useRouter()
   const confirm=useConfirm();
   const modal=useModal();
@@ -36,15 +38,19 @@ export default function ReviewInput({userData,propertyId,edit,rating,Review,setE
     <main className="my-3">
       <div>
         <div className="flex w-full items-center gap-x-3 ">
-          <SafeImage
-            height={48}
-            width={48}
-            src={userData.profileImg?.imgUrl}
-            alt="User"
-            fallbackSrc="/user.png"
-            fallbackText="Profile image unavailable"
-            className={`block h-12 w-12 ${edit? 'rounded-lg':'rounded-full'}`}
-          />
+          {profileImageSrc ? (
+            <Image
+              height={48}
+              width={48}
+              src={profileImageSrc}
+              alt="User"
+              className={`block h-12 w-12 ${edit? 'rounded-lg':'rounded-full'}`}
+            />
+          ) : (
+            <div className={`flex h-12 w-12 items-center justify-center bg-gray-100 text-center text-[10px] text-gray-500 ${edit? 'rounded-lg':'rounded-full'}`}>
+              No image
+            </div>
+          )}
           <p>
             <span className="text-md block font-semibold">{userData.userName}</span>
             <span className="text-sm text-gray-700 ">{new Date(userData.createdAt!).getFullYear()}</span>

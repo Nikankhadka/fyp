@@ -1,7 +1,8 @@
 'use client'
 
+import Image from 'next/image'
 import {useState} from 'react'
-import { SafeImage } from './common/SafeImage'
+import { normalizeImageSrc } from './common/normalizeImageSrc'
 interface Props{
     images:{
         imgId:string,
@@ -12,6 +13,7 @@ interface Props{
 export default function Carousel({images}:Props){
 
     const [img,setimg]=useState(0)
+    const imageSrc = normalizeImageSrc(images?.[img]?.imgUrl)
 
     return(
     <div  className="relative z-10 w-full mx-auto my-2">
@@ -19,15 +21,18 @@ export default function Carousel({images}:Props){
     <div className="relative h-[250px] sm:h-[324px] overflow-hidden rounded-lg md:h-96 ">
         
         <div className="duration-700 ease-in-out " >
-            <SafeImage
-              fill={true}
-              src={images?.[img]?.imgUrl}
-              className="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
-              alt="Property image"
-              fallbackSrc="/house.png"
-              fallbackText="Property image unavailable"
-              fallbackClassName="absolute inset-0 flex items-center justify-center rounded-lg bg-gray-100 text-sm text-gray-500"
-            />
+            {imageSrc ? (
+              <Image
+                fill={true}
+                src={imageSrc}
+                className="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+                alt="Property image"
+              />
+            ) : (
+              <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-gray-100 text-sm text-gray-500">
+                Property image unavailable
+              </div>
+            )}
         </div>
     </div>
    
