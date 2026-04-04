@@ -67,8 +67,6 @@ app.use(passport.initialize());
 //app.use(passport.session())
 
 //database connection
-dbConnect();
-
 //basic logging will only log request to thr console
 app.use(morgan("dev"));
 
@@ -106,6 +104,25 @@ app.use(indexRouter);
 //   res.send("heloo world");
 // });
 
+app.get("/", (req: Request, res: Response) => {
+  res.status(200).json({ message: "API is running" });
+});
+
+app.get("/health", (req: Request, res: Response) => {
+  res.status(200).json({ status: "ok" });
+});
+
 //listen to server on ports
 const port = Number(process.env.PORT || 2900);
-app.listen(port, async () => console.log(`server started at port ${port}`));
+
+const startServer = async () => {
+  try {
+    await dbConnect();
+    app.listen(port, () => console.log(`server started at port ${port}`));
+  } catch (error) {
+    console.error("Failed to start server:", error);
+    process.exit(1);
+  }
+};
+
+startServer();

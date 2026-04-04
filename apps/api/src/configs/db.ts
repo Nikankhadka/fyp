@@ -14,12 +14,12 @@ const dbConnect = async () => {
     // Otherwise use cloud MongoDB
     const mongoUri = process.env.MONGODB_URI || `mongodb://localhost:27017`;
 
+    console.log("Connecting to MongoDB...");
     await connect(mongoUri);
     console.log("Database Connected");
-
-    console.log("Next Called");
   } catch (e) {
-    console.log(e);
+    console.error("Database connection failed:", e);
+    throw e;
   }
 };
 
