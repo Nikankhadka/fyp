@@ -14,7 +14,7 @@ declare module "jsonwebtoken" {
 
 
 import * as jwt from "jsonwebtoken"
-import {hash,compare} from "bcrypt"
+import { compare, hash } from "bcrypt"
 import * as dotenv from "dotenv"
 import {LSR1, refreshTService} from "../../interfaces/Auth"
 import { googleProfile } from "../../interfaces/Auth";
@@ -23,6 +23,7 @@ import {forgotPasswordPatchTemplate, forgotPasswordTemplate, signupMailTemplate 
 import { sendMail } from "../../utils/zohoMailer";
 import { Types } from "mongoose";
 import { generateRandomPassword } from "../../utils/random";
+import { hashPassword } from "../../utils/password";
 
 
 
@@ -45,7 +46,7 @@ export const registerUserS=async(userId:string,password:string):Promise<boolean>
         const newUser=await userModel.create({
             userId:userId,
             userName:userId,
-            password:await hash(password,8),
+            password:await hashPassword(password),
             profile_Img:{
                 imgId:"",
                 imgUrl:""
@@ -339,7 +340,7 @@ export const forgotPasswordPatchS=async(token:string):Promise<boolean>=>{
         //now generate random password and chnage users password
         const password=generateRandomPassword(7);
 
-        userValid.password=await hash(password,8);
+        userValid.password=await hashPassword(password);
         await userValid.save();
 
         //now send this new passwor in mail

@@ -12,9 +12,10 @@ import * as dotenv from "dotenv"
 import { sendMail } from "../../utils/zohoMailer";
 import {postEmailTemplate,verifyEmailTemplate } from "../../configs/mailtemplate";
 import { KycData, updateProfile } from "../../interfaces/inputInterface";
-import { compare, hash } from "bcrypt";
+import { compare } from "bcrypt";
 import { IUser } from "../../interfaces/dbInterface";
 import { returnUserData } from "../../interfaces/userResponse";
+import { hashPassword } from "../../utils/password";
 dotenv.config()
 
 
@@ -129,7 +130,7 @@ export const updateProfileS=async(userId:string,profileData:Partial<updateProfil
             if(await compare(profileData.newPassword!,user?.password!)) throw new Error("Please Enter Valid New Password");
 
             //now simple has and save the new password
-            user!.password=await hash(profileData.newPassword!,8);
+            user!.password=await hashPassword(profileData.newPassword!);
             await user?.save();
             return true
         }
@@ -200,6 +201,5 @@ export const postPhoneS=async(userId:string,phoneNumber:string):Promise<boolean>
         throw e;
     }
 }
-
 
 

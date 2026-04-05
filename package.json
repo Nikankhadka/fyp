@@ -10,7 +10,8 @@
     "lint:web": "pnpm --dir apps/web lint",
     "install:api": "pnpm --dir apps/api install --frozen-lockfile",
     "install:web": "pnpm --dir apps/web install --frozen-lockfile",
-    "seed:demo": "docker compose -f infra/docker/compose.dev.yml exec -T api npm run seed:reset",
+    "seed:clear": "docker compose -f infra/docker/compose.dev.yml exec -T api pnpm seed:clear",
+    "seed:demo": "docker compose -f infra/docker/compose.dev.yml exec -T api pnpm seed:reset",
     "seed:bootstrap": "docker compose -f infra/docker/compose.prod.yml exec -T -e SEED_MODE=bootstrap api node dist/scripts/seedDemoData.js",
     "docker:dev": "docker compose -f infra/docker/compose.dev.yml up --build",
     "docker:prod": "docker compose -f infra/docker/compose.prod.yml up --build -d"
