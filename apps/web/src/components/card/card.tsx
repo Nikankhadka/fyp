@@ -32,11 +32,11 @@ interface props {
   data?: Partial<Property>,
   booking?:Partial<IBooking>
   payment?:Partial<Payment>
-  index?:number,
+  listIndex?:number
   wish?:boolean
   user?:string
 }
-export default function Card({ use, data, wish, user, index}: props) {
+export default function Card({ use, data, wish, user, listIndex }: props) {
   const [img,setimg] = useState(0);
   
  
@@ -255,7 +255,7 @@ export default function Card({ use, data, wish, user, index}: props) {
             className="focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 inline-flex items-center rounded-lg bg-themeColor px-3 py-2 text-center text-sm font-medium text-white hover:bg-mainColor focus:ring-4"
             onClick={(e) => {
               e.preventDefault()
-              list.setIndex(index!)
+              list.setIndex(listIndex ?? 0)
               list.onList('edit')
             }}
           >
@@ -307,7 +307,7 @@ export default function Card({ use, data, wish, user, index}: props) {
             className="focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 inline-flex items-center rounded-lg bg-themeColor px-3 py-2 text-center text-sm font-medium text-white hover:bg-mainColor focus:ring-4"
             onClick={(e) => {
               e.preventDefault()
-              list.setIndex(index ?? 0)
+              list.setIndex(listIndex ?? 0)
               list.onList('edit')
             }}
           >

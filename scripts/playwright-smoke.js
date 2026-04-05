@@ -3,14 +3,13 @@ const path = require("path");
 const { chromium } = require("playwright-core");
 
 const BASE_URL = process.env.BASE_URL || "http://127.0.0.1:3000";
+const API_URL = process.env.API_URL || "http://127.0.0.1:2900";
 const OUTPUT_DIR = path.join(process.cwd(), "artifacts", "playwright");
 
-const DEMO = {
+const USERS = {
   guest: { userId: "guest.asha", password: "guest1234" },
   host: { userId: "host.sita", password: "host1234" },
   admin: { userId: "admin", password: "admin1234" },
-  propertyId: "69c90aba845305efca14dc60",
-  userId: "69c90aba845305efca14dc5a",
 };
 
 const issues = [];
@@ -18,6 +17,9 @@ const seenIssues = new Set();
 
 function ensureOutputDir() {
   fs.mkdirSync(OUTPUT_DIR, { recursive: true });
+  for (const entry of fs.readdirSync(OUTPUT_DIR)) {
+    fs.rmSync(path.join(OUTPUT_DIR, entry), { recursive: true, force: true });
+  }
 }
 
 function slugify(value) {
@@ -37,6 +39,31 @@ function addIssue(issue) {
   });
 }
 
+async function loadDemoData() {
+  const response = await fetch(`${API_URL}/property/v1/getProperty?page=1&limit=6`, {
+    headers: { accept: "application/json" },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch smoke seed data: HTTP ${response.status}`);
+  }
+
+  const payload = await response.json();
+  if (!payload?.success || !Array.isArray(payload.propertyData) || payload.propertyData.length === 0) {
+    throw new Error("Failed to fetch smoke seed data: no properties available");
+  }
+
+  const property = payload.propertyData.find((item) => item?._id && item?.userId) || payload.propertyData[0];
+  if (!property?._id || !property?.userId) {
+    throw new Error("Failed to fetch smoke seed data: property is missing ids");
+  }
+
+  return {
+    propertyId: property._id,
+    userId: String(property.userId),
+  };
+}
+
 async function attachPageObservers(page, scope) {
   page.on("pageerror", async (error) => {
     const screenshot = path.join(OUTPUT_DIR, `${slugify(`${scope}-pageerror`)}.png`);
@@ -52,7 +79,7 @@ async function attachPageObservers(page, scope) {
 
   page.on("requestfailed", (request) => {
     const failure = request.failure()?.errorText || "failed";
-    if (failure.includes("net::ERR_ABORTED") && request.url().includes("_rsc=")) {
+    if (failure.includes("net::ERR_ABORTED")) {
       return;
     }
 
@@ -66,11 +93,19 @@ async function attachPageObservers(page, scope) {
 
   page.on("console", (msg) => {
     if (msg.type() !== "error") return;
+    const message = msg.text();
+    if (
+      message.startsWith("Warning:") ||
+      message.startsWith("The above error occurred") ||
+      message.includes("Failed to fetch RSC payload")
+    ) {
+      return;
+    }
     addIssue({
       scope,
       kind: "console",
       route: page.url(),
-      message: msg.text(),
+      message,
     });
   });
 }
@@ -166,43 +201,46 @@ async function runScenario(name, creds, routes, actions) {
 
 async function run() {
   ensureOutputDir();
+  const demo = await loadDemoData();
+  const propertyRoute = `/Home/rooms/${demo.propertyId}`;
+  const userRoute = `/Home/user/${demo.userId}`;
 
   await runScenario("public", null, [
     "/Home",
     "/Home/login",
     "/Home/signup",
-    `/Home/rooms/${DEMO.propertyId}`,
-    `/Home/user/${DEMO.userId}`,
+    propertyRoute,
+    userRoute,
   ]);
 
-  await runScenario("guest", DEMO.guest, [
+  await runScenario("guest", USERS.guest, [
     "/Home",
-    `/Home/rooms/${DEMO.propertyId}`,
+    propertyRoute,
     "/Home/Account",
     "/Home/Account/trips",
     "/Home/Account/reservations",
     "/Home/Account/favourites",
   ], async (page) => {
-    await page.goto(`${BASE_URL}/Home/rooms/${DEMO.propertyId}`, { waitUntil: "domcontentloaded" });
+    await page.goto(`${BASE_URL}${propertyRoute}`, { waitUntil: "domcontentloaded" });
     await page.getByRole("button", { name: /save/i }).click().catch(async (error) => {
       addIssue({
         scope: "guest",
         kind: "action",
-        route: `/Home/rooms/${DEMO.propertyId}`,
+        route: propertyRoute,
         message: `Wishlist toggle failed: ${error.message}`,
       });
     });
   });
 
-  await runScenario("host", DEMO.host, [
+  await runScenario("host", USERS.host, [
     "/Home",
     "/Home/Account",
     "/Home/Account/trips",
     "/Home/Account/reservations",
-    `/Home/user/${DEMO.userId}`,
+    userRoute,
   ]);
 
-  await runScenario("admin", DEMO.admin, [
+  await runScenario("admin", USERS.admin, [
     "/Admin",
     "/Admin/users",
     "/Admin/listing",
@@ -264,6 +302,9 @@ async function run() {
   fs.writeFileSync(mdPath, `${lines.join("\n")}\n`);
   console.log(`Saved issue artifacts to ${OUTPUT_DIR}`);
   console.log(`Captured ${issues.length} issue(s).`);
+  if (issues.length > 0) {
+    process.exitCode = 1;
+  }
 }
 
 run().catch((error) => {

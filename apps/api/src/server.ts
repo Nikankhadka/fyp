@@ -15,8 +15,12 @@ import helmet from "helmet";
 //importing routes
 import indexRouter from "./routes/index.routes";
 import { clearUser } from "./middlewares/auth.middleware";
-import dbConnect from "./configs/db";
-import { corsOrigins } from "./configs/constant";
+import dbConnect, { isDatabaseReady } from "./configs/db";
+import {
+  corsOrigins,
+  createCookieOptions,
+  trustProxy,
+} from "./configs/constant";
 // import helmet from 'helmet'
 
 //helemt
@@ -25,6 +29,7 @@ app.use(helmet());
 //app level middleware setup
 dotenv.config();
 // app.use(helmet());
+app.set("trust proxy", trustProxy);
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use(
@@ -41,13 +46,7 @@ app.use(
     secret: process.env.sessionSecret!,
     resave: false,
     saveUninitialized: false,
-    cookie: {
-      maxAge: 1000 * 60 * 60 * 24 * 7,
-      //session data saved in http cookie which is only acessed in server
-      httpOnly: true,
-      //only accepts request from the https
-      secure: false,
-    },
+    cookie: createCookieOptions(1000 * 60 * 60 * 24 * 7),
 
     //can store session data in db incase server crash the data is not lost
     //  store:
@@ -102,6 +101,14 @@ app.get("/", (req: Request, res: Response) => {
 
 app.get("/health", (req: Request, res: Response) => {
   res.status(200).json({ status: "ok" });
+});
+
+app.get("/readyz", (req: Request, res: Response) => {
+  if (!isDatabaseReady()) {
+    return res.status(503).json({ status: "degraded", db: "disconnected" });
+  }
+
+  res.status(200).json({ status: "ok", db: "connected" });
 });
 
 //listen to server on ports

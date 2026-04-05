@@ -1,6 +1,6 @@
 import { mailBody } from "../interfaces/mail"
 import * as dotenv from "dotenv"
-import { apiBaseUrl, webAppUrl } from "./constant"
+import { publicApiBaseUrl, publicWebAppUrl } from "./constant"
 dotenv.config()
 
 
@@ -54,7 +54,7 @@ export const signupMailTemplate=(userName:string,userEmail:string):mailBody=>{
             <h3>We are excited to have you with us in your journey of renting and renting out property</h3>
             <p>If you have not verified yourself by filling KYC form, here it is:</p>
             <br>
-            <a href="${webAppUrl}/Home/Account">KYC Form</a>
+            <a href="${publicWebAppUrl}/Home/Account">KYC Form</a>
         </body>
         </html>
          `
@@ -69,7 +69,7 @@ export const postEmailTemplate=(userEmail:string,token:string,):mailBody=>{
         subject:"Verify Email Request",
         text:"",
         html:` <p>Verify Email by Clicking the link Given below.....</p>
-        <a href="${apiBaseUrl}/user/v1/verifyEmail/${token}" >verify Email</a>
+        <a href="${publicApiBaseUrl}/user/v1/verifyEmail/${token}" >verify Email</a>
          `
     }
 }
@@ -82,7 +82,7 @@ export const forgotPasswordTemplate=(userEmail:string,token:string,):mailBody=>{
         subject:"forgot password/Change Password Request",
         text:"",
         html:` <p>Verify Email by Clicking the link Given below.....</p>
-        <a href="${apiBaseUrl}/auth/v1/forgotPasswordPatch/${token}" >verify Email to Genrate New Password</a>
+        <a href="${publicApiBaseUrl}/auth/v1/forgotPasswordPatch/${token}" >verify Email to Genrate New Password</a>
          `
     }
 }
@@ -111,7 +111,7 @@ export const verifyEmailTemplate=(userName:string,userEmail:string):mailBody=>{
         <h3>We are excited to have You with us in your Journey of renting and Renting out property </h3>
         <p>if u have not Verified Yourself by filling kyc form here it is ... </P>
         <br>
-        <a href="${webAppUrl}/Home/Account">Kyc Form </a>
+        <a href="${publicWebAppUrl}/Home/Account">Kyc Form </a>
          `
     }
 }
@@ -125,13 +125,13 @@ export const verifyKycTemplate=(userName:string,userEmail:string,state:boolean,m
         text:"",
         html:state?`<h1> Kyc Successfully Verified 👋 ${userName}</h1>
         <h3>We are excited to have You with us in your Journey of renting and Renting out property </h3>
-        <a href="${webAppUrl}/Home">Rent With Us</a>
+        <a href="${publicWebAppUrl}/Home">Rent With Us</a>
          `:
 
         `<h1> Kyc Verification Failed  ${userName}</h1>
         <h3>Please Provide Proper kycinformation!!</h3>
         <h2>${message}</h2>
-        <a href="${webAppUrl}/Home">Rent With Us</a>
+        <a href="${publicWebAppUrl}/Home">Rent With Us</a>
          `
     }
 }
@@ -199,7 +199,7 @@ export const userPropTemplate=(userName:string,userEmail:string,state:boolean,pr
          `<h1> property deleted Successfully! 👋 ${userName}</h1>
          <h2>${propId}</h2>
          <h3>Property Has been deleted thankYour for providing service</h3>
-         <a href="${webAppUrl}/Home">Rent With Us</a>
+         <a href="${publicWebAppUrl}/Home">Rent With Us</a>
           `
     }
 }
@@ -223,7 +223,7 @@ export const adminPropTemplate=(userName:string,userEmail:string,state:boolean,p
          <h2>${propId}</h2>
          <img src=${img} />
          <h3>${message}</h3>
-         <a href="${webAppUrl}/Home/Account/listings">Rent With Us</a>
+         <a href="${publicWebAppUrl}/Home/Account/listings">Rent With Us</a>
           `
     }
 }
@@ -262,4 +262,3 @@ export const userBookingTemplate=(userName:string,userEmail:string,propId:string
 
     }
 }
-

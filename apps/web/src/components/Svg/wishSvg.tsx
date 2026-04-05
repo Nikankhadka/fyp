@@ -19,7 +19,12 @@ export default function Wish({active,id,user}:WishProps){
     const modal=useModal()
     console.log('in wishList',isActive)
     return(
-        <button onClick={(e)=>{
+        <button
+          type="button"
+          aria-label={isActive ? 'Remove from saved listings' : 'Save listing'}
+          title={isActive ? 'Remove from saved listings' : 'Save listing'}
+          onClick={(e)=>{
+          e.preventDefault()
           console.log(user)
           if(user=='') return modal.onOpen('login')
           if(user=='admin') return toast.error("Admin Cannot Have Favourites");

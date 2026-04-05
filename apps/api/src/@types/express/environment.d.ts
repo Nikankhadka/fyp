@@ -11,6 +11,13 @@ declare namespace NodeJS {
           refreshToken:string,
           accessTokenExpire:string,
           refreshTokenExpire:string,
+          TRUST_PROXY?:string,
+          COOKIE_SECURE?:string,
+          COOKIE_SAME_SITE?:string,
+          API_BASE_URL?:string,
+          WEB_APP_URL?:string,
+          PUBLIC_API_BASE_URL?:string,
+          PUBLIC_WEB_APP_URL?:string,
           dbPassword:string
           googleClientId:string
           googleClientSecret:string

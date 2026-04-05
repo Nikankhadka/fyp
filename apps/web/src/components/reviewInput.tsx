@@ -62,6 +62,7 @@ export default function ReviewInput({userData,propertyId,edit,rating,Review,setE
           {ratings.map((ratevalue,index) => {
             return (
               <button
+              type="button"
               key={index}
                 onClick={(e) => {
                   setrate(index)
@@ -95,7 +96,7 @@ export default function ReviewInput({userData,propertyId,edit,rating,Review,setE
           {err&&<ErrorText  text='Please Provide rating and review Both!'/>}
 
           <div className=' flex  justify-between items-center'>
-          {edit&&<button className='text-md font-semibold underline' 
+          {edit&&<button type="button" className='text-md font-semibold underline' 
           
           onClick={(e)=>{
             setEdit!('');

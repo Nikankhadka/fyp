@@ -80,8 +80,8 @@ export default function ListingComp({
                   <Card
                     use={is_Admin ? 'adminlisting' : 'userlisting'}
                     data={property}
-                    key={index}
-                    index={index}
+                    key={property._id ?? index}
+                    listIndex={index}
                   />
                 )
               })}

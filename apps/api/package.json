@@ -1,5 +1,8 @@
 {
   "name": "@fyp/api",
+  "engines": {
+    "node": ">=18.17.0 <19"
+  },
   "scripts": {
     "dev": "tsnd ./src/server.ts --respawn  --transpile-only --exit-child",
     "build": "tsc",

@@ -5,7 +5,7 @@ services:
       dockerfile: services/mongo/Dockerfile
     container_name: fyp-mongo
     env_file:
-      - ./env/mongo.prod.env.example
+      - ./env/mongo.prod.env
     restart: unless-stopped
     ports:
       - "27017:27017"
@@ -25,7 +25,7 @@ services:
       target: runner
     container_name: fyp-api
     env_file:
-      - ./env/api.prod.env.example
+      - ./env/api.prod.env
     restart: unless-stopped
     ports:
       - "2900:2900"
@@ -33,7 +33,7 @@ services:
       mongo:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://localhost:2900/health >/dev/null 2>&1 || exit 1"]
+      test: ["CMD-SHELL", "wget -qO- http://localhost:2900/readyz >/dev/null 2>&1 || exit 1"]
       interval: 20s
       timeout: 5s
       retries: 10
@@ -46,7 +46,7 @@ services:
       target: runner
     container_name: fyp-web
     env_file:
-      - ./env/web.prod.env.example
+      - ./env/web.prod.env
     restart: unless-stopped
     ports:
       - "3000:3000"

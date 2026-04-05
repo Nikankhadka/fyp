@@ -24,16 +24,15 @@ import { normalizeImageSrc } from './common/normalizeImageSrc'
 interface Props {
   reviewData: IReview
   currentUser: string
-  key:number
 }
-export default function Review({ reviewData, currentUser,key}: Props) {
+export default function Review({ reviewData, currentUser }: Props) {
   const [Edit, setEdit] = useState('')
   const profileImageSrc = normalizeImageSrc(reviewData.userId.profileImg?.imgUrl)
   const confirm=useConfirm();
   const modal=useModal()
   const router=useRouter();
   return (
-    <div key={key} className="rounded-lg bg-white border-2 border-gray-100 p-4 shadow-lg">
+    <div className="rounded-lg bg-white border-2 border-gray-100 p-4 shadow-lg">
       {Edit == '' && (
         <div>
           <div className="flex items-center justify-between">

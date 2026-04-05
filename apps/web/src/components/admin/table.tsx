@@ -271,7 +271,8 @@ export default function AdminTable({use,users,properties,bookings}:AdminTable) {
                   {index+1}.
                 </td>
                 
-                <Link href={`/Home/rooms/${data._id}` } target='_space' ><td className="mr-12 flex items-center space-x-3 whitespace-nowrap p-4">
+                <td className="p-4">
+                  <Link href={`/Home/rooms/${data._id}` } target='_space' className="mr-12 flex items-center space-x-3 whitespace-nowrap">
                   {propertyImageSrc ? (
                     <Image
                       alt="RoomImage"
@@ -289,7 +290,8 @@ export default function AdminTable({use,users,properties,bookings}:AdminTable) {
                   <div className="text-base font-semibold  text-gray-800 dark:text-white">
                     {data.name}
                   </div>
-                </td></Link>
+                  </Link>
+                </td>
 
                 <td className="max-w-sm overflow-hidden truncate p-4 text-base font-semibold text-gray-900 dark:text-gray-400 xl:max-w-xs">
                   {data.isBanned?.status? "Banned":"Active"}
@@ -344,7 +346,8 @@ export default function AdminTable({use,users,properties,bookings}:AdminTable) {
                       {index+1}.
                     </td>
                     
-                    <Link href={`/Home/user/${data._id}` } target='_space' ><td className="mr-12 flex items-center space-x-3 whitespace-nowrap p-4">
+                    <td className="p-4">
+                      <Link href={`/Home/user/${data._id}` } target='_space' className="mr-12 flex items-center space-x-3 whitespace-nowrap">
                       {profileImageSrc ? (
                         <Image
                           alt='ProfileImage'
@@ -362,7 +365,8 @@ export default function AdminTable({use,users,properties,bookings}:AdminTable) {
                       <div className="text-base font-semibold  text-gray-800 dark:text-white">
                         {data.userName}
                       </div>
-                    </td></Link>
+                      </Link>
+                    </td>
     
                     <td className="max-w-sm overflow-hidden truncate p-4 text-base font-semibold text-gray-900 dark:text-gray-400 xl:max-w-xs">
                       {data.isBanned?.status? "Banned":"Active"}

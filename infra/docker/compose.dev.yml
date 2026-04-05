@@ -5,7 +5,7 @@ services:
       dockerfile: services/mongo/Dockerfile
     container_name: fyp-mongo-dev
     env_file:
-      - ./env/mongo.dev.env.example
+      - ./env/mongo.dev.env
     ports:
       - "27017:27017"
     volumes:
@@ -24,17 +24,24 @@ services:
       target: dev
     container_name: fyp-api-dev
     env_file:
-      - ./env/api.dev.env.example
+      - ./env/api.dev.env
     ports:
       - "2900:2900"
+    working_dir: /workspace
+    command: >
+      sh -lc "CI=true pnpm install --filter @fyp/api... --no-frozen-lockfile &&
+      pnpm approve-builds --all &&
+      pnpm --filter @fyp/api rebuild bcrypt &&
+      pnpm --filter @fyp/api dev"
     volumes:
-      - ../../apps/api:/app
-      - api_node_modules:/app/node_modules
+      - ../../:/workspace
+      - api_workspace_node_modules:/workspace/node_modules
+      - api_app_node_modules:/workspace/apps/api/node_modules
     depends_on:
       mongo:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://localhost:2900/health >/dev/null 2>&1 || exit 1"]
+      test: ["CMD-SHELL", "wget -qO- http://localhost:2900/readyz >/dev/null 2>&1 || exit 1"]
       interval: 15s
       timeout: 5s
       retries: 10
@@ -47,13 +54,18 @@ services:
       target: dev
     container_name: fyp-web-dev
     env_file:
-      - ./env/web.dev.env.example
+      - ./env/web.dev.env
     ports:
       - "3000:3000"
+    working_dir: /workspace
+    command: >
+      sh -lc "CI=true pnpm install --filter @fyp/web... --no-frozen-lockfile &&
+      pnpm --filter @fyp/web dev"
     volumes:
-      - ../../apps/web:/app
-      - web_node_modules:/app/node_modules
-      - web_next_cache:/app/.next
+      - ../../:/workspace
+      - web_workspace_node_modules:/workspace/node_modules
+      - web_app_node_modules:/workspace/apps/web/node_modules
+      - web_next_cache:/workspace/apps/web/.next
     depends_on:
       api:
         condition: service_healthy
@@ -66,6 +78,8 @@ services:
 
 volumes:
   mongo_data_dev:
-  api_node_modules:
-  web_node_modules:
+  api_workspace_node_modules:
+  api_app_node_modules:
+  web_workspace_node_modules:
+  web_app_node_modules:
   web_next_cache:

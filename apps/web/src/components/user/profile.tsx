@@ -183,7 +183,7 @@ export default function Profile({ userId, profileData,listings,is_Admin}: Profil
             {
               listings!.map((data,index)=>{
                 return(
-                 <Card data={data} key={index}/>
+                 <Card data={data} key={data._id ?? index}/>
                 )
               })
             }

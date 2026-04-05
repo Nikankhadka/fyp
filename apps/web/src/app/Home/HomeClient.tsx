@@ -26,7 +26,7 @@ export function HomeClient({properties,wishList,userData}:HomeProps){
                         //check if the wishlist matched the proeprty id
                         const inwish=wishList!.wishList.some((data)=>data._id==property._id)
                         return(
-                            <Card use="card" key={index} wish={inwish} data={property} user={userData.is_Admin&&'admin'||userData.docId==property.userId&&'owner'||userData.docId==''&&''||'user'} />
+                            <Card use="card" key={property._id ?? index} wish={inwish} data={property} user={userData.is_Admin&&'admin'||userData.docId==property.userId&&'owner'||userData.docId==''&&''||'user'} />
                         )
                     })
                 }
@@ -55,7 +55,7 @@ export function HomeClient({properties,wishList,userData}:HomeProps){
                 properties.map((property,index)=>{
                    
                     return(
-                        <Card use="card" key={index} wish={false} data={property} user={userData.is_Admin?'admin':''} />
+                        <Card use="card" key={property._id ?? index} wish={false} data={property} user={userData.is_Admin?'admin':''} />
                     )
                 })
             }

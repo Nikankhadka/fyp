@@ -30,7 +30,7 @@ export default async function Favourites() {
         <div className="my-4 grid grid-cols-1 gap-2 gap-x-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           <ClientComp>
             {wishList.wishList.map((data, index) => {
-              return <Card data={data} key={index} use="card" wish={true} />
+              return <Card data={data} key={data._id ?? index} use="card" wish={true} />
             })}
           </ClientComp>
         </div>

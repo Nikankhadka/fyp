@@ -1,4 +1,4 @@
-import { connect, set } from "mongoose";
+import { connect, connection, set } from "mongoose";
 
 import * as dotenv from "dotenv";
 dotenv.config();
@@ -22,5 +22,7 @@ const dbConnect = async () => {
     throw e;
   }
 };
+
+export const isDatabaseReady = () => connection.readyState === 1;
 
 export default dbConnect;

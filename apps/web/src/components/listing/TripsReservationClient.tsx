@@ -205,7 +205,8 @@ export default function TripBookingClient({trips,bookings,is_Admin}:Props) {
                   {index+1}.
                 </td>
                 
-                <Link href={`/Home/rooms/${data.propertyId?._id}` } target='_space' ><td className="mr-12 flex items-center space-x-3 whitespace-nowrap p-4">
+                <td className="p-4">
+                  <Link href={`/Home/rooms/${data.propertyId?._id}` } target='_space' className="mr-12 flex items-center space-x-3 whitespace-nowrap">
                   {propertyImageSrc ? (
                     <Image
                       alt='propertyimage'
@@ -223,7 +224,8 @@ export default function TripBookingClient({trips,bookings,is_Admin}:Props) {
                   <div className="text-base font-semibold  text-gray-800 dark:text-white">
                     {data.propertyId?.name}
                   </div>
-                </td></Link>
+                  </Link>
+                </td>
 
                 <td className="max-w-sm overflow-hidden truncate p-4 text-base font-semibold text-gray-900 dark:text-gray-400 xl:max-w-xs">
                   {data.status}
@@ -249,9 +251,9 @@ export default function TripBookingClient({trips,bookings,is_Admin}:Props) {
                 </td>
 
               
-             {!is_Admin&& <td>
+             {!is_Admin&& <td className="space-x-2 whitespace-nowrap p-4">
                  {/* for owner */}
-                 {(!trips&&!data.checkInStatus)&&data.status=='Booked'&&<td className="space-x-2 whitespace-nowrap p-4">
+                 {(!trips&&!data.checkInStatus)&&data.status=='Booked'&&<>
                   <button
                     type="button"
                     
@@ -269,10 +271,10 @@ export default function TripBookingClient({trips,bookings,is_Admin}:Props) {
                     <RiDeleteBin6Fill className="mr-2 h-5 w-5" />
                     Cancel Booking
                   </button>
-                </td>}
+                </>}
 
                 {/* for tennant */}
-                {trips&&(!data.checkInStatus)&&data.status=='Booked'&&<td className="space-x-2 whitespace-nowrap p-4">
+                {trips&&(!data.checkInStatus)&&data.status=='Booked'&&<>
                 {/* <button
                   type="button"
                   className="focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 inline-flex items-center rounded-lg bg-themeColor px-3 py-2 text-center text-sm font-medium text-white hover:bg-mainColor focus:ring-4"
@@ -292,10 +294,10 @@ export default function TripBookingClient({trips,bookings,is_Admin}:Props) {
                     <RiDeleteBin6Fill className="mr-2 h-5 w-5" />
                     Cancel Booking
                   </button>
-                </td>}
+                </>}
 
 
-                {(!trips&&!data.checkOutStatus&&data.checkInStatus)&&data.status=='Booked'&&<td className="space-x-2 whitespace-nowrap p-4">
+                {(!trips&&!data.checkOutStatus&&data.checkInStatus)&&data.status=='Booked'&&<>
                   <button
                     type="button"
                     className="focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 inline-flex items-center rounded-lg bg-themeColor px-3 py-2 text-center text-sm font-medium text-white hover:bg-mainColor focus:ring-4"
@@ -306,10 +308,10 @@ export default function TripBookingClient({trips,bookings,is_Admin}:Props) {
                   </button>
 
                 
-                </td>}
+                </>}
 
               {/* for both client and owner */}
-              {data.checkInStatus&&<td className="space-x-2 text-sm font-semibold text-gray-600 whitespace-nowrap p-4">
+              {data.checkInStatus&&<div className="space-x-2 text-sm font-semibold text-gray-600">
                 
                 <div className='flex items-center gap-x-2'>
                 {(trips?data.checkInStatus:data.checkOutStatus)&&<BsHouseCheckFill className='h-6 w-6' />}
@@ -318,10 +320,10 @@ export default function TripBookingClient({trips,bookings,is_Admin}:Props) {
                 </div>
               
                 
-                </td>}
+                </div>}
 
               {
-                (data.status=='tenantCancelled'||data.status=="ownerCancelled")&&<td className="space-x-2 text-sm font-semibold text-gray-600 whitespace-nowrap p-4">
+                (data.status=='tenantCancelled'||data.status=="ownerCancelled")&&<div className="space-x-2 text-sm font-semibold text-gray-600">
                 
                   <div className='flex items-center gap-x-2'>
                    <BsFillHouseSlashFill className='h-6 w-6' />
@@ -330,7 +332,7 @@ export default function TripBookingClient({trips,bookings,is_Admin}:Props) {
                   </div>
                 
                   
-                  </td>
+                  </div>
                 }
 
               </td>}
