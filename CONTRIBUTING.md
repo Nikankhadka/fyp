@@ -4,8 +4,8 @@ This repository is in a stabilization phase. The goal is to keep the app usable 
 
 ## Current Repo Reality
 
-- The repo has a `pnpm` workspace file, but dependency management is still partly app-local.
-- Docker dev and native dev both work, but they are not fully aligned yet.
+- The repo now installs from the workspace root and keeps app-level install wrappers as compatibility helpers.
+- Docker dev and native dev both work from the workspace root, with Docker bootstrapping filtered installs inside the containers.
 - Production hardening is being documented and rolled out in stages.
 
 Because of that, contributors should follow the documented commands here instead of inferring workflow from one app directory alone.
@@ -40,16 +40,20 @@ The repo baseline is Node `18.17.x`, which now matches the root metadata, Docker
 2. Read [`docs/ENVIRONMENT_MATRIX.md`](/home/nikan/projects/fyp/docs/ENVIRONMENT_MATRIX.md) before changing env usage.
 3. Read [`PRODUCTION_DECISIONS.md`](/home/nikan/projects/fyp/PRODUCTION_DECISIONS.md) if your change affects Docker, auth, redirects, email links, or deployment behavior.
 
-## Current Install Workflow
+## Install Workflow
 
-Until the shared-workspace migration is completed, use the current install path:
+Use the shared root install first:
+
+```bash
+pnpm install
+```
+
+If app-local links or bins need to be refreshed, the compatibility wrappers are still available:
 
 ```bash
 pnpm install:api
 pnpm install:web
 ```
-
-Do not assume a fresh root `pnpm install` is the only supported path yet.
 
 ## Native Development
 
@@ -105,6 +109,11 @@ Equivalent raw command:
 ```bash
 docker compose -f infra/docker/compose.dev.yml up --build
 ```
+
+Notes:
+
+- Docker dev now mounts the repo root into each app container.
+- The API and web containers run filtered workspace installs on startup so the mounted monorepo stays in sync with container dependencies.
 
 Useful commands:
 

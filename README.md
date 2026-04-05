@@ -17,9 +17,15 @@ git clone git@github.com:Nikankhadka/fyp.git
 cd fyp
 ```
 
-### Current Install Path
+### Install
 
-The repo is in the middle of a workspace stabilization pass. Until that migration is complete, use the current install commands:
+Use the root workspace install first:
+
+```bash
+pnpm install
+```
+
+Compatibility wrappers are still available if app-local links or bins need to be refreshed:
 
 ```bash
 pnpm install:api
@@ -65,6 +71,8 @@ Equivalent raw command:
 ```bash
 docker compose -f infra/docker/compose.dev.yml up --build
 ```
+
+The Docker dev stack now mounts the repo root and bootstraps filtered workspace installs inside the containers on startup.
 
 ### Seed Data
 
@@ -112,6 +120,7 @@ pnpm verify
 ## Important Notes
 
 - Native dev and Docker dev are both supported and must stay supported.
+- Root `pnpm install` is the primary install path; `install:api` and `install:web` remain compatibility helpers.
 - Public URLs and internal service URLs must not be mixed.
 - Tracked `*.example` files are templates; runtime env handling is being tightened as part of the stabilization work.
 - Before changing Docker, auth cookies, redirects, email links, or env names, read the linked docs first.
