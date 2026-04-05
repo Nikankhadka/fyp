@@ -41,7 +41,8 @@ export const httpOnlyCookie = true
 export const cookieSecure =
   process.env.NODE_ENV === 'production'
 
-export const cookieSameSite = 'lax'
+export const cookieSameSite =
+  process.env.NODE_ENV === 'production' ? 'none' : 'lax'
 
 export const demoPaymentMode =
   process.env.NEXT_PUBLIC_DEMO_PAYMENT_MODE !== 'false'
