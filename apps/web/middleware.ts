@@ -1,6 +1,10 @@
 
 import { NextRequest, NextResponse } from 'next/server'
-import { httpOnlyCookie } from './src/configs/constant'
+import {
+  cookieSameSite,
+  cookieSecure,
+  httpOnlyCookie,
+} from './src/configs/constant'
 import { api } from './src/api/api'
 //setup conditional middleware for admin and user Routes
 export default async function checkAuth(req: NextRequest) {
@@ -26,8 +30,7 @@ export default async function checkAuth(req: NextRequest) {
 
 
   } catch (e) {
-   
-    NextResponse.redirect('http://localhost:3000/Home/login')
+    return NextResponse.redirect(new URL('/Home/login', req.url))
   }
 }
 
@@ -47,7 +50,7 @@ const refreshTokenS=async(req:NextRequest,res:NextResponse)=>{
     //since cookie accessed does not match the format of cookie passed in header modify it then pass as cookie so it can be parse by cookie parser
     const cookies=`refreshToken=${refreshToken}`
     console.log('session in middleware',session)
-    if(!refreshToken) return NextResponse.redirect('/Home/login')
+    if(!refreshToken) return NextResponse.redirect(new URL('/Home/login', req.url))
     if(session && accessToken){
       console.log("We have token and session both")
     return res;  
@@ -72,7 +75,7 @@ const refreshTokenS=async(req:NextRequest,res:NextResponse)=>{
       if (!jsonData.success){
         //clear cookie in client side since token is refresh is failed the old token will be unauthorized
         await res.cookies.delete('accessToken').delete('refreshToken').delete('session')
-        return NextResponse.redirect('http://localhost:3000/Home/login')
+        return NextResponse.redirect(new URL('/Home/login', req.url))
       }
        
 
@@ -85,19 +88,27 @@ const refreshTokenS=async(req:NextRequest,res:NextResponse)=>{
       await res.cookies.set('accessToken', jsonData.accessToken, {
         maxAge: 1800,
         httpOnly: httpOnlyCookie,
+        sameSite: cookieSameSite,
+        secure: cookieSecure,
       })
       await res.cookies.set('refreshToken', jsonData.refreshToken, {
         maxAge: 604800,
         httpOnly: httpOnlyCookie,
+        sameSite: cookieSameSite,
+        secure: cookieSecure,
       })
-      await res.cookies.set('session',JSON.stringify(jsonData.user), { maxAge: 1500, httpOnly: httpOnlyCookie })
+      await res.cookies.set('session',JSON.stringify(jsonData.user), {
+        maxAge: 1500,
+        httpOnly: httpOnlyCookie,
+        sameSite: cookieSameSite,
+        secure: cookieSecure,
+      })
 
       return res  
     
 
   }catch(e){
-   
-    return NextResponse.redirect('http://localhost:3000/Home/login')
+    return NextResponse.redirect(new URL('/Home/login', req.url))
   }
 }
 

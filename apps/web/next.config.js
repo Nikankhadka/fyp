@@ -1,4 +1,6 @@
 /** @type {import('next').NextConfig} */
+const apiBaseUrl = process.env.API_BASE_URL || 'http://localhost:2900'
+
 const nextConfig = {
   output: 'standalone',
 
@@ -51,6 +53,15 @@ const nextConfig = {
   },
 
   // Route handling
+  async rewrites() {
+    return [
+      {
+        source: '/backend/:path*',
+        destination: `${apiBaseUrl}/:path*`,
+      },
+    ]
+  },
+
   async redirects() {
     return [
       {

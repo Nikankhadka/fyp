@@ -38,6 +38,11 @@ export const propertyOptions = [
 
 export const httpOnlyCookie = true
 
+export const cookieSecure =
+  process.env.NODE_ENV === 'production'
+
+export const cookieSameSite = 'lax'
+
 export const demoPaymentMode =
   process.env.NEXT_PUBLIC_DEMO_PAYMENT_MODE !== 'false'
 
