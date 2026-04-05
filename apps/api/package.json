@@ -4,9 +4,10 @@
     "dev": "tsnd ./src/server.ts --respawn  --transpile-only --exit-child",
     "build": "tsc",
     "seed": "tsnd ./src/scripts/seedDemoData.ts --transpile-only --exit-child",
+    "seed:clear": "SEED_MODE=clear tsnd ./src/scripts/seedDemoData.ts --transpile-only --exit-child",
     "seed:reset": "SEED_MODE=reset tsnd ./src/scripts/seedDemoData.ts --transpile-only --exit-child",
     "seed:bootstrap": "SEED_MODE=bootstrap tsnd ./src/scripts/seedDemoData.ts --transpile-only --exit-child",
-    "start": " tsc &&node dist/server.js"
+    "start": "pnpm run build && node dist/server.js"
   },
   "devDependencies": {
     "@types/bcrypt": "5.0.2",

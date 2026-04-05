@@ -1,11 +1,11 @@
 import { userModel } from "../../models/user";
-import {hash} from "bcrypt"
 import { IBooking, IUser, Property } from "../../interfaces/dbInterface";
 import { verifyKyc } from "../../interfaces/admin";
 import { propertyModel } from "../../models/property";
 import { sendMail } from "../../utils/zohoMailer";
 import { adminPropTemplate, banUnbanPropTemplate, banUnbanUserTemplate, verifyKycTemplate } from "../../configs/mailtemplate";
 import { bookingModel } from "../../models/booking";
+import { hashPassword } from "../../utils/password";
 
 
 interface Dash{
@@ -259,7 +259,7 @@ export const registerAdminS=async(userId:string,password:string):Promise<boolean
         const newUser=await userModel.create({
             userId:userId,
             userName:userId,
-            password:await hash(password,process.env.salt_rounds!),
+            password:await hashPassword(password),
             is_Admin:true
         })
 

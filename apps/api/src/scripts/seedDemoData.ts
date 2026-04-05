@@ -2,17 +2,16 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 import mongoose, { Types } from "mongoose";
-import { hash } from "bcrypt";
 import { bookingModel } from "../models/booking";
 import { conversationModel } from "../models/conversation";
 import paymentModel from "../models/payment";
 import { propertyModel } from "../models/property";
 import { reviewModel } from "../models/reviews";
 import { userModel } from "../models/user";
+import { hashPassword } from "../utils/password";
 
 const mongoUri =
   process.env.MONGODB_URI || "mongodb://localhost:27017/meroghar";
-const saltRounds = Number(process.env.saltRounds || 8);
 const seedMode =
   process.env.SEED_MODE || (process.env.NODE_ENV === "production" ? "bootstrap" : "reset");
 
@@ -73,7 +72,7 @@ const userSeedConfig = [
     _id: ids.admin,
     userId: "admin",
     userName: "MeroGhar Admin",
-    passwordKey: "admin",
+    password: "admin1234",
     is_Admin: true,
     profileFile: "admin.jpg",
     about:
@@ -98,7 +97,7 @@ const userSeedConfig = [
     _id: ids.hostSita,
     userId: "host.sita",
     userName: "Sita Sharma",
-    passwordKey: "host",
+    password: "host1234",
     is_Admin: false,
     profileFile: "girl1.jpg",
     about:
@@ -123,7 +122,7 @@ const userSeedConfig = [
     _id: ids.hostBikash,
     userId: "host.bikash",
     userName: "Bikash Shrestha",
-    passwordKey: "host",
+    password: "host1234",
     is_Admin: false,
     profileFile: "guy1.jpg",
     about:
@@ -148,7 +147,7 @@ const userSeedConfig = [
     _id: ids.hostPriya,
     userId: "host.priya",
     userName: "Priya Gurung",
-    passwordKey: "host",
+    password: "host1234",
     is_Admin: false,
     profileFile: "girl2.jpg",
     about:
@@ -173,7 +172,7 @@ const userSeedConfig = [
     _id: ids.hostAarav,
     userId: "host.aarav",
     userName: "Aarav Khadka",
-    passwordKey: "host",
+    password: "host1234",
     is_Admin: false,
     profileFile: "guy2.jpg",
     about:
@@ -198,7 +197,7 @@ const userSeedConfig = [
     _id: ids.hostNima,
     userId: "host.nima",
     userName: "Nima Lama",
-    passwordKey: "host",
+    password: "host1234",
     is_Admin: false,
     profileFile: "guy3.jpg",
     about:
@@ -223,7 +222,7 @@ const userSeedConfig = [
     _id: ids.hostRiya,
     userId: "host.riya",
     userName: "Riya Basnet",
-    passwordKey: "host",
+    password: "host1234",
     is_Admin: false,
     profileFile: "girl3.jpg",
     about:
@@ -248,7 +247,7 @@ const userSeedConfig = [
     _id: ids.guestAsha,
     userId: "guest.asha",
     userName: "Asha Koirala",
-    passwordKey: "guest",
+    password: "guest1234",
     is_Admin: false,
     profileFile: "girl1.jpg",
     about:
@@ -273,7 +272,7 @@ const userSeedConfig = [
     _id: ids.guestNoel,
     userId: "guest.noel",
     userName: "Noel Rai",
-    passwordKey: "guest",
+    password: "guest1234",
     is_Admin: false,
     profileFile: "guy1.jpg",
     about:
@@ -298,7 +297,7 @@ const userSeedConfig = [
     _id: ids.guestMina,
     userId: "guest.mina",
     userName: "Mina Adhikari",
-    passwordKey: "guest",
+    password: "guest1234",
     is_Admin: false,
     profileFile: "girl2.jpg",
     about:
@@ -323,7 +322,7 @@ const userSeedConfig = [
     _id: ids.guestKiran,
     userId: "guest.kiran",
     userName: "Kiran Thapa",
-    passwordKey: "guest",
+    password: "guest1234",
     is_Admin: false,
     profileFile: "guy2.jpg",
     about:
@@ -833,19 +832,13 @@ const seededViewedProperties: Record<string, string[]> = {
 };
 
 const buildUserDocs = async () => {
-  const passwordHashes = {
-    admin: await hash("admin1234", saltRounds),
-    host: await hash("host1234", saltRounds),
-    guest: await hash("guest1234", saltRounds),
-  };
-
   const now = new Date();
 
-  return userSeedConfig.map((user) => ({
+  return Promise.all(userSeedConfig.map(async (user) => ({
     _id: user._id,
     userId: user.userId,
     userName: user.userName,
-    password: passwordHashes[user.passwordKey as keyof typeof passwordHashes],
+    password: await hashPassword(user.password),
     profileImg: profileImage(user.profileFile, `${user.userId}-profile`),
     about: user.about,
     email: {
@@ -883,7 +876,7 @@ const buildUserDocs = async () => {
     viewedProperty: [],
     createdAt: user.createdAt,
     updatedAt: now,
-  }));
+  })));
 };
 
 const buildPropertyDocs = (
@@ -1216,32 +1209,23 @@ async function upsertSeedDocs(model: any, docs: any[], getFilter: (doc: any) => 
   }
 }
 
-async function main() {
-  mongoose.set("strictQuery", true);
-  console.log(`Connecting to ${mongoUri}`);
-  console.log(`Seed mode: ${seedMode}`);
-  console.log("Seed images are disabled; image URLs will be empty strings.");
+async function clearAllDataFromDb() {
+  console.log("Clearing all existing seedable data...");
+  await Promise.all([
+    conversationModel.deleteMany({}),
+    reviewModel.deleteMany({}),
+    paymentModel.deleteMany({}),
+    bookingModel.deleteMany({}),
+    propertyModel.deleteMany({}),
+    userModel.deleteMany({}),
+  ]);
+}
 
-  await mongoose.connect(mongoUri);
-
+async function clearAndInsertDataIntoDb() {
   const userDocs = await buildUserDocs();
 
-  if (seedMode === "reset") {
-    console.log("Reset mode: clearing all existing seedable data...");
-    await Promise.all([
-      conversationModel.deleteMany({}),
-      reviewModel.deleteMany({}),
-      paymentModel.deleteMany({}),
-      bookingModel.deleteMany({}),
-      propertyModel.deleteMany({}),
-      userModel.deleteMany({}),
-    ]);
-
-    await userModel.insertMany(userDocs);
-  } else {
-    console.log("Bootstrap mode: upserting launch catalog and accounts without wiping real data...");
-    await upsertSeedDocs(userModel, userDocs, (doc) => ({ userId: doc.userId }));
-  }
+  await clearAllDataFromDb();
+  await userModel.insertMany(userDocs);
 
   const seededUsers = await userModel.find({
     userId: { $in: userSeedConfig.map((user) => user.userId) },
@@ -1249,12 +1233,7 @@ async function main() {
   const userIdMap = new Map(seededUsers.map((user) => [user.userId, user._id]));
 
   const propertyDocs = buildPropertyDocs(userIdMap, userIdMap.get("admin")!);
-
-  if (seedMode === "reset") {
-    await propertyModel.insertMany(propertyDocs);
-  } else {
-    await upsertSeedDocs(propertyModel, propertyDocs, (doc) => ({ url: doc.url }));
-  }
+  await propertyModel.insertMany(propertyDocs);
 
   const seededProperties = await propertyModel.find({
     url: { $in: propertySeedConfig.map((property) => property.url) },
@@ -1282,11 +1261,64 @@ async function main() {
   const paymentDocs = buildPaymentDocs(userIdMap);
   const reviewDocs = buildReviewDocs(userIdMap, propertyIdMap, hostMapByProperty);
 
+  await bookingModel.insertMany(bookingDocs);
+  await paymentModel.insertMany(paymentDocs);
+  await reviewModel.insertMany(reviewDocs);
+}
+
+async function main() {
+  mongoose.set("strictQuery", true);
+  console.log(`Connecting to ${mongoUri}`);
+  console.log(`Seed mode: ${seedMode}`);
+  console.log("Seed images are disabled; image URLs will be empty strings.");
+
+  await mongoose.connect(mongoUri);
+
   if (seedMode === "reset") {
-    await bookingModel.insertMany(bookingDocs);
-    await paymentModel.insertMany(paymentDocs);
-    await reviewModel.insertMany(reviewDocs);
+    console.log("Reset mode: clearing and inserting demo data...");
+    await clearAndInsertDataIntoDb();
+  } else if (seedMode === "clear") {
+    console.log("Clear mode: removing demo data without inserting replacements...");
+    await clearAllDataFromDb();
   } else {
+    console.log("Bootstrap mode: upserting launch catalog and accounts without wiping real data...");
+    const userDocs = await buildUserDocs();
+    await upsertSeedDocs(userModel, userDocs, (doc) => ({ userId: doc.userId }));
+
+    const seededUsers = await userModel.find({
+      userId: { $in: userSeedConfig.map((user) => user.userId) },
+    });
+    const userIdMap = new Map(seededUsers.map((user) => [user.userId, user._id]));
+
+    const propertyDocs = buildPropertyDocs(userIdMap, userIdMap.get("admin")!);
+    await upsertSeedDocs(propertyModel, propertyDocs, (doc) => ({ url: doc.url }));
+
+    const seededProperties = await propertyModel.find({
+      url: { $in: propertySeedConfig.map((property) => property.url) },
+    });
+    const propertyIdMap = new Map(seededProperties.map((property) => [property.url, property._id]));
+    const hostMapByProperty = new Map(
+      seededProperties.map((property) => [property.url, property.userId as Types.ObjectId]),
+    );
+
+    for (const [seedUserId, propertyUrls] of Object.entries(seededWishlists)) {
+      const wishList = propertyUrls
+        .map((url) => propertyIdMap.get(url))
+        .filter(Boolean);
+      const viewedProperty = (seededViewedProperties[seedUserId] || [])
+        .map((url) => propertyIdMap.get(url))
+        .filter(Boolean);
+
+      await userModel.updateOne(
+        { userId: seedUserId },
+        { $set: { wishList, viewedProperty } },
+      );
+    }
+
+    const bookingDocs = buildBookingDocs(userIdMap, propertyIdMap, hostMapByProperty);
+    const paymentDocs = buildPaymentDocs(userIdMap);
+    const reviewDocs = buildReviewDocs(userIdMap, propertyIdMap, hostMapByProperty);
+
     await upsertSeedDocs(bookingModel, bookingDocs, (doc) => ({ _id: doc._id }));
     await upsertSeedDocs(paymentModel, paymentDocs, (doc) => ({ _id: doc._id }));
     await upsertSeedDocs(reviewModel, reviewDocs, (doc) => ({ _id: doc._id }));
