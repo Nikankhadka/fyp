@@ -21,7 +21,7 @@ importers:
         specifier: 1.11.13
         version: 1.11.13
       encoding:
-        specifier: ^0.1.13
+        specifier: 0.1.13
         version: 0.1.13
       firebase:
         specifier: 9.23.0
