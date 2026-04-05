@@ -3,7 +3,8 @@ export const httpOnlyCookie = true
 export const cookieSecure =
   process.env.NODE_ENV === "production"
 
-export const cookieSameSite = "lax"
+export const cookieSameSite =
+  process.env.NODE_ENV === "production" ? "none" : "lax"
 
 export const webAppUrl =
   process.env.WEB_APP_URL || "http://localhost:3000"
