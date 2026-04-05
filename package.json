@@ -1,0 +1,28 @@
+{
+  "name": "fyp-monorepo",
+  "private": true,
+  "packageManager": "pnpm@10.33.0+sha512.10568bb4a6afb58c9eb3630da90cc9516417abebd3fabbe6739f0ae795728da1491e9db5a544c76ad8eb7570f5c4bb3d6c637b2cb41bfdcdb47fa823c8649319",
+  "scripts": {
+    "dev:web": "pnpm --dir apps/web dev",
+    "dev:api": "pnpm --dir apps/api dev",
+    "build:web": "pnpm --dir apps/web build",
+    "build:api": "pnpm --dir apps/api build",
+    "lint:web": "pnpm --dir apps/web lint",
+    "install:api": "pnpm --dir apps/api install --frozen-lockfile",
+    "install:web": "pnpm --dir apps/web install --frozen-lockfile",
+    "seed:demo": "docker compose -f infra/docker/compose.dev.yml exec -T api npm run seed:reset",
+    "seed:bootstrap": "docker compose -f infra/docker/compose.prod.yml exec -T -e SEED_MODE=bootstrap api node dist/scripts/seedDemoData.js",
+    "docker:dev": "docker compose -f infra/docker/compose.dev.yml up --build",
+    "docker:prod": "docker compose -f infra/docker/compose.prod.yml up --build -d"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "5.62.0",
+    "@typescript-eslint/parser": "5.62.0",
+    "eslint": "8.28.0",
+    "eslint-config-prettier": "8.10.0",
+    "eslint-plugin-prettier": "4.2.1",
+    "eslint-plugin-react": "7.37.5",
+    "eslint-plugin-react-hooks": "4.6.2",
+    "playwright-core": "1.59.1"
+  }
+}

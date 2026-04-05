@@ -1,0 +1,50 @@
+{
+  "name": "@fyp/api",
+  "scripts": {
+    "dev": "tsnd ./src/server.ts --respawn  --transpile-only --exit-child",
+    "build": "tsc",
+    "seed": "tsnd ./src/scripts/seedDemoData.ts --transpile-only --exit-child",
+    "seed:reset": "SEED_MODE=reset tsnd ./src/scripts/seedDemoData.ts --transpile-only --exit-child",
+    "seed:bootstrap": "SEED_MODE=bootstrap tsnd ./src/scripts/seedDemoData.ts --transpile-only --exit-child",
+    "start": " tsc &&node dist/server.js"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "5.0.2",
+    "@types/cookie-parser": "1.4.9",
+    "@types/cors": "2.8.19",
+    "@types/express": "4.17.23",
+    "@types/express-session": "1.18.2",
+    "@types/jsonwebtoken": "8.5.9",
+    "@types/morgan": "1.9.10",
+    "@types/nodemailer": "6.4.17",
+    "@types/passport": "1.0.17",
+    "@types/passport-facebook": "2.1.11",
+    "@types/passport-google-oauth20": "2.0.16",
+    "@types/swagger-ui-express": "4.1.8",
+    "@types/yamljs": "0.2.34",
+    "ts-node-dev": "2.0.0",
+    "typescript": "4.9.5"
+  },
+  "dependencies": {
+    "axios": "1.10.0",
+    "bcrypt": "5.1.1",
+    "cookie-parser": "1.4.7",
+    "cors": "2.8.5",
+    "dotenv": "16.5.0",
+    "express": "4.21.2",
+    "express-session": "1.18.1",
+    "helmet": "7.2.0",
+    "http-status-codes": "2.3.0",
+    "joi": "17.13.3",
+    "jsonwebtoken": "8.5.1",
+    "mongoose": "6.13.8",
+    "morgan": "1.10.0",
+    "nodemailer": "6.10.1",
+    "passport": "0.6.0",
+    "passport-facebook": "3.0.0",
+    "passport-google-oauth20": "2.0.0",
+    "swagger-ui-express": "4.6.3",
+    "yamljs": "0.3.0"
+  },
+  "packageManager": "pnpm@10.33.0+sha512.10568bb4a6afb58c9eb3630da90cc9516417abebd3fabbe6739f0ae795728da1491e9db5a544c76ad8eb7570f5c4bb3d6c637b2cb41bfdcdb47fa823c8649319"
+}
