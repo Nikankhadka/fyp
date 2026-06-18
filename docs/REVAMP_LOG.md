@@ -522,10 +522,57 @@ Smoke status:
 
 - Playwright smoke still needs a running web/API stack. Manual follow-up should cover login with invalid credentials, signup with duplicate user, forgot password flow, booking bill modal rendering, demo checkout completion.
 
+## Session: Final Cleanup - Icons and Lodash Removal
+
+Status: implemented after auth modals migration.
+
+Goal:
+
+- Replace all remaining `react-icons` imports with `lucide-react` equivalents.
+- Replace broad `lodash` namespace imports with native helpers.
+- Fix invalid table markup in TripsReservationClient.
+
+Changes:
+
+- Rebuilt `apps/web/src/app/loading.tsx` with:
+  - lucide `Loader2` instead of `react-icons/fa` spinner
+- Rebuilt `apps/web/src/components/navbar/sidebar.tsx` with:
+  - lucide `LayoutDashboard`, `User`, `Home`, `HousePlus`, `Settings`, `UserCheck`, `LogOut` instead of `react-icons`
+- Rebuilt `apps/web/src/components/navbar/DashboardNav.tsx` with:
+  - lucide `Menu` instead of `react-icons/rx` hamburger
+- Rebuilt `apps/web/src/components/footer.tsx` with:
+  - lucide `Search`, `Heart`, `Globe`, `User` instead of `react-icons`
+- Rebuilt `apps/web/src/components/card/userCard.tsx` with:
+  - lucide `BadgeCheck`, `XCircle` instead of `react-icons`
+  - native `capitalize()` helper instead of `lodash.capitalize`
+  - shared `Button` primitives
+- Rebuilt `apps/web/src/components/listing/TripsReservationClient.tsx` with:
+  - lucide `CheckCircle`, `Trash2`, `ChevronLeft`, `ChevronRight`, `House`, `X` instead of `react-icons`
+  - native `capitalize()` helper instead of `lodash` namespace
+  - fixed invalid `<tbody>` inside `.map()` — moved `<tbody>` outside, mapped only `<tr>` elements
+  - fixed invalid `<Link>` inside `<td>` nesting
+  - `StatusBadge` for booking status display
+  - shared `Button` primitives for actions
+
+Verification:
+
+- `pnpm lint:web`: passed
+- `pnpm build:web`: passed
+- Zero `react-icons` imports remaining in codebase
+- Zero `lodash` imports remaining in codebase
+
+Updated first-load JS notes after final cleanup:
+
+| Route | After auth modals migration | After final cleanup |
+| --- | ---: | ---: |
+| `/Admin/bookings` | about `173 kB` | about `145 kB` |
+| `/Admin/kycRequest` | about `153 kB` | about `137 kB` |
+| `/Home/Account/reservations` | about `158 kB` | about `142 kB` |
+| `/Home/Account/trips` | about `158 kB` | about `142 kB` |
+
 ## Remaining Production Hardening
 
 - Add API-side Cloudinary signed upload and deletion endpoints.
 - Verify real PayPal or Stripe payments server-side before booking finalization.
 - Add API integration tests for auth, booking, admin moderation, and seed validation.
 - Add bundle analyzer for richer before/after route-size reports.
-- Replace remaining broad icon/utility imports where measurable.

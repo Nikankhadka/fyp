@@ -2,16 +2,7 @@
 
 import Link from 'next/link'
 
-import { HiUser,HiHeart,HiHome } from 'react-icons/hi'
-import {MdManageAccounts,MdOutlineReviews} from 'react-icons/md'
-
-import{AiFillSetting} from 'react-icons/ai'
-import {RiLockPasswordFill,RiAdminFill} from 'react-icons/ri'
-
-import{BsFillHouseCheckFill} from 'react-icons/bs'
-import {ImUserCheck} from 'react-icons/im'
-
-import {BiLogOut} from 'react-icons/bi'
+import { User, Home, Settings, Lock, Shield, HousePlus, UserCheck, LogOut, LayoutDashboard } from 'lucide-react'
 import { forwardRef } from 'react'
 import Api from '../../api/client/axios'
 import toast from 'react-hot-toast'
@@ -63,15 +54,9 @@ const  SideBar=forwardRef<Ref,props>((props,ref):JSX.Element=>{
               href="/Admin"
               className=" my-2 group flex items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-hoverColor dark:text-white dark:hover:bg-slate-500"
             >
-              <svg
-                aria-hidden="true"
-                className="h-6 w-6 fill-gray-500 transition duration-75 group-hover:fill-gray-900 dark:fill-gray-400 dark:group-hover:fill-white"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
-                <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
-              </svg>
+              <LayoutDashboard
+                className="h-6 w-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
+              />
               <span className="ml-3 dark:text-gray-300 dark:group-hover:text-white">
                 Dashboard
               </span>
@@ -81,7 +66,7 @@ const  SideBar=forwardRef<Ref,props>((props,ref):JSX.Element=>{
               href="/Admin/users"
               className="my-2 group flex items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-hoverColor dark:text-white dark:hover:bg-slate-500"
             >
-              <HiUser className="h-6 w-6 fill-gray-500 transition duration-75 group-hover:fill-gray-900 dark:fill-gray-400 dark:group-hover:fill-white" />
+              <User className="h-6 w-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" />
               <span className="ml-3 dark:text-gray-300 dark:group-hover:text-white">
                 Users
               </span>
@@ -93,19 +78,19 @@ const  SideBar=forwardRef<Ref,props>((props,ref):JSX.Element=>{
               href="/Admin/kycRequest"
               className=" my-2 group flex items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-hoverColor dark:text-white dark:hover:bg-slate-500"
             >
-              <ImUserCheck className="h-6 w-6 fill-gray-500 transition duration-75 group-hover:fill-gray-900 dark:fill-gray-400 dark:group-hover:fill-white" />
+              <UserCheck className="h-6 w-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" />
               <span className="ml-3 dark:text-gray-300 dark:group-hover:text-white">
                 Kyc Requests
               </span>
             </Link>}
 
-          
+           
 
             <Link
               href={'Admin/listing'}
               className="my-2 group flex items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-hoverColor dark:text-white dark:hover:bg-slate-500"
             >
-              <HiHome className="h-6 w-6 fill-gray-500 transition duration-75 group-hover:fill-gray-900 dark:fill-gray-400 dark:group-hover:fill-white" />
+              <Home className="h-6 w-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" />
               <span className="ml-3 dark:text-gray-300 dark:group-hover:text-white">
                 Listings
               </span>
@@ -116,7 +101,7 @@ const  SideBar=forwardRef<Ref,props>((props,ref):JSX.Element=>{
               href={'/Admin/listingRequest'}
               className="my-2 group flex items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-hoverColor dark:text-white dark:hover:bg-slate-500"
             >
-              <BsFillHouseCheckFill className="h-6 w-6 fill-gray-500 transition duration-75 group-hover:fill-gray-900 dark:fill-gray-400 dark:group-hover:fill-white" />
+              <HousePlus className="h-6 w-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" />
               <span className="ml-3 dark:text-gray-300 dark:group-hover:text-white">
                 Listing Requests
               </span>
@@ -171,7 +156,7 @@ const  SideBar=forwardRef<Ref,props>((props,ref):JSX.Element=>{
               href="/Admin/account"
               className=" group flex items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-hoverColor dark:text-white dark:hover:bg-slate-500"
             >
-              <MdManageAccounts className="h-6 w-6 fill-gray-500 transition duration-75 group-hover:fill-gray-900 dark:fill-gray-400 dark:group-hover:fill-white" />
+              <Settings className="h-6 w-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" />
               <span className="ml-3 dark:text-gray-300 dark:group-hover:text-white">
                 Account
               </span>
@@ -191,8 +176,8 @@ const  SideBar=forwardRef<Ref,props>((props,ref):JSX.Element=>{
            </div>
             
 
-           
 
+           
 
            {/* { props.is_Admin&&<Link
               href="#"
@@ -221,7 +206,7 @@ const  SideBar=forwardRef<Ref,props>((props,ref):JSX.Element=>{
             })}}
               className="w-full group flex items-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-hoverColor dark:text-white dark:hover:bg-slate-500"
             >
-              <BiLogOut className="h-6 w-6 fill-gray-500 transition duration-75 group-hover:fill-gray-900 dark:fill-gray-400 dark:group-hover:fill-white" />
+              <LogOut className="h-6 w-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" />
               <span className="ml-3 dark:text-gray-300 dark:group-hover:text-white">
                 Log out
               </span>

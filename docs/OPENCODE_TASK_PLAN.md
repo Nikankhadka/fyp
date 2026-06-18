@@ -199,7 +199,7 @@ Status:
 - Codex migrated the inner edit profile, email, and password editors to shared `Field`, `TextArea`, `Button`, and `PageHeader` primitives while preserving existing API/confirmation flows.
 - Public and non-owner profile views now force the overview state so a stale local account tab store cannot hide listings or show private edit panels.
 - Removed old profile/account react-icons imports, ad hoc bordered/shadowed profile sections, invalid heading-in-paragraph markup, and account page debug logging.
-- Next OpenCode task: visually verify own account, public profile, and admin KYC profile views; then migrate the remaining `kyc` and `phone` forms to the same shared field/button primitives.
+- **Completed**: Codex migrated `kyc.tsx` and `phone.tsx` to shared `Field`, `SelectField`, `Button`, `PageHeader`, `Surface`, and lucide icons.
 
 Task P6.2: Redesign host listing management
 
@@ -211,7 +211,7 @@ Task P6.2: Redesign host listing management
 
 Status:
 
-- Listing management shell now uses shared `Field`, `Button`, `PageHeader`, `EmptyState`, and the migrated `Card`; the property form itself still needs a deeper shadcn-form pass.
+- **Completed**: Codex migrated `postproperty.tsx` to shared `Field`, `SelectField`, `TextArea`, `Button`, `PageHeader`, `Surface`, and lucide icons. Removed ad hoc `inputStyle`, `react-icons/ai`, and replaced with accessible image upload cards.
 
 ## Phase 7: Admin Operations UX
 
@@ -221,6 +221,10 @@ Task P7.1: Redesign admin dashboard
 - Goal: compact operations dashboard with metric cards and popular listings table.
 - Acceptance:
   - Dashboard remains scannable on desktop and mobile.
+
+Status:
+
+- **Completed**: Codex migrated dashboard to `Surface`, `StatusBadge`, lucide icons, fixed invalid table markup (`<tbody>` outside `.map()`), fixed invalid `<Link>` inside `<td>` nesting, responsive grid layout for metric cards.
 
 Task P7.2: Redesign admin tables
 

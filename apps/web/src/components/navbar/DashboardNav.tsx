@@ -1,7 +1,7 @@
 'use client'
 
 import Link from "next/link"
-import {RxHamburgerMenu} from 'react-icons/rx'
+import { Menu } from 'lucide-react'
 import SideBar from "./sidebar"
  
 import {useState,useEffect,createRef} from 'react'
@@ -37,7 +37,7 @@ export default function DashboardNav(){
                 setopenSide(!openSide)
             }}
             >
-              <RxHamburgerMenu className="h-6 w-6 fill-gray-500 transition duration-75 group-hover:fill-gray-900 dark:fill-gray-400 dark:group-hover:fill-white" />
+              <Menu className="h-6 w-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" />
              
             </button>
 
