@@ -147,6 +147,7 @@ Performance rules:
 - Search/filter as a polished modal or sheet.
 - Empty and loading states.
 - Keep cards dense enough for browsing.
+- Current implementation progress: the shared listing `Card` now uses shadcn-style primitives, stable image ratio, status badges, lucide icons, accessible carousel controls, and preserved wishlist/moderation actions.
 
 ### Room Detail
 

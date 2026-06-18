@@ -144,6 +144,11 @@ Task P5.1: Redesign listing cards
   - Wishlist button is accessible.
   - No layout shift when image missing.
 
+Status:
+
+- Codex migrated the shared `Card` component to shadcn-style primitives, lucide icons, stable image ratio, tooltip-backed image controls, and shared action/status components.
+- Next OpenCode task: visually verify the card on Home, Favourites, Host Listings, Admin Listing Requests, and public profile listing grids.
+
 Task P5.2: Redesign room detail
 
 - Files: `apps/web/src/app/Home/rooms/[listingId]/client.tsx`, `apps/web/src/components/carousel.tsx`, `apps/web/src/components/listing/BookProperty.tsx`
@@ -179,6 +184,10 @@ Task P6.2: Redesign host listing management
 - Acceptance:
   - KYC gate still blocks listing creation.
   - Edit preserves existing images unless replaced.
+
+Status:
+
+- Listing management shell now uses shared `Field`, `Button`, `PageHeader`, `EmptyState`, and the migrated `Card`; the property form itself still needs a deeper shadcn-form pass.
 
 ## Phase 7: Admin Operations UX
 

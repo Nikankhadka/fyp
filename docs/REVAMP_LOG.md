@@ -176,6 +176,48 @@ Smoke status:
 - Playwright smoke was not run in this session because `http://127.0.0.1:3000/Home` and `http://127.0.0.1:2900/health` were not running locally.
 - Next evidence task: start the Docker/dev stack, run `pnpm seed:demo`, then run `BASE_URL=http://localhost:3000 node scripts/playwright-smoke.js`.
 
+## Session: Marketplace Card Shadcn Migration
+
+Status: implemented after commit `c795c96`.
+
+Goal:
+
+- Replace the legacy marketplace/listing card and surrounding listing-grid shell with shadcn-style owned primitives without breaking wishlist, moderation, owner edit/delete, or listing approval flows.
+
+Changes:
+
+- Rebuilt `apps/web/src/components/card/card.tsx` with:
+  - stable image aspect ratio
+  - `SafeImage`
+  - accessible carousel controls
+  - Radix Tooltip wrappers
+  - shared `Button` and `StatusBadge`
+  - lucide icons
+  - preserved wishlist, admin verify/reject, host update/delete behavior
+- Rebuilt `apps/web/src/app/Home/HomeClient.tsx` with `PageHeader`, `EmptyState`, and shared `Button` for load-more state.
+- Updated `apps/web/src/components/listing/listingcomp.tsx` to use shared `Field`, `Button`, `PageHeader`, `EmptyState`, and lucide icons.
+
+Verification:
+
+- `pnpm lint:web`: passed
+- `pnpm build:api`: passed
+- `pnpm build:web`: passed
+
+Updated first-load JS notes after card migration:
+
+| Route | After shadcn table/modal slice | After card migration |
+| --- | ---: | ---: |
+| `/Home` | about `132 kB` | about `158 kB` |
+| `/Home/Account/favourites` | about `131 kB` | about `157 kB` |
+| `/Home/Account/listings` | about `145 kB` | about `159 kB` |
+| `/Admin/listingRequest` | about `145 kB` | about `159 kB` |
+| `/Home/Account` | about `146 kB` | about `162 kB` |
+| `/Home/user/[userId]` | about `146 kB` | about `162 kB` |
+
+Note:
+
+- The card routes increased modestly because cards now use Tooltip/lucide/shared primitives, but the main previously heavy routes remain far below the original `~2.43-2.49 MB` baseline.
+
 ## Remaining Production Hardening
 
 - Add API-side Cloudinary signed upload and deletion endpoints.
