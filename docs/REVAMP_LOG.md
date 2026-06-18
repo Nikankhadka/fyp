@@ -71,6 +71,9 @@ Changes:
 - Added shared UI primitives for buttons, fields, badges, empty states, page headers, surfaces, and pagination.
 - Added shadcn/Radix-style foundation dependencies: Radix primitives, `class-variance-authority`, `clsx`, `tailwind-merge`, and `lucide-react`.
 - Added `apps/web/src/utils/cn.ts` and converted primitives to `cva` variants and Radix `Slot` composition.
+- Added Radix-backed Dialog, AlertDialog, DropdownMenu, Tabs, Select, Tooltip, and DataTable primitives.
+- Migrated the shared modal shell to Radix Dialog while keeping Zustand modal state.
+- Migrated admin user/property management tables to the new DataTable/Button/Field/StatusBadge primitives, valid table markup, lucide icons, and native debounced search.
 - Removed global forced text color and letter spacing.
 - Applied targeted marketplace/room/account/admin fixes that preserve current API contracts.
 - Lazy-loaded heavy account/listing/payment modules where they were easiest to isolate safely.
@@ -83,6 +86,7 @@ Changes:
 
 - Added `docs/UI_DESIGN_REVAMP.md` with library research, current UI audit, design direction, component-system target, route-level redesign goals, and Stitch prompt pack.
 - Added `docs/OPENCODE_TASK_PLAN.md` as the detailed OpenCode task handoff with goals, loops, phase tasks, checks, and definition of done.
+- Updated the UI revamp direction to explicitly target replacing premade/ad hoc UI with owned shadcn-style components as much as possible without breaking application behavior.
 
 ### Phase 9: Backend and Security Hardening
 
@@ -124,6 +128,53 @@ Measured first-load JS improvement from this session:
 Smoke automation update:
 
 - `scripts/playwright-smoke.js` now discovers a current listing/user target from the API before falling back to legacy IDs.
+
+## Session: Shadcn UI Foundation Expansion
+
+Status: implemented after commit `c5ebdfa`.
+
+Goal:
+
+- Move from ad hoc/premade UI toward a complete shadcn-style owned component layer while preserving Zustand and existing route/API contracts.
+
+Changes:
+
+- Added Radix-backed UI primitives:
+  - `apps/web/src/components/ui/dialog.tsx`
+  - `apps/web/src/components/ui/alert-dialog.tsx`
+  - `apps/web/src/components/ui/dropdown-menu.tsx`
+  - `apps/web/src/components/ui/tabs.tsx`
+  - `apps/web/src/components/ui/select.tsx`
+  - `apps/web/src/components/ui/tooltip.tsx`
+  - `apps/web/src/components/ui/data-table.tsx`
+- Migrated the shared modal shell to the new Dialog primitive while keeping the existing Zustand `useModal` store.
+- Migrated confirm/reject modals to use shared Button/TextArea/Dialog typography primitives.
+- Rebuilt the admin user/property table with DataTable, Field, Button, StatusBadge, lucide icons, native debounced search, and valid table/link markup.
+- Updated `docs/UI_DESIGN_REVAMP.md` to explicitly target replacing premade/ad hoc UI with owned shadcn-style components as much as possible without breaking the application.
+- Updated `docs/OPENCODE_TASK_PLAN.md` with the new primitive and admin-table status.
+
+Verification:
+
+- `pnpm lint:web`: passed
+- `pnpm build:api`: passed
+- `pnpm build:web`: passed
+
+Updated first-load JS notes:
+
+| Route | After previous session | After shadcn table/modal slice |
+| --- | ---: | ---: |
+| `/Home/Account` | about `146 kB` | about `146 kB` |
+| `/Home/user/[userId]` | about `146 kB` | about `146 kB` |
+| `/Admin/account` | about `146 kB` | about `146 kB` |
+| `/Home/Account/listings` | about `145 kB` | about `145 kB` |
+| `/Admin/listingRequest` | about `145 kB` | about `145 kB` |
+| `/Admin/users` | about `162 kB` | about `174 kB` |
+| `/Admin/listing` | about `162 kB` | about `174 kB` |
+
+Smoke status:
+
+- Playwright smoke was not run in this session because `http://127.0.0.1:3000/Home` and `http://127.0.0.1:2900/health` were not running locally.
+- Next evidence task: start the Docker/dev stack, run `pnpm seed:demo`, then run `BASE_URL=http://localhost:3000 node scripts/playwright-smoke.js`.
 
 ## Remaining Production Hardening
 

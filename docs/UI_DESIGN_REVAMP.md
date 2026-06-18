@@ -4,7 +4,7 @@ This document records the UI audit, library decision, design direction, and Stit
 
 ## Library Research Decision
 
-Recommended foundation: **shadcn/ui-style owned components built on Radix primitives, Tailwind CSS, Zustand, and lucide-react**.
+Recommended foundation: **replace the premade/ad hoc UI with shadcn/ui-style owned components built on Radix primitives, Tailwind CSS, Zustand, and lucide-react**.
 
 Why this fits MeroGhar:
 
@@ -13,6 +13,13 @@ Why this fits MeroGhar:
 - Radix primitives provide accessible behavior for dialogs, dropdowns, selects, tabs, tooltips, and alert dialogs while leaving styling under our control.
 - Zustand already handles app state well for modals, booking, listing, account tabs, and confirmation flows; keep it.
 - lucide-react should replace most react-icons over time for consistent icon style and smaller, predictable imports.
+
+Important interpretation:
+
+- “Use shadcn” means use the shadcn architecture: owned source components, Radix behavior primitives, Tailwind styling, `cva` variants, and direct customization.
+- Do not install a large opaque UI kit that controls the design language.
+- Do not replace Zustand. Zustand remains the app state layer for modal, booking, account, listing, and confirmation state.
+- Migrate feature screens incrementally, but the end state should be that most visible controls and layouts are built from the owned shadcn-style `components/ui` layer.
 
 Official references used:
 
@@ -96,20 +103,40 @@ Current foundation:
 - `PageHeader`
 - `Surface`
 - `PaginationBar`
+- Radix `Dialog`
+- Radix `AlertDialog`
+- Radix `DropdownMenu`
+- Radix `Tabs`
+- Radix `Select`
+- Radix `Tooltip`
+- `DataTable`
 
 Next components to add:
 
-- `Dialog` using `@radix-ui/react-dialog`
-- `AlertDialog` using `@radix-ui/react-alert-dialog`
-- `DropdownMenu` using `@radix-ui/react-dropdown-menu`
-- `Tabs` using `@radix-ui/react-tabs`
-- `Select` using `@radix-ui/react-select`
-- `Tooltip` using `@radix-ui/react-tooltip`
-- `DataTable` wrapper for admin/booking tables
 - `ListingCard` and `HostCard`
 - `BookingPanel`
 - `ImageGallery`
 - `FormField`
+- `Sheet` for mobile filters/navigation
+- `Toast` wrapper if replacing `react-hot-toast` later
+
+## Replacement Strategy
+
+Use this order so the app keeps working while the UI becomes shadcn-based:
+
+1. Replace global primitives first: buttons, fields, badges, modals, dropdowns, tabs, selects, tooltips, tables.
+2. Replace shared shells: navbar, sidebar, modal registry, account shell, admin shell.
+3. Replace repeated domain components: listing cards, booking panel, image gallery, review card, user card, admin data table.
+4. Replace route surfaces: Home, room detail, account/profile, host listings, admin dashboard, KYC/listing queues.
+5. Remove old one-off Tailwind variants and unused icon packages once screens no longer import them.
+
+Performance rules:
+
+- Keep Server Components for data-heavy pages whenever interaction is not required.
+- Dynamic import heavy editors and providers: KYC, Firebase phone OTP, property form, PayPal, PDF generation.
+- Prefer lucide-react icons in new shadcn-style components.
+- Avoid bringing in shadcn blocks wholesale if they add unused dependencies.
+- Measure `pnpm build:web` after each route group migration.
 
 ## Route-Level Redesign Goals
 

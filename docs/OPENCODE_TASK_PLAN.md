@@ -108,7 +108,7 @@ Status: started by Codex in the current revamp session.
 Task P4.1: Complete Radix/shadcn-style UI primitives
 
 - Files: `apps/web/src/components/ui/**`, `apps/web/src/utils/cn.ts`
-- Goal: add owned primitives for Dialog, AlertDialog, DropdownMenu, Tabs, Select, Tooltip, and DataTable.
+- Goal: add and use owned primitives for Dialog, AlertDialog, DropdownMenu, Tabs, Select, Tooltip, and DataTable.
 - Use:
   - Radix primitives
   - `class-variance-authority`
@@ -119,6 +119,11 @@ Task P4.1: Complete Radix/shadcn-style UI primitives
   - Primitives use current MeroGhar colors.
   - Components are accessible and keyboard-friendly.
   - Existing modals can migrate incrementally.
+  - New visible UI should prefer these primitives over ad hoc Tailwind markup.
+
+Status:
+
+- Codex added the core primitive files and migrated the shared modal shell plus admin management table as the first worked examples.
 
 Task P4.2: Normalize typography and spacing
 
@@ -192,6 +197,10 @@ Task P7.2: Redesign admin tables
   - No invalid table/link nesting.
   - Ban/unban flows still work.
   - Broad `lodash` import is replaced with targeted/native helpers.
+
+Status:
+
+- User/property admin table was migrated to `DataTable`, `Field`, `Button`, `StatusBadge`, lucide icons, valid table markup, and native debounced search.
 
 ## Phase 8: Performance Optimization
 
