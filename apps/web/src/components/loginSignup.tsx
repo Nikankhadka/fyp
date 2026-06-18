@@ -12,12 +12,13 @@ import { toast } from 'react-hot-toast'
 import Api from '../api/client/axios'
 import Image from 'next/image'
 import { api } from '../api/api'
+import { facebookAuthEnabled, googleAuthEnabled } from '../configs/constant'
 
 
 //since this component will be used multiple places always check the page before rendering the component
 
 export default function LoginSignup({ login,modal }: loginSignupModal): JSX.Element {
-  const showSocialLogin = false
+  const showSocialLogin = login && (googleAuthEnabled || facebookAuthEnabled)
   
   const {register,handleSubmit,formState: { errors }} = useForm<LoginRegisterInput>()
 
@@ -150,16 +151,20 @@ export default function LoginSignup({ login,modal }: loginSignupModal): JSX.Elem
                 <hr className="my-4 w-[44%] border-[1px] border-gray-400" />
               </div>
 
-              <SocialLogin
-                placeholder="Continue with Google"
-                url={`${api}/auth/v1/google-login`}
-                img="/google.png"
-              />
-              <SocialLogin
-                placeholder="Continue with Facebook"
-                url={`${api}/auth/v1/facebook-login`}
-                img="/facebook.png"
-              />
+              {googleAuthEnabled && (
+                <SocialLogin
+                  placeholder="Continue with Google"
+                  url={`${api}/auth/v1/google-login`}
+                  img="/google.png"
+                />
+              )}
+              {facebookAuthEnabled && (
+                <SocialLogin
+                  placeholder="Continue with Facebook"
+                  url={`${api}/auth/v1/facebook-login`}
+                  img="/facebook.png"
+                />
+              )}
             </>
           )}
 

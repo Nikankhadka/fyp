@@ -29,6 +29,7 @@ services:
       - "2900:2900"
     volumes:
       - ../../apps/api:/app
+      - ../../apps/web/public:/web-public:ro
       - api_node_modules:/app/node_modules
     depends_on:
       mongo:

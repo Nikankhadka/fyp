@@ -1,5 +1,5 @@
 
-export const inputStyle ='w-[95%] h-10 border-2 border-gray-400  my-1 rounded-md  text-gray-700 text-md p-1 hover:bg-hoverColor'
+export const inputStyle ='h-11 w-[95%] rounded-md border border-neutral-300 bg-white p-2 text-sm text-neutral-900 outline-none transition hover:bg-neutral-50 focus:border-sky-700 focus:ring-2 focus:ring-sky-100'
 
 
-export const bg='border-2 border-gray-200 shadow-lg bg-white  p-4';
+export const bg='border border-neutral-200 bg-white p-4';

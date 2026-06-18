@@ -1,6 +1,8 @@
 import * as dotenv from "dotenv";
 dotenv.config();
 
+import fs from "fs";
+import path from "path";
 import mongoose, { Types } from "mongoose";
 import { bookingModel } from "../models/booking";
 import { conversationModel } from "../models/conversation";
@@ -14,6 +16,10 @@ const mongoUri =
   process.env.MONGODB_URI || "mongodb://localhost:27017/meroghar";
 const seedMode =
   process.env.SEED_MODE || (process.env.NODE_ENV === "production" ? "bootstrap" : "reset");
+const seedAssetRoot =
+  process.env.SEED_ASSET_ROOT ||
+  path.resolve(__dirname, "../../../web/public");
+const shouldValidateSeedAssets = process.env.SEED_VALIDATE_ASSETS !== "false";
 
 const oid = (value: string) => new Types.ObjectId(value);
 
@@ -61,11 +67,49 @@ const image = (path: string, imgId: string) => ({
   imgUrl: path,
 });
 
-const emptySeedImage = (imgId: string) => image("", imgId);
+const seedProfileImage = (fileName: string) => `/seed/profiles/${fileName}`;
 
-const profileImage = (_fileName: string, imgId: string) => emptySeedImage(imgId);
+const seedPropertyImage = (fileName: string) => `/seed/properties/${fileName}`;
 
-const propertyImage = (_fileName: string, imgId: string) => emptySeedImage(imgId);
+const profileImage = (fileName: string, imgId: string) => image(seedProfileImage(fileName), imgId);
+
+const propertyImage = (fileName: string, imgId: string) => image(seedPropertyImage(fileName), imgId);
+
+const requiredSeedAssetPaths = () => {
+  const profileAssets = userSeedConfig.flatMap((user) => [
+    seedProfileImage(user.profileFile),
+    seedProfileImage(user.profileFile),
+  ]);
+  const propertyAssets = propertySeedConfig.flatMap((property) =>
+    property.imageFiles.map(seedPropertyImage),
+  );
+
+  return Array.from(new Set([...profileAssets, ...propertyAssets]));
+};
+
+const validateSeedAssets = () => {
+  if (!shouldValidateSeedAssets) {
+    console.log("Seed asset validation disabled by SEED_VALIDATE_ASSETS=false.");
+    return;
+  }
+
+  const missingAssets = requiredSeedAssetPaths().filter((assetPath) => {
+    const filePath = path.join(seedAssetRoot, assetPath.replace(/^\//, ""));
+    return !fs.existsSync(filePath);
+  });
+
+  if (missingAssets.length > 0) {
+    throw new Error(
+      [
+        `Missing ${missingAssets.length} seed image asset(s) under ${seedAssetRoot}.`,
+        "Create the files or set SEED_ASSET_ROOT to the web public asset directory.",
+        ...missingAssets.map((assetPath) => `- ${assetPath}`),
+      ].join("\n"),
+    );
+  }
+
+  console.log(`Seed asset validation passed for ${requiredSeedAssetPaths().length} image path(s).`);
+};
 
 const userSeedConfig = [
   {
@@ -1270,7 +1314,8 @@ async function main() {
   mongoose.set("strictQuery", true);
   console.log(`Connecting to ${mongoUri}`);
   console.log(`Seed mode: ${seedMode}`);
-  console.log("Seed images are disabled; image URLs will be empty strings.");
+  console.log(`Seed asset root: ${seedAssetRoot}`);
+  validateSeedAssets();
 
   await mongoose.connect(mongoUri);
 

@@ -4,16 +4,28 @@ import { FiUserCheck, FiUserMinus } from 'react-icons/fi'
 import { HiStar, HiMinus } from 'react-icons/hi'
 
 import { HiCheck } from 'react-icons/hi'
-import { EditBasic } from './editProfile'
 
 import Card from '../card/card'
 import { FetchedMe, Property } from '../../interface/response'
 import { bg } from '../../styles/variants'
 import useAccount from '../../store/AccountState'
-import AccountComponent from './account'
-import Password from './pasword'
 import Image from 'next/image'
 import { normalizeImageSrc } from '../common/normalizeImageSrc'
+import dynamic from 'next/dynamic'
+import { EmptyState, PageHeader, StatusBadge } from '../ui/primitives'
+
+const EditBasic = dynamic(() => import('./editProfile').then((mod) => mod.EditBasic), {
+  ssr: false,
+  loading: () => <div className="p-4 text-sm text-neutral-600">Loading profile editor...</div>,
+})
+const AccountComponent = dynamic(() => import('./account'), {
+  ssr: false,
+  loading: () => <div className="p-4 text-sm text-neutral-600">Loading account settings...</div>,
+})
+const Password = dynamic(() => import('./pasword'), {
+  ssr: false,
+  loading: () => <div className="p-4 text-sm text-neutral-600">Loading password editor...</div>,
+})
 interface ProfileProps {
   userId: string
   profileData: Partial<FetchedMe>,
@@ -41,14 +53,13 @@ export default function Profile({ userId, profileData,listings,is_Admin}: Profil
   return (
     <main className='my-5'>
       <div className={`${bg} rounded-lg`}>
+        <PageHeader
+          title={`Hi, I am ${userName}`}
+          description={`Joined in ${new Date(createdAt!).getFullYear()}`}
+        />
         
         <div className="flex flex-wrap-reverse items-center justify-between">
-          <div>
-            <h2 className="text-2xl font-semibold">Hi, I am {userName}</h2>
-            <p className="my-1 text-sm font-semibold text-gray-700">
-              Joined in {new Date(createdAt!).getFullYear()}{' '}
-            </p>
-          </div>
+          <div />
           {profileImageSrc ? (
             <Image
               height={150}
@@ -69,11 +80,13 @@ export default function Profile({ userId, profileData,listings,is_Admin}: Profil
 
           <div className="my-2 flex items-center gap-x-2">
             {kyc!.isVerified ? (
-              <FiUserCheck className="h-6 w-6 stroke-themeColor  " />
+              <FiUserCheck className="h-6 w-6 stroke-sky-700  " />
             ) : (
-              <FiUserMinus className="h-6 w-6 stroke-themeColor  " />
+              <FiUserMinus className="h-6 w-6 stroke-sky-700  " />
             )}
-            <span className="block">Identity Verified</span>
+            <StatusBadge tone={kyc!.isVerified ? 'success' : 'warning'}>
+              {kyc!.isVerified ? 'Identity verified' : 'Identity not verified'}
+            </StatusBadge>
           </div>
 
           <div className="flex items-center gap-x-2 ">
@@ -176,6 +189,13 @@ export default function Profile({ userId, profileData,listings,is_Admin}: Profil
 
         
         <hr className='text-gray-300 mt-5 mb-3' />
+
+     {account.openComponent=='close'&& listings!.length===0&& (
+      <EmptyState
+        title="No public listings yet"
+        description="Listings from this host will appear here after they are approved."
+      />
+     )}
 
      {account.openComponent=='close'&& listings!.length>0&& <div className='p-2'>
           <h1 className='text-lg ms:text-xl my-2 mb-6 font-semibold '>{profileData.userName}s Listings</h1>

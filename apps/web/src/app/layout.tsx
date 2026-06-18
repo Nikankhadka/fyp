@@ -2,15 +2,7 @@
 import '../styles/globals.css'
 import ClientComp from '../components/clientComp';
 
-import { LoginModal } from '../components/modals/loginModal';
-import { RegisterModal } from '../components/modals/registerModal';
-
-import ToasterProvider from '../components/toast/toastProvider';
-import { ConfirmModal } from '../components/modals/confirmModal';
-import { MessageModal } from '../components/modals/rejectReportModal';
-import { BookingModal } from '../components/modals/bookingBillModal';
-import ResetPassword from '../components/modals/forgotpassword';
-import { SearchModal } from '../components/modals/searchModal';
+import ModalRegistry from '../components/modals/ModalRegistry';
 
 export default async function RootLayout({children}: {children: React.ReactNode}) {
 
@@ -31,14 +23,7 @@ export default async function RootLayout({children}: {children: React.ReactNode}
           {/* this component are kind of hassle donot repeat them on other layouts since they have shared state 
           overlapping will cause modal to bug and close  on click since they are in root layout they are rendered through out the 
           application */}
-          <ToasterProvider />
-           <LoginModal />
-           <RegisterModal />
-           <ConfirmModal />
-           <MessageModal />
-           <BookingModal />
-           <ResetPassword />
-           <SearchModal/>
+          <ModalRegistry />
           
            
         </ClientComp>

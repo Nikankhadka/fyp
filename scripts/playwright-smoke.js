@@ -3,6 +3,7 @@ const path = require("path");
 const { chromium } = require("playwright-core");
 
 const BASE_URL = process.env.BASE_URL || "http://127.0.0.1:3000";
+const API_BASE_URL = process.env.API_BASE_URL || "http://127.0.0.1:2900";
 const OUTPUT_DIR = path.join(process.cwd(), "artifacts", "playwright");
 
 const DEMO = {
@@ -35,6 +36,40 @@ function addIssue(issue) {
     ...issue,
     timestamp: new Date().toISOString(),
   });
+}
+
+async function fetchJson(url) {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}`);
+  }
+  return response.json();
+}
+
+async function resolveDemoTargets() {
+  try {
+    const data = await fetchJson(`${API_BASE_URL}/property/v1/getProperty?page=1&limit=1`);
+    const property = data.propertyData?.[0];
+
+    if (!data.success || !property?._id) {
+      throw new Error("No property returned from API");
+    }
+
+    const userId =
+      typeof property.userId === "object" && property.userId?._id
+        ? property.userId._id
+        : DEMO.userId;
+
+    DEMO.propertyId = property._id;
+    DEMO.userId = userId;
+  } catch (error) {
+    addIssue({
+      scope: "setup",
+      kind: "data",
+      route: API_BASE_URL,
+      message: `Using fallback smoke IDs because API target discovery failed: ${error.message}`,
+    });
+  }
 }
 
 async function attachPageObservers(page, scope) {
@@ -166,6 +201,7 @@ async function runScenario(name, creds, routes, actions) {
 
 async function run() {
   ensureOutputDir();
+  await resolveDemoTargets();
 
   await runScenario("public", null, [
     "/Home",

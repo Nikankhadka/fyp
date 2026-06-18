@@ -14,6 +14,7 @@ import * as _ from 'lodash'
 import { AiFillStar } from 'react-icons/ai'
 import ReviewInput from '../../../../components/reviewInput'
 import SafeImage from '../../../../components/common/SafeImage'
+import { EmptyState, StatusBadge } from '../../../../components/ui/primitives'
 
 
 interface RoomProps {
@@ -179,6 +180,16 @@ export function RoomClient({
           {/* interactive component for contacting owner */}
 
          {!is_Admin&&!isBanned!.status!&&isVerified!.status&&<BookProperty reservations={reservations} user={user} propertyData={propertyData} is_Admin={is_Admin} />}
+         {(isBanned?.status || !isVerified?.status) && (
+          <div className="my-4 w-[95%] rounded-md border border-neutral-200 bg-neutral-50 p-4 md:w-[35%]">
+            <StatusBadge tone={isBanned?.status ? 'danger' : 'warning'}>
+              {isBanned?.status ? 'Unavailable' : 'Pending approval'}
+            </StatusBadge>
+            <p className="mt-3 text-sm text-neutral-600">
+              This property is not currently available for booking.
+            </p>
+          </div>
+         )}
         </div>
 
         <hr className="my-8 border-gray-200" /> 
@@ -208,6 +219,12 @@ export function RoomClient({
 
          
           {/* grid block simply map reviews*/}
+          {reviews.length === 0 && (
+            <EmptyState
+              title="No reviews yet"
+              description="Reviews from completed guest stays will appear here."
+            />
+          )}
           <div className="grid-1 grid w-full gap-7 md:grid-cols-2 ">
             {reviews.map((data,index) => {
               return (

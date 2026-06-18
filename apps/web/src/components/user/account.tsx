@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Card from '../card/card'
-import Kyc from './kyc'
 import toast, { Toaster } from 'react-hot-toast'
 import useModal from '../../store/useModal'
 import { ConfirmModal } from '../modals/confirmModal'
@@ -13,11 +12,24 @@ import { inputStyle } from '../../styles/variants'
 import{AiFillStar ,AiFillHourglass,AiFillCheckCircle,AiOutlineCheckCircle} from 'react-icons/ai'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { ErrorText } from '../random'
-import { PhoneComp } from './phone'
-import EmailComp from './emailcomp'
 import { RxCrossCircled } from 'react-icons/rx'
 import Image from 'next/image'
 import { normalizeImageSrc } from '../common/normalizeImageSrc'
+import dynamic from 'next/dynamic'
+import { PageHeader, StatusBadge } from '../ui/primitives'
+
+const Kyc = dynamic(() => import('./kyc'), {
+  ssr: false,
+  loading: () => <div className="p-4 text-sm text-neutral-600">Loading KYC form...</div>,
+})
+const PhoneComp = dynamic(() => import('./phone').then((mod) => mod.PhoneComp), {
+  ssr: false,
+  loading: () => <div className="p-4 text-sm text-neutral-600">Loading phone verification...</div>,
+})
+const EmailComp = dynamic(() => import('./emailcomp'), {
+  ssr: false,
+  loading: () => <div className="p-4 text-sm text-neutral-600">Loading email editor...</div>,
+})
 interface props {
   userId?:string
   userData: Partial<FetchedMe>,
@@ -48,14 +60,13 @@ export default function AccountComponent({ userData,is_Admin,userId}: props) {
       <div className=" w-[97%] sm:w-[80%] p-3 ">
         {/* for kyc header */}
 
-        <h2 className="text-2xl font-semibold  text-gray-700">
-          {' '}
-          Personal Information
-        </h2>
+        <PageHeader title="Personal Information" description="Manage identity, email, phone, and KYC details." />
 
       {(userMatch&&!is_Admin)&&<div className='my-6' >
         <p className='text-md text-black font-semibold flex gap-x-1'>Status:  <span className='flex items-center gap-x-1 '>
-        {kyc?.pending&&'Pending'} {(kyc!.pending==kyc!.isVerified)&& (kyc!.message =='')&&"Rejected!!/Please Apply Again!!"}{kyc?.isVerified&&'Verified'}
+        <StatusBadge tone={kyc?.isVerified ? 'success' : kyc?.pending ? 'warning' : 'danger'}>
+        {kyc?.pending&&'Pending'} {(kyc!.pending==kyc!.isVerified)&& (kyc!.message =='')&&"Rejected / Apply again"}{kyc?.isVerified&&'Verified'}
+        </StatusBadge>
         {kyc!.pending&&  <AiFillHourglass className='h-5 w-5' />} {kyc?.pending==kyc!.isVerified&&<RxCrossCircled className='h-5 w-5 '/>}{kyc?.isVerified&&<AiFillCheckCircle className='h-5 w-5'/>}
       
       </span>

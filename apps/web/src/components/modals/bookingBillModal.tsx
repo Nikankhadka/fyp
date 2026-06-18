@@ -7,11 +7,8 @@ import useBookingStore from "../../store/bookingStore"
 import useModal from "../../store/useModal"
 import {AiFillStar} from 'react-icons/ai'
 const style1='bg-white border-2 border-gray-200 flex  flex-col items-center justify-center rounded-lg shadow-lg md:w-[540px]'
-import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 
 import { useRouter } from "next/navigation"
-import html2canvas from 'html2canvas';
-import { jsPDF } from 'jspdf';
 import dayjs  from "dayjs"
 import Modal from "./modal"
 import Invoice from "../listing/invoiceUI"
@@ -19,6 +16,16 @@ import {createRef, useState} from 'react'
 import { toast } from "react-hot-toast"
 import SafeImage from "../common/SafeImage"
 import { demoPaymentMode, paypalClientId } from "../../configs/constant"
+import dynamic from "next/dynamic"
+
+const PayPalCheckout = dynamic(() => import('./PayPalCheckout'), {
+    ssr: false,
+    loading: () => (
+        <div className="rounded-md border border-neutral-200 bg-neutral-50 p-3 text-center text-sm text-neutral-600">
+            Loading payment provider...
+        </div>
+    ),
+})
 
 
 
@@ -49,6 +56,10 @@ export function BookingModal(){
     
     const handleDownloadPdf = async () => {
         const element = billref.current;
+        const [{ default: html2canvas }, { jsPDF }] = await Promise.all([
+            import('html2canvas'),
+            import('jspdf'),
+        ]);
         const canvas = await html2canvas(element!);
         const data = canvas.toDataURL('image/png');
         console.log('data',data);
@@ -147,37 +158,21 @@ export function BookingModal(){
                   Complete Demo Checkout
                 </button>
                 ) : (
-                <PayPalScriptProvider options={{ "client-id": paypalClientId }}>
-                <PayPalButtons style={{ layout: "horizontal",color:"blue" ,height:40,tagline:false }} createOrder={(data, actions) => {
-                    return actions.order.create({
-                        purchase_units: [
-                            {
-                                amount: {
-                                    value:totalCost.toString(),
-                                },
-                            },
-                        ],
-                    });
-                }}
-                onApprove={(data, actions:any) => {
-                    return actions.order.capture().then(async(details:any) => {
-                        const name = details.payer.name.given_name;
-                        
-                        console.log(details)
-                        // account used for paying the bill 
+                <PayPalCheckout
+                    clientId={paypalClientId}
+                    totalCost={totalCost}
+                    onSuccess={(payerId, paymentId) => {
                         bookingStore.setBillData({
-                            payerId:details.payer.payer_id,
-                            paymentId:details.id
+                            payerId,
+                            paymentId,
                         });
                         
                         toast.success("Payment Successfull");
                         
                         router.refresh();
                        return  bookingModal.onOpen('bill')
-                        
-                    });
-                }} />
-        </PayPalScriptProvider>
+                    }}
+                />
                 )}
 
                 {useDemoCheckout && (
