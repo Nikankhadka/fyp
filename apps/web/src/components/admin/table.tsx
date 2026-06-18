@@ -201,7 +201,7 @@ export default function AdminTable({
       <div className="mb-5 max-w-md">
         <label className="sr-only">Search {pageTitle}</label>
         <div className="relative">
-          <Search className="pointer-events-none absolute left-3 top-3 h-5 w-5 text-neutral-400" />
+          <Search className="pointer-events-none absolute left-3 top-3 h-5 w-5 text-onSurface-variant/50" />
           <Field
             type="search"
             value={search}
@@ -215,7 +215,7 @@ export default function AdminTable({
       <DataTable>
         <Table>
           <TableHead>
-            <TableRow className="hover:bg-neutral-50">
+            <TableRow className="hover:bg-surface-container">
               <TableHeaderCell className="w-20">S.No</TableHeaderCell>
               <TableHeaderCell>{use === 'user' ? 'User' : 'Property'}</TableHeaderCell>
               <TableHeaderCell>Status</TableHeaderCell>
@@ -249,7 +249,7 @@ export default function AdminTable({
                         href={`/Home/rooms/${data._id}`}
                         target="_blank"
                         rel="noreferrer"
-                        className="flex items-center gap-3 font-semibold text-neutral-900 hover:text-mainColor"
+                        className="flex items-center gap-3 font-semibold text-onSurface hover:text-primary"
                       >
                         {propertyImageSrc ? (
                           <Image
@@ -260,7 +260,7 @@ export default function AdminTable({
                             src={propertyImageSrc}
                           />
                         ) : (
-                          <div className="flex h-16 w-20 items-center justify-center rounded-md bg-neutral-100 text-center text-xs text-neutral-500">
+                          <div className="flex h-16 w-20 items-center justify-center rounded-md bg-surface-container text-center text-xs text-onSurface-variant">
                             No image
                           </div>
                         )}
@@ -274,7 +274,7 @@ export default function AdminTable({
                     </TableCell>
                     <TableCell>
                       {hostId ? (
-                        <Link href={`/Home/user/${hostId}`} className="font-semibold underline">
+                        <Link href={`/Home/user/${hostId}`} className="font-semibold text-primary underline">
                           {titleCase(hostName)}
                         </Link>
                       ) : (
@@ -326,7 +326,7 @@ export default function AdminTable({
                         href={`/Home/user/${data._id}`}
                         target="_blank"
                         rel="noreferrer"
-                        className="flex items-center gap-3 font-semibold text-neutral-900 hover:text-mainColor"
+                        className="flex items-center gap-3 font-semibold text-onSurface hover:text-primary"
                       >
                         {profileImageSrc ? (
                           <Image
@@ -337,7 +337,7 @@ export default function AdminTable({
                             src={profileImageSrc}
                           />
                         ) : (
-                          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-neutral-100 text-center text-[10px] text-neutral-500">
+                          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-surface-container text-center text-[10px] text-onSurface-variant">
                             No image
                           </div>
                         )}
@@ -349,7 +349,7 @@ export default function AdminTable({
                         {data.isBanned?.status ? 'Banned' : 'Active'}
                       </StatusBadge>
                     </TableCell>
-                    <TableCell className="max-w-md truncate">
+                    <TableCell className="max-w-md truncate text-onSurface-variant">
                       {data.about || 'No profile summary provided'}
                     </TableCell>
                     <TableCell className="text-right">
