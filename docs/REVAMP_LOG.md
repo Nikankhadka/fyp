@@ -416,6 +416,39 @@ Smoke status:
 
 - Playwright smoke still needs a running web/API stack. Manual follow-up should cover KYC form pre-fill, country/state/city cascade, image preview, phone OTP flow with unconfigured Firebase.
 
+## Session: Property Form Shadcn Migration
+
+Status: implemented after KYC/phone migration.
+
+Goal:
+
+- Migrate the property post/edit form to shared shadcn-style primitives while preserving create/update branching logic, image array handling, and API contracts.
+
+Changes:
+
+- Rebuilt `apps/web/src/components/postproperty.tsx` with:
+  - shared `Field`, `SelectField`, `TextArea`, `Button`, `PageHeader`, and `Surface`
+  - lucide `Plus`, `Trash2`, `Camera` icons instead of `react-icons/ai`
+  - image upload cards use accessible label + sr-only input pattern
+  - removed ad hoc `inputStyle` string, replaced with shared primitives
+  - preserved react-hook-form with `useFieldArray` for images, Cloudinary multi-image upload, country→state→city cascade, create vs update logic, confirmation modal flow, amenities checkboxes
+
+Verification:
+
+- `pnpm lint:web`: passed
+- `pnpm build:web`: passed
+
+Updated first-load JS notes after property form migration:
+
+| Route | After KYC/phone migration | After property form migration |
+| --- | ---: | ---: |
+| `/Home/Account/listings` | about `159 kB` | about `159 kB` |
+| `/Admin/listingRequest` | about `159 kB` | about `159 kB` |
+
+Smoke status:
+
+- Playwright smoke still needs a running web/API stack. Manual follow-up should cover create new property with images, update existing property, amenities selection, country/state/city cascade, validation errors.
+
 ## Remaining Production Hardening
 
 - Add API-side Cloudinary signed upload and deletion endpoints.
