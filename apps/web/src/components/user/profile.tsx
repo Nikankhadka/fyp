@@ -123,7 +123,7 @@ export default function Profile({
     <main className="my-5 space-y-4">
       <Surface className="p-5">
         <PageHeader
-          title={`Hi, I am ${userName || 'MeroGhar user'}`}
+          title={`Hi, I am ${userName || 'LuxeStay user'}`}
           description={`Joined in ${joinedYear}`}
           action={
             <StatusBadge tone={identityVerified ? 'success' : 'warning'}>
