@@ -820,3 +820,72 @@ Smoke status:
 
 - `pnpm seed:demo` could not run because Docker is not running locally: Docker API socket `unix:///Users/nikankhadka/.docker/run/docker.sock` was unavailable.
 - `BASE_URL=http://localhost:3000 node scripts/playwright-smoke.js` was not run because the Docker-backed API/database seed prerequisite is blocked.
+
+## Session: Phase 1 - UI Foundation (Luminous Teal Tokens + Primitives)
+
+Status: implemented.
+
+Goal:
+
+- Replace MeroGhar blue Tailwind tokens with Luminous Teal palette.
+- Update all shadcn-style primitives to use teal color tokens.
+- Add missing UI primitives: Avatar, Sheet, Card, IconButton, Skeleton, Alert, PageContainer.
+- Add Inter font as the system typeface.
+
+Changes:
+
+- Updated `apps/web/tailwind.config.js`:
+  - Replaced `mainColor: #22546D`, `themeColor: #54A2C9`, `hoverColor: #cee4ef` with Luminous Teal tokens.
+  - Added `primary`, `secondary`, `surface`, `onSurface`, `outline`, `inverse`, `error`, `background`, `onBackground` color scales.
+  - Added `fontFamily.sans` with Inter.
+  - Added explicit `borderRadius` scale matching design spec.
+
+- Updated `apps/web/src/components/ui/primitives.tsx`:
+  - `buttonVariants`: teal primary (`bg-primary text-primary-on`), teal secondary (`border-outline-variant`), added `size` variants (`sm`, `default`, `icon`).
+  - `Field`, `SelectField`, `TextArea`: teal focus ring (`focus:border-primary focus:ring-primary/20`), teal placeholder colors.
+  - `StatusBadge`: teal success/info tones (`bg-primary/10`, `bg-primary-fixed/30`).
+  - `EmptyState`: teal surface hierarchy, optional `icon` prop.
+  - `PageHeader`: teal border (`border-outline-variant`), tighter tracking.
+  - `Surface`: teal border, `shadow-sm`, `rounded-lg`.
+  - `PaginationBar`: functional with `currentPage`, `totalPages`, `onPageChange` props.
+  - Added `Alert` component with info/success/warning/danger tones.
+  - Added `Skeleton` component with pulse animation.
+  - Added `Avatar` component with sm/md/lg/xl sizes and fallback initials.
+  - Added `PageContainer` component with max-w-7xl and responsive padding.
+
+- Added `apps/web/src/components/ui/sheet.tsx`:
+  - Sheet overlay with top/bottom/left/right slide variants.
+  - SheetHeader, SheetTitle, SheetDescription, SheetContent, SheetFooter subcomponents.
+  - Keyboard Escape close, body scroll lock, data-state animations.
+
+- Added `apps/web/src/components/ui/card.tsx`:
+  - Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter subcomponents.
+  - Teal surface hierarchy, hover shadow transition.
+
+- Added `apps/web/src/components/ui/icon-button.tsx`:
+  - IconButton with tone (primary/secondary/ghost/danger) and size (sm/md/lg) variants.
+  - Radix Slot composition for asChild support.
+
+- Updated `apps/web/src/styles/globals.css`:
+  - Added Inter font base styles.
+  - Added CSS custom properties for teal theme (light/dark).
+  - Cleaned up comments.
+
+- Updated `apps/web/src/app/layout.tsx`:
+  - Added Inter font from next/font/google.
+  - Applied font variable to html element.
+  - Removed stale comments.
+
+Verification:
+
+- `pnpm lint:web`: passed (1 img warning in Avatar primitive — acceptable for external URLs)
+- `pnpm build:web`: passed
+
+Bundle sizes stable — color token changes are CSS-only with no JS impact.
+
+Known Follow-ups:
+
+- Phase 2: Apply teal tokens to navbar (replace "MeroGhar" branding, update active states).
+- Phase 2: Update Home page to use PageContainer instead of `w-[95%]`.
+- Phase 2: Fix mobile footer routes to match actual app routes.
+- Phase 6: Replace remaining hardcoded old blue references in component files.
