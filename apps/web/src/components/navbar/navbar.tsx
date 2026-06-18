@@ -1,105 +1,162 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
-import InititailModalC from './navmodel'
-import { createRef } from 'react'
-import Link from 'next/link'
+import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import Search from './searchButton'
+import Link from 'next/link'
 import Image from 'next/image'
-
+import { Home, LogIn, Menu, UserPlus } from 'lucide-react'
+import Search from './searchButton'
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from '../ui/dropdown-menu'
+import { Button } from '../ui/primitives'
+import useModal from '../../store/useModal'
+import Api from '../../api/client/axios'
+import { toast } from 'react-hot-toast'
 
 interface NavProps {
   theme: string,
-  authState:boolean,
-  img:string
-  is_Admin:boolean
-
+  authState: boolean,
+  img: string
+  is_Admin: boolean
 }
 
-
-
-
-const NavBar = ({authState,img,is_Admin}: NavProps): JSX.Element => {
-  //get auth state and pass into the initial model
-  const [open, setopen] = useState(false)
-  const menuRef = createRef<HTMLDivElement>()
-  const router=useRouter()
-
+const NavBar = ({ authState, img, is_Admin }: NavProps): JSX.Element => {
+  const router = useRouter()
+  const modal = useModal()
 
   useEffect(() => {
-    const clickHandler = (e: any) => {
-      //if event click is outsise the div ref of the modal clsoe modal
-      if (!menuRef.current?.contains(e.target)) {
-        setopen(false)
-      }
-    }
-    document.addEventListener('mousedown', clickHandler)
+    router.refresh()
+  }, [])
 
-    return () => {
-      document.removeEventListener('mousedown', clickHandler)
-    }
-  })
-
-  useEffect(()=>{
-    //every time nav bar is rendered refresh the page once 
-    router.refresh();
-  },[])
-
-
+  const handleLogout = () => {
+    Api.delete('/auth/v1/logout', { withCredentials: true })
+      .then(() => {
+        toast.success("User logged Out")
+        router.refresh()
+        router.push('/Home')
+      })
+      .catch(() => {
+        toast.success("User logged Out")
+        router.refresh()
+        router.push('/Home')
+      })
+  }
 
   return (
-    <nav className={`fixed z-20 flex h-20 w-full items-center justify-around bg-white p-3 shadow-none dark:bg-slate-700  md:shadow-md`} >
-      {/* logoName */}
-
-      <div className=" hidden items-center gap-1 md:flex">
-        <Link
-          href="/"
-          className="block items-center gap-2 md:flex "
-        >
-          <Image width={40} height={40} src="/airbnb.png" alt="logo" className="block " />
+    <nav className="fixed inset-x-0 top-0 z-20 border-b border-neutral-200 bg-white dark:bg-slate-700">
+      <div className="mx-auto flex h-20 w-full max-w-7xl items-center gap-3 px-3 sm:px-4 lg:px-6">
+        <Link href="/Home" className="flex shrink-0 items-center gap-2">
+          <Image width={40} height={40} src="/airbnb.png" alt="MeroGhar logo" />
+          <span className="hidden text-lg font-semibold text-mainColor drop-shadow-xl dark:text-themeColor sm:inline">
+            MeroGhar
+          </span>
         </Link>
 
-        <Link
-          href="/"
-          className="block text-lg font-semibold text-mainColor drop-shadow-xl dark:text-themeColor "
-        >
-          MeroGhar
-        </Link>
-      </div>
+        <div className="min-w-0 flex-1 md:flex md:justify-center">
+          <div className="w-full md:max-w-xl">
+            <Search />
+          </div>
+        </div>
 
-      {/* search Bar */}
-      <div className=" w-[95%] my-2 md:w-[35%] ">
-       <Search />
-      </div>
+        <div className="flex shrink-0 items-center gap-2">
+          {!authState && (
+            <div className="hidden items-center gap-2 md:flex">
+              <Button
+                type="button"
+                tone="ghost"
+                className="gap-2 px-3"
+                onClick={() => modal.onOpen('login')}
+              >
+                <LogIn className="h-4 w-4" aria-hidden="true" />
+                Log in
+              </Button>
+              <Button
+                type="button"
+                className="gap-2 px-3"
+                onClick={() => modal.onOpen('signup')}
+              >
+                <UserPlus className="h-4 w-4" aria-hidden="true" />
+                Sign up
+              </Button>
+            </div>
+          )}
 
-      {/* post and Profile */}
-      <div className="hidden items-center gap-2 md:flex">
-        {/* <ToggleButton theme={theme} /> */}
-        <Link
-          href="/Account/listings"
-          className=" block rounded-md border-2  font-semibold  border-gray-200 p-2 px-3  text-gray-700 hover:border-themeColor dark:text-gray-300 md:text-sm"
-        >
-          Post Room
-        </Link>
+          {authState && !is_Admin && (
+            <Button asChild tone="secondary" className="hidden gap-2 px-3 md:inline-flex">
+              <Link href="/Home/Account/listings">
+                <Home className="h-4 w-4" aria-hidden="true" />
+                Post Room
+              </Link>
+            </Button>
+          )}
 
-        <div ref={menuRef}>
-          <button
-            className="flex items-center gap-1  rounded-lg border-2 border-gray-200  px-2 py-1 hover:border-themeColor dark:bg-slate-300 "
-            onClick={(e) => setopen(!open)}
-          >
-            <Image width={20} height={20} src="/menu.png" alt="user" />
-            <Image width={32} height={32} src={img==''? '/user.png':img} alt="user" className="h-8 w-8 rounded-full " />
-          </button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button tone="secondary" className="gap-2 border-gray-200 px-2 py-1">
+                <Menu className="h-5 w-5" aria-hidden="true" />
+                <Image
+                  width={32}
+                  height={32}
+                  src={img === '' ? '/user.png' : img}
+                  alt="user"
+                  className="h-8 w-8 rounded-full"
+                />
+              </Button>
+            </DropdownMenuTrigger>
 
-          {open && <InititailModalC authState={authState} ref={menuRef} is_Admin={is_Admin} />}
-          
-          
-          {/* <LoginSignup login={true} modal={true} /> */}
-            
+            <DropdownMenuContent align="end" className="w-60">
+              {!authState ? (
+                <>
+                  <DropdownMenuItem onClick={() => modal.onOpen('login')} className="cursor-pointer font-semibold">
+                    Log in
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => modal.onOpen('signup')} className="cursor-pointer">
+                    Sign up
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => modal.onOpen('login')} className="cursor-pointer">
+                    Post Property
+                  </DropdownMenuItem>
+                </>
+              ) : (
+                <>
+                  {!is_Admin && (
+                    <>
+                      <DropdownMenuItem asChild>
+                        <Link href="/Home/Account/trips" className="font-semibold">Trips</Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link href="/Home/Account/favourites" className="font-semibold">WishLists</Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link href="/Home/Account/reservations" className="font-semibold">Reservations</Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem asChild>
+                        <Link href="/Home/Account/listings">Manage Listings</Link>
+                      </DropdownMenuItem>
+                    </>
+                  )}
+                  <DropdownMenuItem asChild>
+                    <Link href={is_Admin ? "/Admin" : "/Home/Account"} className={is_Admin ? 'font-semibold' : ''}>
+                      {is_Admin ? "Dashboard" : "Account"}
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
+                    Log Out
+                  </DropdownMenuItem>
+                </>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
-      
     </nav>
   )
 }

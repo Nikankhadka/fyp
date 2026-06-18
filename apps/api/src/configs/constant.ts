@@ -23,3 +23,15 @@ export const corsOrigins = (
   .split(",")
   .map((origin) => origin.trim())
   .filter(Boolean)
+
+export const cloudinaryCloudName =
+  process.env.CLOUDINARY_CLOUD_NAME || ""
+
+export const cloudinaryApiKey =
+  process.env.CLOUDINARY_API_KEY || ""
+
+export const paypalClientId =
+  process.env.PAYPAL_CLIENT_ID || ""
+
+export const paypalApiUrl =
+  process.env.PAYPAL_API_URL || "https://api-m.sandbox.paypal.com"

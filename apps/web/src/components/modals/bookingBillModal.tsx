@@ -15,6 +15,7 @@ import SafeImage from "../common/SafeImage"
 import { demoPaymentMode, paypalClientId } from "../../configs/constant"
 import dynamic from "next/dynamic"
 import { Button } from "../ui/primitives"
+import { localServer } from "../../configs/constant"
 
 const PayPalCheckout = dynamic(() => import('./PayPalCheckout'), {
     ssr: false,
@@ -31,6 +32,7 @@ const PayPalCheckout = dynamic(() => import('./PayPalCheckout'), {
 export function BookingModal(){
     const bookingModal=useModal()
     const billref=createRef<HTMLDivElement>()
+    const [serverVerifiedBooking, setServerVerifiedBooking] = useState(false)
   
     const bookingStore=useBookingStore()
     const router=useRouter();
@@ -79,12 +81,75 @@ export function BookingModal(){
       };
 
     const handleDemoCheckout = () => {
+        setServerVerifiedBooking(false)
         bookingStore.setBillData({
             payerId: 'demo-payer',
             paymentId: `demo-${Date.now()}`
         });
         toast.success("Demo payment completed successfully");
         bookingModal.onOpen('bill')
+    };
+
+    const createPaymentBill = async (paymentId: string) => {
+        const { jsPDF } = await import('jspdf')
+        const pdf = new jsPDF()
+        const hostName = typeof userId === 'string' ? userId : userId?.userName || 'Host'
+
+        pdf.setFontSize(18)
+        pdf.text('MeroGhar Booking Invoice', 14, 20)
+        pdf.setFontSize(11)
+        pdf.text(`Invoice #: ${paymentId}`, 14, 32)
+        pdf.text(`Property: ${name || 'Property'}`, 14, 42)
+        pdf.text(`Host: ${hostName}`, 14, 52)
+        pdf.text(`Start date: ${dayjs(startDate).format('MM/DD/YYYY')}`, 14, 62)
+        pdf.text(`End date: ${dayjs(endDate).format('MM/DD/YYYY')}`, 14, 72)
+        pdf.text(`Guests: ${bookingStore.bookingInfo.guest}`, 14, 82)
+        pdf.text(`Nights: ${totalDays}`, 14, 92)
+        pdf.text(`Base amount: $${basePrice.toFixed(2)}`, 14, 106)
+        pdf.text(`Taxes/Charge: $${taxPrice.toFixed(2)}`, 14, 116)
+        pdf.text(`Total: $${totalCost.toFixed(2)}`, 14, 126)
+
+        return pdf.output('dataurlstring')
+    }
+
+    const handlePayPalSuccess = async (orderId: string) => {
+        try {
+            const bill = await createPaymentBill(orderId)
+            const response = await fetch(`${localServer}/payment/v1/verify-paypal/${_id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+                body: JSON.stringify({
+                    orderId,
+                    startDate,
+                    endDate,
+                    guest: bookingStore.bookingInfo.guest,
+                    bill,
+                }),
+            })
+
+            const result = await response.json()
+
+            if (!result.success) {
+                toast.error(result.error || 'Payment verification failed')
+                return
+            }
+
+            bookingStore.setBillData({
+                payerId: result.data.payerId,
+                paymentId: result.data.paymentId,
+            })
+
+            setServerVerifiedBooking(true)
+            toast.success("Payment verified and booking confirmed")
+            router.refresh()
+            bookingModal.onOpen('bill')
+        } catch (error) {
+            console.error('Payment verification failed:', error)
+            toast.error('Payment verification failed. Please try again.')
+        }
     };
     
 
@@ -161,16 +226,8 @@ export function BookingModal(){
                 <PayPalCheckout
                     clientId={paypalClientId}
                     totalCost={totalCost}
-                    onSuccess={(payerId, paymentId) => {
-                        bookingStore.setBillData({
-                            payerId,
-                            paymentId,
-                        });
-                        
-                        toast.success("Payment Successfull");
-                        
-                        router.refresh();
-                       return  bookingModal.onOpen('bill')
+                    onSuccess={(_payerId, paymentId) => {
+                        handlePayPalSuccess(paymentId)
                     }}
                 />
                 )}
@@ -198,7 +255,7 @@ export function BookingModal(){
             <main className="w-full rounded-lg border border-neutral-200 bg-white shadow-lg md:w-[540px]">
                         <div className="w-full">
                 <div ref={billref}  >
-                <Invoice payerId={bookingStore.billData.payerId} paymentId={bookingStore.billData.paymentId} rate={rate!} nights={totalDays} tennantId="Random1" propertyName={name!} hostId={ typeof userId === 'string' ? userId : userId!.userName!} initialPrice={basePrice} taxAndServiceChargePrice={taxPrice} totalPrice={totalCost} />
+                <Invoice payerId={bookingStore.billData.payerId} paymentId={bookingStore.billData.paymentId} rate={rate!} nights={totalDays} tennantId="Random1" propertyName={name!} hostId={ typeof userId === 'string' ? userId : userId!.userName!} initialPrice={basePrice} taxAndServiceChargePrice={taxPrice} totalPrice={totalCost} createBookingOnMount={!serverVerifiedBooking} />
                 </div>
             
                 <div className="flex w-[95%] items-center justify-between p-2 ml-2">

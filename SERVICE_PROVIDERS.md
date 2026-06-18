@@ -14,8 +14,8 @@ No secrets should be committed to this repository. If a previous account or cred
 | Google OAuth | Social login | Keep when credentials exist | `googleClientId`, `googleClientSecret` |
 | Facebook OAuth | Optional social login | Optional; hide or disable if unused | `facebookClientId`, `facebookClientSecret` |
 | Firebase Auth | Phone OTP verification in account settings only | Keep optional | `NEXT_PUBLIC_FIREBASE_*` |
-| Cloudinary | Profile, KYC, and listing image upload/hosting | Keep; harden later | `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME`, `NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET` |
-| PayPal | Optional real checkout button | Demo mode by default | `NEXT_PUBLIC_PAYPAL_CLIENT_ID`, `NEXT_PUBLIC_DEMO_PAYMENT_MODE` |
+| Cloudinary | Profile, KYC, and listing image upload/hosting | Keep with server-signed uploads | `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`, `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` |
+| PayPal | Optional real checkout button | Demo mode by default; verify real payments server-side | `NEXT_PUBLIC_PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET`, `PAYPAL_API_URL`, `NEXT_PUBLIC_DEMO_PAYMENT_MODE` |
 | Zoho SMTP | Transactional email sending | Keep unless replacing with Postmark/Resend | `user`, `pass`, `mailSecret` |
 | Vercel | Frontend deployment target | Keep suitable | `WEB_APP_URL`, `NEXT_PUBLIC_API_BASE_URL` |
 | Render | API deployment target | Keep suitable | `API_BASE_URL`, `CORS_ORIGINS` |
@@ -82,15 +82,13 @@ Cloudinary stores user-uploaded images:
 - profile images
 - KYC document images
 
-The current frontend upload path uses an unsigned upload preset. That is acceptable for a controlled demo if the preset is limited, but production should use server-signed uploads.
+The current upload path uses server-signed uploads. The browser requests a signed upload payload from the API, uploads to Cloudinary with that signature, and stores only `imgId` and `imgUrl` in MongoDB. Deletion also goes through the API so Cloudinary credentials remain server-side.
 
 Recommended hardening:
 
-1. Add an API endpoint that signs Cloudinary uploads.
-2. Move privileged deletion to the API.
-3. Store only `imgId` and `imgUrl` in MongoDB.
-4. Validate file type, size, and count before upload.
-5. Keep local seed images for demo fixtures.
+1. Validate file type, size, and count before upload.
+2. Keep local seed images for demo fixtures unless `SEED_UPLOAD_TO_CLOUDINARY=true`.
+3. Add API integration tests for signature and deletion failure modes.
 
 ### PayPal
 
@@ -100,7 +98,7 @@ PayPal can render a checkout button when `NEXT_PUBLIC_PAYPAL_CLIENT_ID` is set a
 NEXT_PUBLIC_DEMO_PAYMENT_MODE=true
 ```
 
-Important risk: the current real-payment path is client-trusting. Real production checkout must verify payment server-side before finalizing booking/payment records.
+Real-payment checkout is verified server-side before booking/payment records are created. The API loads the property, recomputes the booking total from stay dates and property rate, verifies the PayPal order status and amount, and only then creates records.
 
 Recommended alternative: Stripe is usually a better default for a marketplace, but replacing PayPal is outside the current revamp scope.
 
@@ -138,6 +136,14 @@ facebookClientSecret=replace-me
 user=replace-me
 pass=replace-me
 mailSecret=replace-me
+SEED_ASSET_ROOT=../../apps/web/public
+SEED_UPLOAD_TO_CLOUDINARY=false
+CLOUDINARY_CLOUD_NAME=replace-me
+CLOUDINARY_API_KEY=replace-me
+CLOUDINARY_API_SECRET=replace-me
+PAYPAL_CLIENT_ID=replace-me
+PAYPAL_CLIENT_SECRET=replace-me
+PAYPAL_API_URL=https://api-m.sandbox.paypal.com
 ```
 
 Web:
@@ -148,7 +154,6 @@ API_BASE_URL=http://localhost:2900
 NEXT_PUBLIC_DEMO_PAYMENT_MODE=true
 NEXT_PUBLIC_PAYPAL_CLIENT_ID=
 NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=
-NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET=
 NEXT_PUBLIC_FIREBASE_API_KEY=
 NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
 NEXT_PUBLIC_FIREBASE_PROJECT_ID=
@@ -165,15 +170,15 @@ NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=
 | Database | Keep MongoDB for the portfolio project |
 | Auth | Keep Passport + custom JWT cookies, make disabled social providers graceful |
 | Phone OTP | Keep Firebase optional |
-| Media | Keep Cloudinary, add server-signed upload later |
-| Payments | Keep demo checkout; document real-payment server verification gap |
+| Media | Keep Cloudinary with server-signed uploads |
+| Payments | Keep demo checkout; verify real PayPal checkout server-side |
 | Email | Keep Zoho for now; consider Postmark or Resend later |
 | Hosting | Keep Vercel/Render viable, remove hardcoded URLs |
 
 ## Security Notes
 
 - Rotate any real-looking credentials that were ever committed.
-- Do not rely on public Cloudinary upload presets for production without restrictions.
-- Do not trust client payment capture for real bookings.
+- Keep Cloudinary API secret server-side only.
+- Do not trust client payment totals for real bookings.
 - Keep auth cookies HTTP-only.
 - Use `secure: true` and `sameSite: none` for production cross-site deployment cookies.

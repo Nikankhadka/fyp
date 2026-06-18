@@ -22,7 +22,7 @@ export default function PayPalCheckout({
             purchase_units: [
               {
                 amount: {
-                  value: totalCost.toString(),
+                  value: totalCost.toFixed(2),
                 },
               },
             ],

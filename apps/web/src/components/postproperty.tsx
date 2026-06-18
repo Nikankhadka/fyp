@@ -114,13 +114,23 @@ export default function PostPropertyForm({
       //there might be multiple image upload so
       const imageData = new FormData()
       //since there might be multiple images
-      for (const image of formdata.images) {
-        const uploadedImg = await uploadImage(image[0])
+      try {
+        for (const image of formdata.images) {
+          if (!(image?.[0] instanceof File)) {
+            throw new Error('Choose an image before posting the property')
+          }
 
-        await images.push({
-          imgId: uploadedImg.imgId,
-          imgUrl: uploadedImg.imgUrl,
-        })
+          const uploadedImg = await uploadImage(image[0])
+
+          await images.push({
+            imgId: uploadedImg.imgId,
+            imgUrl: uploadedImg.imgUrl,
+          })
+        }
+      } catch (e: any) {
+        toast.error(e?.message || 'Property image upload failed')
+        modal.setLoading(false)
+        return modal.onClose()
       }
 
       let RequestBody: PropertyForm={
@@ -171,18 +181,19 @@ export default function PostPropertyForm({
         formdata
       let images: Images[] = []
       //since there might be multiple images
-      for (const image of formdata.images) {
-        try {
-          //if its able to crrate url itsfile if its not then obj
-          const imgurl = URL.createObjectURL(image[0])
-          console.log('uploaded img')
-          const { imgId, imgUrl } = await uploadImage(image[0])
-          images.push({ imgId: imgId, imgUrl: imgUrl })
-        } catch (e) {
-          console.log(e)
-          console.log('object')
-          images.push(image)
+      try {
+        for (const image of formdata.images) {
+          if (image?.[0] instanceof File) {
+            const { imgId, imgUrl } = await uploadImage(image[0])
+            images.push({ imgId: imgId, imgUrl: imgUrl })
+          } else {
+            images.push(image)
+          }
         }
+      } catch (e: any) {
+        toast.error(e?.message || 'Property image upload failed')
+        modal.setLoading(false)
+        return modal.onClose()
       }
 
       let RequestBody: PropertyForm = {

@@ -105,10 +105,10 @@ export function EditBasic({ userName, about, img }: Prop) {
         confirmModal.setLoading(false)
         confirmModal.onClose()
         toast.error('Profile upload failed')
-      } catch (e) {
+      } catch (e: any) {
         confirmModal.setLoading(false)
         confirmModal.onClose()
-        return toast.error('Profile upload failed')
+        return toast.error(e?.message || 'Profile upload failed')
       }
     }
 

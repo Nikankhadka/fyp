@@ -97,6 +97,7 @@ useEffect(()=>{
 
     const submitAction=async()=>{
 
+      try {
       confirmModal.setLoading(true)
       let kycdata: KycData = {
         kycInfo: {
@@ -147,6 +148,11 @@ useEffect(()=>{
       confirmModal.onClose()
       setopenKyc('close')
       return router.refresh();
+      } catch (e: any) {
+        confirmModal.setLoading(false)
+        confirmModal.onClose()
+        return toast.error(e?.message || 'Failed to submit KYC')
+      }
       
     }
 

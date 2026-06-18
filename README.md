@@ -131,12 +131,22 @@ Demo seed data uses local public images:
 - Profiles and KYC: `/seed/profiles/...`
 - Properties: `/seed/properties/...`
 
-User uploads currently use Cloudinary unsigned uploads from the web app with:
+User uploads use server-signed Cloudinary uploads. The web app requests an upload
+signature from the API, uploads the image to Cloudinary with that signature, and
+stores the returned `imgId` and `imgUrl`.
+
+API credentials:
+
+- `CLOUDINARY_CLOUD_NAME`
+- `CLOUDINARY_API_KEY`
+- `CLOUDINARY_API_SECRET`
+
+Web public configuration:
 
 - `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME`
-- `NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET`
 
-Production hardening should move upload signing and deletion to the API.
+Cloudinary deletion is also routed through the API so public IDs with nested
+folder paths are handled server-side.
 
 ## Payment Flow
 
@@ -150,11 +160,36 @@ This lets bookings complete without contacting a real payment provider. Real pay
 
 ## Getting Started
 
+### Quick Start for Local Testing
+
+```bash
+# 1. Install dependencies
+pnpm install:api
+pnpm install:web
+
+# 2. Seed the database (uses local seed images by default, creates demo data)
+pnpm seed:local
+
+# 3. Start API (terminal 1)
+pnpm dev:api
+
+# 4. Start Web (terminal 2)
+pnpm dev:web
+
+# 5. Open http://localhost:3000
+```
+
+Default URLs:
+- Web: `http://localhost:3000`
+- API: `http://localhost:2900`
+- Health: `http://localhost:2900/health`
+- Swagger: `http://localhost:2900/apiDocs`
+
 ### Prerequisites
 
 - Node.js `18.17+`
 - `pnpm` `10+`
-- Docker Desktop or Docker Engine + Docker Compose
+- Docker Desktop or Docker Engine + Docker Compose (optional)
 
 ### Install
 
@@ -193,6 +228,14 @@ facebookClientSecret=replace-me
 user=replace-me
 pass=replace-me
 mailSecret=replace-me
+SEED_ASSET_ROOT=../../apps/web/public
+SEED_UPLOAD_TO_CLOUDINARY=false
+CLOUDINARY_CLOUD_NAME=replace-me
+CLOUDINARY_API_KEY=replace-me
+CLOUDINARY_API_SECRET=replace-me
+PAYPAL_CLIENT_ID=replace-me
+PAYPAL_CLIENT_SECRET=replace-me
+PAYPAL_API_URL=https://api-m.sandbox.paypal.com
 ```
 
 Important web variables:
@@ -203,7 +246,6 @@ API_BASE_URL=http://localhost:2900
 NEXT_PUBLIC_DEMO_PAYMENT_MODE=true
 NEXT_PUBLIC_PAYPAL_CLIENT_ID=
 NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=
-NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET=
 NEXT_PUBLIC_FIREBASE_API_KEY=
 NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
 NEXT_PUBLIC_FIREBASE_PROJECT_ID=
@@ -325,9 +367,16 @@ Seeded images are local public assets served by the web app. If a required seed 
 ### Cloudinary
 
 1. Create a Cloudinary account/cloud.
-2. Create an unsigned upload preset for current demo uploads.
-3. Fill `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` and `NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET`.
-4. For production, implement server-signed uploads before accepting real user media.
+2. Fill API-side `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, and `CLOUDINARY_API_SECRET`.
+3. Fill web-side `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME`.
+4. Keep `SEED_UPLOAD_TO_CLOUDINARY=false` for local demo fixtures unless you intentionally want seed data uploaded to Cloudinary.
+
+### PayPal
+
+1. Keep `NEXT_PUBLIC_DEMO_PAYMENT_MODE=true` for portfolio demos.
+2. For real sandbox checkout, set web-side `NEXT_PUBLIC_PAYPAL_CLIENT_ID`.
+3. Set API-side `PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET`, and `PAYPAL_API_URL`.
+4. The API verifies the PayPal order and recomputes the booking total from property rate and stay dates before creating booking records.
 
 ## Testing
 

@@ -1,6 +1,7 @@
 import * as dotenv from "dotenv";
 dotenv.config();
 
+import crypto from "crypto";
 import fs from "fs";
 import path from "path";
 import mongoose, { Types } from "mongoose";
@@ -20,8 +21,102 @@ const seedAssetRoot =
   process.env.SEED_ASSET_ROOT ||
   path.resolve(__dirname, "../../../web/public");
 const shouldValidateSeedAssets = process.env.SEED_VALIDATE_ASSETS !== "false";
+const shouldUploadToCloudinary = process.env.SEED_UPLOAD_TO_CLOUDINARY === "true";
+
+const cloudinaryCloudName = process.env.CLOUDINARY_CLOUD_NAME || "";
+const cloudinaryApiKey = process.env.CLOUDINARY_API_KEY || "";
+const cloudinaryApiSecret = process.env.CLOUDINARY_API_SECRET || "";
+const hasCloudinaryCredentials = Boolean(
+  cloudinaryCloudName &&
+  cloudinaryApiKey &&
+  cloudinaryApiSecret &&
+  cloudinaryCloudName !== "replace-me" &&
+  cloudinaryApiKey !== "replace-me" &&
+  cloudinaryApiSecret !== "replace-me"
+);
 
 const oid = (value: string) => new Types.ObjectId(value);
+
+interface CloudinaryUploadResult {
+  public_id: string;
+  secure_url: string;
+}
+
+async function uploadToCloudinary(
+  filePath: string,
+  folder: string
+): Promise<CloudinaryUploadResult | null> {
+  if (!hasCloudinaryCredentials) {
+    return null;
+  }
+
+  try {
+    const timestamp = Math.round(new Date().getTime() / 1000);
+    const paramsToSign = `folder=${folder}&timestamp=${timestamp}`;
+    const signature = crypto
+      .createHash("sha1")
+      .update(paramsToSign + cloudinaryApiSecret, "utf-8")
+      .digest("hex");
+
+    const formData = new FormData();
+    const fileBuffer = fs.readFileSync(filePath);
+    const blob = new Blob([fileBuffer]);
+    formData.append("file", blob, path.basename(filePath));
+    formData.append("api_key", cloudinaryApiKey);
+    formData.append("timestamp", timestamp.toString());
+    formData.append("signature", signature);
+    formData.append("folder", folder);
+
+    const response = await fetch(
+      `https://api.cloudinary.com/v1_1/${cloudinaryCloudName}/image/upload`,
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+
+    const result = await response.json();
+
+    if (result.error) {
+      console.warn(`Cloudinary upload failed for ${filePath}: ${result.error.message}`);
+      return null;
+    }
+
+    return {
+      public_id: result.public_id,
+      secure_url: result.secure_url,
+    };
+  } catch (error) {
+    console.warn(`Cloudinary upload failed for ${filePath}:`, error);
+    return null;
+  }
+}
+
+async function seedImage(
+  fileName: string,
+  folder: "profiles" | "properties",
+  imgId: string
+): Promise<{ imgId: string; imgUrl: string }> {
+  const localPath = `/seed/${folder}/${fileName}`;
+  const fullPath = path.join(seedAssetRoot, localPath.replace(/^\//, ""));
+
+  if (shouldUploadToCloudinary && fs.existsSync(fullPath)) {
+    const cloudinaryFolder = `meroghar-seed/${folder}`;
+    const uploadResult = await uploadToCloudinary(fullPath, cloudinaryFolder);
+
+    if (uploadResult) {
+      return {
+        imgId: uploadResult.public_id,
+        imgUrl: uploadResult.secure_url,
+      };
+    }
+  }
+
+  return {
+    imgId,
+    imgUrl: localPath,
+  };
+}
 
 const ids = {
   admin: oid("660100000000000000000001"),
@@ -62,26 +157,13 @@ const daysFromNow = (days: number) => {
   return date;
 };
 
-const image = (path: string, imgId: string) => ({
-  imgId,
-  imgUrl: path,
-});
-
-const seedProfileImage = (fileName: string) => `/seed/profiles/${fileName}`;
-
-const seedPropertyImage = (fileName: string) => `/seed/properties/${fileName}`;
-
-const profileImage = (fileName: string, imgId: string) => image(seedProfileImage(fileName), imgId);
-
-const propertyImage = (fileName: string, imgId: string) => image(seedPropertyImage(fileName), imgId);
-
 const requiredSeedAssetPaths = () => {
   const profileAssets = userSeedConfig.flatMap((user) => [
-    seedProfileImage(user.profileFile),
-    seedProfileImage(user.profileFile),
+    `/seed/profiles/${user.profileFile}`,
+    `/seed/profiles/${user.profileFile}`,
   ]);
   const propertyAssets = propertySeedConfig.flatMap((property) =>
-    property.imageFiles.map(seedPropertyImage),
+    property.imageFiles.map((fileName) => `/seed/properties/${fileName}`),
   );
 
   return Array.from(new Set([...profileAssets, ...propertyAssets]));
@@ -878,92 +960,105 @@ const seededViewedProperties: Record<string, string[]> = {
 const buildUserDocs = async () => {
   const now = new Date();
 
-  return Promise.all(userSeedConfig.map(async (user) => ({
-    _id: user._id,
-    userId: user.userId,
-    userName: user.userName,
-    password: await hashPassword(user.password),
-    profileImg: profileImage(user.profileFile, `${user.userId}-profile`),
-    about: user.about,
-    email: {
-      mail: user.email,
-      isVerified: true,
-    },
-    token: "",
-    refreshToken: [],
-    is_Admin: user.is_Admin,
-    kycInfo: {
-      firstName: user.firstName,
-      lastName: user.lastName,
-      gender: user.gender,
-      email: user.email,
-      phoneNumber: user.phoneNumber,
-      country: user.country,
-      state: user.state,
-      city: user.city,
-      img: profileImage(user.profileFile, `${user.userId}-kyc`),
-    },
-    kyc: {
-      isVerified: user.kycVerified,
-      pending: user.kycPending,
-      message: user.kycMessage,
-      approvedBy: user.kycVerified ? ids.admin : null,
-    },
-    listingCount: user.listingCount,
-    avgRating: user.avgRating,
-    recievedReviewcount: user.recievedReviewcount,
-    wishList: [],
-    isBanned: {
-      status: false,
-      message: "",
-    },
-    viewedProperty: [],
-    createdAt: user.createdAt,
-    updatedAt: now,
-  })));
+  return Promise.all(userSeedConfig.map(async (user) => {
+    const profileImg = await seedImage(user.profileFile, "profiles", `${user.userId}-profile`);
+    const kycImg = await seedImage(user.profileFile, "profiles", `${user.userId}-kyc`);
+
+    return {
+      _id: user._id,
+      userId: user.userId,
+      userName: user.userName,
+      password: await hashPassword(user.password),
+      profileImg,
+      about: user.about,
+      email: {
+        mail: user.email,
+        isVerified: true,
+      },
+      token: "",
+      refreshToken: [],
+      is_Admin: user.is_Admin,
+      kycInfo: {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        gender: user.gender,
+        email: user.email,
+        phoneNumber: user.phoneNumber,
+        country: user.country,
+        state: user.state,
+        city: user.city,
+        img: kycImg,
+      },
+      kyc: {
+        isVerified: user.kycVerified,
+        pending: user.kycPending,
+        message: user.kycMessage,
+        approvedBy: user.kycVerified ? ids.admin : null,
+      },
+      listingCount: user.listingCount,
+      avgRating: user.avgRating,
+      recievedReviewcount: user.recievedReviewcount,
+      wishList: [],
+      isBanned: {
+        status: false,
+        message: "",
+      },
+      viewedProperty: [],
+      createdAt: user.createdAt,
+      updatedAt: now,
+    };
+  }));
 };
 
-const buildPropertyDocs = (
+const buildPropertyDocs = async (
   userIdMap: Map<string, Types.ObjectId>,
   approvedBy: Types.ObjectId,
 ) => {
   const now = new Date();
 
-  return propertySeedConfig.map((property) => ({
-    _id: property._id,
-    userId: userIdMap.get(property.hostUserId)!,
-    name: property.name,
-    url: property.url,
-    country: property.country,
-    state: property.state,
-    city: property.city,
-    discription: property.discription,
-    propertyType: property.propertyType,
-    rules: property.rules,
-    amenities: property.amenities,
-    rate: property.rate,
-    images: property.imageFiles.map((fileName, index) =>
-      propertyImage(fileName, `${property.url}-${index + 1}`),
-    ),
-    tennants: property.tenantUserIds.map((userId) => userIdMap.get(userId)!),
-    ratingCount: property.ratingCount,
-    viewCount: property.viewCount,
-    avgRating: property.avgRating,
-    isBanned: {
-      status: false,
-      message: "",
-    },
-    isBooked: property.isBooked,
-    isVerified: {
-      status: property.isVerified.status,
-      pending: property.isVerified.pending,
-      message: property.isVerified.message,
-      approvedBy:
-        property.isVerified.status || !property.isVerified.pending ? approvedBy : null,
-    },
-    createdAt: property.createdAt,
-    updatedAt: now,
-  }));
+  const propertyPromises = propertySeedConfig.map(async (property) => {
+    const images = await Promise.all(
+      property.imageFiles.map(async (fileName, index) =>
+        seedImage(fileName, "properties", `${property.url}-${index + 1}`)
+      )
+    );
+
+    return {
+      _id: property._id,
+      userId: userIdMap.get(property.hostUserId)!,
+      name: property.name,
+      url: property.url,
+      country: property.country,
+      state: property.state,
+      city: property.city,
+      discription: property.discription,
+      propertyType: property.propertyType,
+      rules: property.rules,
+      amenities: property.amenities,
+      rate: property.rate,
+      images,
+      tennants: property.tenantUserIds.map((userId) => userIdMap.get(userId)!),
+      ratingCount: property.ratingCount,
+      viewCount: property.viewCount,
+      avgRating: property.avgRating,
+      isBanned: {
+        status: false,
+        message: "",
+      },
+      isBooked: property.isBooked,
+      isVerified: {
+        status: property.isVerified.status,
+        pending: property.isVerified.pending,
+        message: property.isVerified.message,
+        approvedBy:
+          property.isVerified.status || !property.isVerified.pending ? approvedBy : null,
+      },
+      createdAt: property.createdAt,
+      updatedAt: now,
+    };
+  });
+
+  return Promise.all(propertyPromises);
 };
 
 const buildBookingDocs = (
@@ -1276,7 +1371,7 @@ async function clearAndInsertDataIntoDb() {
   });
   const userIdMap = new Map(seededUsers.map((user) => [user.userId, user._id]));
 
-  const propertyDocs = buildPropertyDocs(userIdMap, userIdMap.get("admin")!);
+  const propertyDocs = await buildPropertyDocs(userIdMap, userIdMap.get("admin")!);
   await propertyModel.insertMany(propertyDocs);
 
   const seededProperties = await propertyModel.find({
@@ -1315,6 +1410,7 @@ async function main() {
   console.log(`Connecting to ${mongoUri}`);
   console.log(`Seed mode: ${seedMode}`);
   console.log(`Seed asset root: ${seedAssetRoot}`);
+  console.log(`Cloudinary uploads: ${shouldUploadToCloudinary && hasCloudinaryCredentials ? "enabled" : "disabled (using local paths)"}`);
   validateSeedAssets();
 
   await mongoose.connect(mongoUri);
@@ -1335,7 +1431,7 @@ async function main() {
     });
     const userIdMap = new Map(seededUsers.map((user) => [user.userId, user._id]));
 
-    const propertyDocs = buildPropertyDocs(userIdMap, userIdMap.get("admin")!);
+    const propertyDocs = await buildPropertyDocs(userIdMap, userIdMap.get("admin")!);
     await upsertSeedDocs(propertyModel, propertyDocs, (doc) => ({ url: doc.url }));
 
     const seededProperties = await propertyModel.find({

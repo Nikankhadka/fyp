@@ -570,9 +570,227 @@ Updated first-load JS notes after final cleanup:
 | `/Home/Account/reservations` | about `158 kB` | about `142 kB` |
 | `/Home/Account/trips` | about `158 kB` | about `142 kB` |
 
+## Session: Remaining UI Components Shadcn Migration
+
+Status: implemented after final cleanup.
+
+Goal:
+
+- Complete the shadcn migration for remaining ad-hoc UI components: admin KYC page, navbar, nav dropdown, reject modal, invoice, and footer icons.
+
+Changes:
+
+- Rebuilt `apps/web/src/app/Admin/kycRequest/page.tsx` with:
+  - `PageHeader` and `Button` primitives instead of ad-hoc heading and Link buttons
+  - lucide `ChevronLeft`, `ChevronRight` instead of `react-icons/ai`
+  - removed commented-out search form code
+  - consistent grid gap and pagination layout
+
+- Rebuilt `apps/web/src/components/navbar/navbar.tsx` with:
+  - `DropdownMenu` primitive from `ui/dropdown-menu.tsx` replacing manual ref-based click handler
+  - `Button` primitive for profile trigger with lucide `Menu` icon
+  - `DropdownMenuItem` for all menu entries with proper `asChild` Link composition
+  - preserved auth state branching, admin/guest menu differences, and logout flow
+
+- Removed `apps/web/src/components/navbar/navmodel.tsx` usage:
+  - functionality absorbed into navbar using `DropdownMenuContent`
+  - eliminated ad-hoc `btnstyle` string and manual positioning
+
+- Cleaned `apps/web/src/components/modals/rejectReportModal.tsx`:
+  - removed `ErrorText` dependency from `random.tsx`
+  - inline error message pattern with consistent `text-sm text-red-700`
+  - proper `htmlFor`/`id` label association for `TextArea`
+  - removed unused `control` and `watch` from `useForm`
+
+- Rebuilt `apps/web/src/components/listing/invoiceUI.tsx` with:
+  - `Surface` wrapper for consistent card styling
+  - valid `<thead>`/`<tbody>` table markup with proper `p-2` cell padding
+  - consistent typography for billing sections
+  - removed debug console logs
+
+- Rebuilt `apps/web/src/components/Svg/footerchild.tsx` with:
+  - lucide `Search`, `Heart`, `User`, `Globe`, `MessageSquare` instead of custom SVGs
+  - `cn` utility for conditional icon styling
+  - icon/href mapping tables for cleaner branching
+  - preserved active state coloring and hover transitions
+
+Verification:
+
+- `pnpm lint:web`: passed
+- `pnpm build:web`: passed
+- `pnpm build:api`: passed
+- Zero `react-icons` imports remaining in codebase
+- Zero `lodash` imports remaining in codebase
+
+Updated first-load JS notes after remaining UI migration:
+
+| Route | After final cleanup | After remaining UI migration |
+| --- | ---: | ---: |
+| `/Admin/kycRequest` | about `137 kB` | about `137 kB` |
+| `/Home` | about `158 kB` | about `158 kB` |
+| `/Admin` | about `109 kB` | about `109 kB` |
+
+Note:
+
+- Bundle sizes remained stable because replaced components were already using efficient primitives or were server-rendered.
+- Navbar now uses accessible DropdownMenu with keyboard navigation instead of manual click-outside detection.
+- Footer icons are now consistent lucide stroke icons instead of mixed custom SVG paths.
+
+## Session: Phase 9 - Backend Security Hardening
+
+Status: implemented after remaining UI migration.
+
+Goal:
+
+- Replace insecure unsigned Cloudinary uploads with server-signed uploads.
+- Add server-side PayPal payment verification before booking finalization.
+- Update environment configuration for production-ready provider setup.
+
+Changes:
+
+### Cloudinary Signed Uploads
+
+- Created `apps/api/src/services/cloudinary/cloudinary.service.ts`:
+  - `generateUploadSignature()` - creates SHA1 signature using API secret, timestamp, and folder
+  - `destroyImage()` - server-side image deletion via Cloudinary API
+  - Credential validation with graceful fallback when not configured
+
+- Created `apps/api/src/controllers/cloudinary/cloudinary.controller.ts`:
+  - `POST /cloudinary/v1/signature` - returns signed upload parameters (authenticated)
+  - `DELETE /cloudinary/v1/destroy/:publicId` - deletes image from Cloudinary (authenticated)
+
+- Created `apps/api/src/routes/cloudinary/cloudinary.routes.ts`:
+  - Protected routes requiring valid access token
+  - Mounted at `/cloudinary/v1` in index router
+
+- Updated `apps/web/src/api/client/uploadImag.ts`:
+  - Replaced unsigned upload preset flow with signed upload
+  - Requests signature from API before uploading to Cloudinary
+  - Calls API destroy endpoint instead of no-op stub
+  - Removed dependency on `NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET`
+
+### PayPal Payment Verification
+
+- Created `apps/api/src/services/payment/payment.service.ts`:
+  - `verifyPayPalPayment()` - verifies PayPal order via REST API
+  - OAuth2 token generation for PayPal API access
+  - Validates payment status is COMPLETED
+  - Validates payment amount matches expected booking total
+  - Graceful fallback when credentials not configured
+
+- Created `apps/api/src/controllers/payment/payment.controller.ts`:
+  - `POST /payment/v1/verify-paypal/:id` - verifies payment and creates booking
+  - `GET /payment/v1/config` - returns PayPal configuration status
+  - Only creates booking/payment records after successful verification
+
+- Created `apps/api/src/routes/payment/payment.routes.ts`:
+  - Protected routes requiring valid access token and user role
+  - Mounted at `/payment/v1` in index router
+
+- Updated `apps/web/src/components/modals/bookingBillModal.tsx`:
+  - PayPal success now calls server verification endpoint
+  - Booking created only after server confirms payment
+  - Demo mode remains safe default (bypasses verification)
+
+### Environment Configuration
+
+- Updated `apps/api/.env.example` with:
+  - `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`
+  - `PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET`, `PAYPAL_API_URL`
+
+- Updated `apps/web/.env.example` with:
+  - `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` (upload preset removed)
+  - `NEXT_PUBLIC_FIREBASE_*` variables documented
+  - `NEXT_PUBLIC_PAYPAL_CLIENT_ID` documented
+
+- Updated `apps/api/src/configs/constant.ts` with Cloudinary and PayPal constants
+
+### Security Improvements
+
+1. **Cloudinary uploads now require server signature**:
+   - Browser can no longer upload without valid API signature
+   - Upload preset no longer exposed in client env vars
+   - Image deletion is server-controlled
+
+2. **PayPal payments verified server-side**:
+   - Payment ID validated against PayPal API before booking creation
+   - Payment amount checked against expected booking total
+   - Prevents fraudulent booking creation with fake payment IDs
+
+3. **Demo mode remains safe default**:
+   - `NEXT_PUBLIC_DEMO_PAYMENT_MODE=true` bypasses real payment
+   - Cloudinary falls back to error when not configured
+   - PayPal falls back to error when not configured
+
+Verification:
+
+- `pnpm lint:web`: passed
+- `pnpm build:web`: passed
+- `pnpm build:api`: passed
+
+Updated first-load JS notes after Phase 9:
+
+| Route | After remaining UI migration | After Phase 9 |
+| --- | ---: | ---: |
+| `/Home/rooms/[listingId]` | about `145 kB` | about `145 kB` |
+| `/Home/Account` | about `161 kB` | about `161 kB` |
+| `/Admin` | about `109 kB` | about `109 kB` |
+
+Note:
+
+- Bundle sizes stable - security changes are server-side with minimal client impact.
+- New endpoints add one API call for upload signature and one for payment verification.
+- Demo mode (`NEXT_PUBLIC_DEMO_PAYMENT_MODE=true`) remains recommended for portfolio demos.
+
 ## Remaining Production Hardening
 
-- Add API-side Cloudinary signed upload and deletion endpoints.
-- Verify real PayPal or Stripe payments server-side before booking finalization.
 - Add API integration tests for auth, booking, admin moderation, and seed validation.
 - Add bundle analyzer for richer before/after route-size reports.
+- Run Playwright smoke tests with running dev stack for end-to-end verification.
+- Collect before/after screenshots for portfolio evidence.
+
+## Session: Phase 9 Stabilization and Homepage Auth Fix
+
+Status: implemented after Phase 9 hardening pass.
+
+Goal:
+
+- Stabilize signed Cloudinary uploads and server-side PayPal verification.
+- Fix homepage access to login/signup actions after navbar migration.
+- Sync provider documentation with the signed-upload and verified-payment architecture.
+
+Changes:
+
+- Replaced the payment route's old booking validator with a dedicated PayPal booking validator for `orderId`, stay dates, guest count, and bill data.
+- Updated PayPal verification so the API loads the property, recomputes stay length, base amount, service charge, and total from server data, then verifies the PayPal order amount before creating booking/payment records.
+- Updated real PayPal checkout so the client sends booking intent plus a generated PDF bill, and the invoice display no longer creates a duplicate booking after server verification.
+- Kept demo checkout on the existing invoice-driven booking path.
+- Changed Cloudinary deletion to support JSON-body `publicId` values so nested Cloudinary folder IDs with slashes are handled safely.
+- Propagated signed-upload API errors to profile, KYC, and property image upload toasts.
+- Reworked the homepage navbar so unauthenticated login/signup access is visible on desktop and available from the account menu on mobile.
+- Standardized navbar spacing, icon sizing, and the authenticated "Post Room" action with shared button primitives.
+- Updated `README.md` and `SERVICE_PROVIDERS.md` to remove unsigned upload preset setup and document API-side Cloudinary and PayPal variables.
+
+Verification:
+
+- `pnpm build:api`: passed
+- `pnpm lint:web`: passed
+- `pnpm build:web`: passed
+- `git diff --check`: passed
+- `rg "CLOUDINARY_UPLOAD_PRESET|unsigned upload|upload preset|client-trusting|server-signed upload later" README.md SERVICE_PROVIDERS.md apps/api/.env.example apps/web/.env.example apps/web/src apps/api/src`: no matches
+- `rg "expectedAmount|bookingDetail|validateBooking" apps/api/src/routes/payment apps/api/src/controllers/payment apps/web/src/components/modals/bookingBillModal.tsx`: no matches
+
+Updated first-load JS notes after stabilization:
+
+| Route | After Phase 9 | After stabilization |
+| --- | ---: | ---: |
+| `/Home` | about `158 kB` | about `158 kB` |
+| `/Home/rooms/[listingId]` | about `145 kB` | about `145 kB` |
+| `/Home/Account` | about `161 kB` | about `161 kB` |
+| `/Admin/kycRequest` | about `137 kB` | about `137 kB` |
+| `/Admin/bookings` | about `144 kB` | about `144 kB` |
+
+Smoke status:
+
+- `pnpm seed:demo` could not run because Docker is not running locally: Docker API socket `unix:///Users/nikankhadka/.docker/run/docker.sock` was unavailable.
+- `BASE_URL=http://localhost:3000 node scripts/playwright-smoke.js` was not run because the Docker-backed API/database seed prerequisite is blocked.
