@@ -1,10 +1,10 @@
 'use client'
 
 import Link from 'next/link'
-import { BsFillHouseCheckFill } from 'react-icons/bs'
+import { Users, Building2, CalendarCheck } from 'lucide-react'
 import { dashData } from '../../api/server/property/getdashboard'
-import Image from 'next/image'
 import SafeImage from '../../components/common/SafeImage'
+import { Surface, StatusBadge } from '../../components/ui/primitives'
 
 export default function DashClient({
   totalBookings,
@@ -16,175 +16,145 @@ export default function DashClient({
   properties,
 }: dashData) {
   return (
-    <main className="w-[98%] mx-auto">
-      <h1 className="text-lg mb-5 font-semiBold  sm:text-2xl sm:font-bold ">
-        Data OverView
+    <main className="w-full">
+      <h1 className="mb-6 text-2xl font-bold text-neutral-950">
+        Data Overview
       </h1>
 
-      <div className="w-[95%] mx-auto gap-x-5 flex items-center justify-center overflow-x-auto">
-        <div className="border-2 w-[200px] h-[170px] border-gray-300 shadow-lg p-4 rounded-lg">
-          <Image
-            alt="hello"
-            width={56}
-            height={56}
-            src="/user.png"
-            className="h-14 w-14 mx-auto "
-          />
-
-          <div className="my-2  flex items-center">
-            <p className="font-semibold text-md">Total Users:</p>
-            <p className="font-semibold text-sm">{totalUsers}</p>
-          </div>
-
-          <div className="my-1 flex items-center">
-            <p className="font-semibold text-md">Active Users:</p>
-            <p className="font-semibold text-sm">{activeUsers}</p>
-          </div>
-        </div>
-
-        <div className="border-2 w-[200px] h-[170px] border-gray-300 shadow-lg p-4 rounded-lg">
-          <Image
-            alt="hello"
-            width={56}
-            height={56}
-            src="/airbnb.png"
-            className="h-14 w-14 mx-auto "
-          />
-
-          <div className="my-2 flex items-center">
-            <p className="font-semibold text-md">Total Properties:</p>
-            <p className="font-semibold text-sm">{totalProperties}</p>
-          </div>
-
-          <div className="my-2 flex items-center">
-            <p className="font-semibold text-md">Active Properties:</p>
-            <p className="font-semibold text-sm">{activeProperties}</p>
-          </div>
-        </div>
-
-        <div className="border-2 w-[200px] h-[170px] border-gray-300 shadow-lg p-4 rounded-lg">
-          <BsFillHouseCheckFill className="h-14 w-14 mx-auto " />
-
-          <div className="my-2 flex items-center">
-            <p className="font-semibold text-md">Total Bookings:</p>
-            <p className="font-semibold text-sm">{totalBookings}</p>
-          </div>
-
-          <div className="my-1 flex items-center">
-            <p className="font-semibold text-md">Active Bookings:</p>
-            <p className="font-semibold text-sm">{activeBookings}</p>
-          </div>
-        </div>
-      </div>
-
-      <h2 className="text-xl font-bold my-8 ">
-        Most Popular Properties rightNow!
-      </h2>
-
-      {/* table to display property */}
-
-      <div className="flex flex-col w-[98%] mx-auto">
-        <div className="overflow-x-auto">
-          <div className="inline-block min-w-full align-middle">
-            <div className="overflow-hidden shadow">
-              <table className="min-w-full table-fixed divide-y divide-gray-200 dark:divide-gray-600">
-                <thead className="bg-gray-100 dark:bg-gray-700">
-                  <tr>
-                    <th
-                      scope="col"
-                      className="p-4 text-left text-xs font-bold uppercase text-gray-500 dark:text-gray-400"
-                    >
-                      S.No
-                    </th>
-
-                    <th
-                      scope="col"
-                      className="p-4 text-left text-xs font-bold uppercase text-gray-500 dark:text-gray-400"
-                    >
-                      PropertyName
-                    </th>
-
-                    <th
-                      scope="col"
-                      className="p-4 text-left text-xs font-bold uppercase text-gray-500 dark:text-gray-400"
-                    >
-                      Host
-                    </th>
-                    <th
-                      scope="col"
-                      className="p-4 text-left text-xs font-bold uppercase text-gray-500 dark:text-gray-400"
-                    >
-                      Tennant Count
-                    </th>
-                    <th
-                      scope="col"
-                      className="p-4 text-left text-xs font-bold uppercase text-gray-500 dark:text-gray-400"
-                    >
-                      Rate/Night
-                    </th>
-                  </tr>
-                </thead>
-
-                {properties!.map((data, index) => {
-                  console.log(data)
-                  return (
-                    <tbody
-                      key={index}
-                      className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800"
-                    >
-                      <tr className="hover:bg-gray-100 dark:hover:bg-gray-700">
-                        <td className="max-w-sm overflow-hidden truncate p-4 text-base font-semibold text-gray-900 dark:text-gray-400 xl:max-w-xs">
-                          {index + 1}.
-                        </td>
-
-                        <Link href={`/Home/rooms/${data._id}`} target="_space">
-                          <td className="mr-12 flex items-center space-x-3 whitespace-nowrap p-4">
-                            <SafeImage
-                              className="h-16 w-20 rounded-lg"
-                              src={data.images?.[0]?.imgUrl}
-                              alt="Property"
-                              height={64}
-                              width={80}
-                              fallbackText="No image available"
-                            />
-
-                            <div className="text-base font-semibold  text-gray-800 dark:text-white">
-                              {data.name}
-                            </div>
-                          </td>
-                        </Link>
-
-                        <td className="max-w-sm overflow-hidden truncate p-4 text-base font-normal text-gray-900 dark:text-gray-400 xl:max-w-xs">
-                          <Link
-                            target="_space"
-                            href={`/Home/user/${
-                              typeof data.userId == 'object'
-                                ? data!.userId._id!
-                                : data._id
-                            }`}
-                            className="underline"
-                          >
-                            {typeof data.userId == 'object'
-                              ? data!.userId.userName!
-                              : 'Host'}
-                          </Link>
-                        </td>
-
-                        <td className="max-w-sm overflow-hidden truncate p-4 text-base font-semibold text-gray-900 dark:text-gray-400 xl:max-w-xs">
-                          {data.ratingCount}
-                        </td>
-
-                        <td className="max-w-sm overflow-hidden truncate p-4 text-base font-semibold text-gray-900 dark:text-gray-400 xl:max-w-xs">
-                          ${data.rate}
-                        </td>
-                      </tr>
-                    </tbody>
-                  )
-                })}
-              </table>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <Surface>
+          <div className="flex flex-col items-center">
+            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-sky-50">
+              <Users className="h-7 w-7 text-themeColor" aria-hidden="true" />
+            </div>
+            <div className="mt-3 w-full space-y-1">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-neutral-600">Total Users</span>
+                <span className="text-lg font-bold text-neutral-950">{totalUsers}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-neutral-600">Active Users</span>
+                <StatusBadge tone="success">{activeUsers}</StatusBadge>
+              </div>
             </div>
           </div>
-        </div>
+        </Surface>
+
+        <Surface>
+          <div className="flex flex-col items-center">
+            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-sky-50">
+              <Building2 className="h-7 w-7 text-themeColor" aria-hidden="true" />
+            </div>
+            <div className="mt-3 w-full space-y-1">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-neutral-600">Total Properties</span>
+                <span className="text-lg font-bold text-neutral-950">{totalProperties}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-neutral-600">Active Properties</span>
+                <StatusBadge tone="success">{activeProperties}</StatusBadge>
+              </div>
+            </div>
+          </div>
+        </Surface>
+
+        <Surface>
+          <div className="flex flex-col items-center">
+            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-sky-50">
+              <CalendarCheck className="h-7 w-7 text-themeColor" aria-hidden="true" />
+            </div>
+            <div className="mt-3 w-full space-y-1">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-neutral-600">Total Bookings</span>
+                <span className="text-lg font-bold text-neutral-950">{totalBookings}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-neutral-600">Active Bookings</span>
+                <StatusBadge tone="info">{activeBookings}</StatusBadge>
+              </div>
+            </div>
+          </div>
+        </Surface>
+      </div>
+
+      <h2 className="mt-8 mb-4 text-xl font-bold text-neutral-950">
+        Most Popular Properties
+      </h2>
+
+      <div className="overflow-x-auto">
+        <table className="min-w-full divide-y divide-neutral-200">
+          <thead className="bg-neutral-50">
+            <tr>
+              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-neutral-500">
+                S.No
+              </th>
+              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-neutral-500">
+                Property
+              </th>
+              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-neutral-500">
+                Host
+              </th>
+              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-neutral-500">
+                Reviews
+              </th>
+              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-neutral-500">
+                Rate/Night
+              </th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-neutral-200 bg-white">
+            {properties!.map((data, index) => {
+              const hostId = typeof data.userId == 'object' ? data!.userId._id! : data._id
+              const hostName = typeof data.userId == 'object' ? data!.userId.userName! : 'Host'
+
+              return (
+                <tr key={index} className="hover:bg-neutral-50">
+                  <td className="whitespace-nowrap px-4 py-4 text-sm font-semibold text-neutral-900">
+                    {index + 1}.
+                  </td>
+
+                  <td className="whitespace-nowrap px-4 py-4">
+                    <Link
+                      href={`/Home/rooms/${data._id}`}
+                      target="_blank"
+                      className="flex items-center gap-3 hover:underline"
+                    >
+                      <SafeImage
+                        className="h-12 w-16 rounded-lg object-cover"
+                        src={data.images?.[0]?.imgUrl}
+                        alt="Property"
+                        height={48}
+                        width={64}
+                        fallbackText="No image"
+                      />
+                      <span className="text-sm font-semibold text-neutral-900">
+                        {data.name}
+                      </span>
+                    </Link>
+                  </td>
+
+                  <td className="whitespace-nowrap px-4 py-4 text-sm text-neutral-700">
+                    <Link
+                      target="_blank"
+                      href={`/Home/user/${hostId}`}
+                      className="text-themeColor hover:underline"
+                    >
+                      {hostName}
+                    </Link>
+                  </td>
+
+                  <td className="whitespace-nowrap px-4 py-4 text-sm font-semibold text-neutral-900">
+                    {data.ratingCount}
+                  </td>
+
+                  <td className="whitespace-nowrap px-4 py-4 text-sm font-semibold text-neutral-900">
+                    ${data.rate}
+                  </td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
       </div>
     </main>
   )

@@ -449,6 +449,39 @@ Smoke status:
 
 - Playwright smoke still needs a running web/API stack. Manual follow-up should cover create new property with images, update existing property, amenities selection, country/state/city cascade, validation errors.
 
+## Session: Admin Dashboard Shadcn Migration
+
+Status: implemented after property form migration.
+
+Goal:
+
+- Redesign the admin dashboard with metric cards, valid table markup, and lucide icons while preserving all data props and link behavior.
+
+Changes:
+
+- Rebuilt `apps/web/src/app/Admin/dashClient.tsx` with:
+  - shared `Surface` and `StatusBadge` for metric cards
+  - lucide `Users`, `Building2`, `CalendarCheck` icons instead of `react-icons/bs`
+  - fixed invalid table markup: moved `<tbody>` outside `.map()`, mapped only `<tr>` elements
+  - fixed invalid `<Link>` inside `<td>` nesting by wrapping content properly
+  - responsive grid layout for metric cards (1/2/3 columns)
+  - preserved all data props, popular properties listing, link targets, dark mode support
+
+Verification:
+
+- `pnpm lint:web`: passed
+- `pnpm build:web`: passed
+
+Updated first-load JS notes after admin dashboard migration:
+
+| Route | After property form migration | After admin dashboard migration |
+| --- | ---: | ---: |
+| `/Admin` | about `97.6 kB` | about `109 kB` |
+
+Smoke status:
+
+- Playwright smoke still needs a running web/API stack. Manual follow-up should cover dashboard with zero data, popular properties table with empty array, links opening in new tabs, responsive layout on mobile.
+
 ## Remaining Production Hardening
 
 - Add API-side Cloudinary signed upload and deletion endpoints.
