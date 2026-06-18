@@ -70,15 +70,15 @@ export default function LoginSignup({ login,modal }: loginSignupModal): JSX.Elem
 
 
   return (
-    <div className="flex w-full flex-col items-center rounded-lg border border-neutral-200 bg-white shadow-lg md:w-[540px]">
-      <div className="flex w-full items-center border-b border-neutral-200 p-4">
-        <p className="w-11/12 text-center text-lg font-semibold text-mainColor">
+    <div className="flex w-full flex-col items-center rounded-lg border border-outline-variant bg-surface-container-lowest shadow-lg md:w-[540px]">
+      <div className="flex w-full items-center border-b border-outline-variant p-4">
+        <p className="w-11/12 text-center text-lg font-semibold text-primary">
           {login ? 'Log in' : 'Sign up'}
         </p>
         
         {modal && (
           <button
-            className="rounded-full p-1 text-neutral-500 hover:bg-neutral-100 hover:text-neutral-700"
+            className="rounded-full p-1 text-onSurface-variant hover:bg-surface-container hover:text-onSurface"
             onClick={(e) => {
               e.preventDefault();
               loginSignupModal.onClose()
@@ -91,8 +91,8 @@ export default function LoginSignup({ login,modal }: loginSignupModal): JSX.Elem
 
       <div className="w-full p-4">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
-          <p className="text-xl font-semibold text-mainColor">
-            Welcome to MeroGhar
+          <p className="text-xl font-semibold text-primary">
+            Welcome to LuxeStay
           </p>
 
           <div>
@@ -119,7 +119,7 @@ export default function LoginSignup({ login,modal }: loginSignupModal): JSX.Elem
           {login && (
             <Link
               href="/Home/forgotpassword"
-              className="text-sm text-mainColor hover:underline"
+              className="text-sm text-primary hover:underline"
             >
               Forgot Password?
             </Link>
@@ -132,9 +132,9 @@ export default function LoginSignup({ login,modal }: loginSignupModal): JSX.Elem
           {showSocialLogin && (
             <>
               <div className="flex w-full items-center justify-center">
-                <hr className="my-4 w-[44%] border border-neutral-300" />
-                <span className="text-sm mx-2 text-neutral-500">or</span>
-                <hr className="my-4 w-[44%] border border-neutral-300" />
+                <hr className="my-4 w-[44%] border border-outline-variant" />
+                <span className="text-sm mx-2 text-onSurface-variant">or</span>
+                <hr className="my-4 w-[44%] border border-outline-variant" />
               </div>
 
               {googleAuthEnabled && (
@@ -155,12 +155,12 @@ export default function LoginSignup({ login,modal }: loginSignupModal): JSX.Elem
           )}
 
           <div className="flex w-full items-center justify-center text-sm">
-            <span className="text-neutral-600">
+            <span className="text-onSurface-variant">
               {login ? "Don't Have Account?" : 'Have Account?'}{' '}
               {!modal && (
                 <Link
                   href={login ? '/signup' : '/login'}
-                  className="text-mainColor hover:underline"
+                  className="text-primary hover:underline"
                 >
                   {login ? 'Sign Up' : 'Login'}
                 </Link>
@@ -168,7 +168,7 @@ export default function LoginSignup({ login,modal }: loginSignupModal): JSX.Elem
 
               {modal && (
                 <button
-                  className="text-mainColor hover:underline"
+                  className="text-primary hover:underline"
                   onClick={(e) => {
                     e.preventDefault();
                     if(login){

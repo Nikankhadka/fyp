@@ -27,15 +27,15 @@ import { cn } from '../../utils/cn'
 
 const EditBasic = dynamic(() => import('./editProfile').then((mod) => mod.EditBasic), {
   ssr: false,
-  loading: () => <div className="p-4 text-sm text-neutral-600">Loading profile editor...</div>,
+  loading: () => <div className="p-4 text-sm text-onSurface-variant">Loading profile editor...</div>,
 })
 const AccountComponent = dynamic(() => import('./account'), {
   ssr: false,
-  loading: () => <div className="p-4 text-sm text-neutral-600">Loading account settings...</div>,
+  loading: () => <div className="p-4 text-sm text-onSurface-variant">Loading account settings...</div>,
 })
 const Password = dynamic(() => import('./pasword'), {
   ssr: false,
-  loading: () => <div className="p-4 text-sm text-neutral-600">Loading password editor...</div>,
+  loading: () => <div className="p-4 text-sm text-onSurface-variant">Loading password editor...</div>,
 })
 
 interface ProfileProps {
@@ -63,7 +63,7 @@ function ProfileTab({
       onClick={onClick}
       className={cn(
         'min-h-10 justify-start whitespace-nowrap',
-        active && 'border-themeColor text-mainColor',
+        active && 'border-primary text-primary',
       )}
     >
       {icon}
@@ -80,13 +80,13 @@ function VerificationItem({
   verified: boolean
 }) {
   return (
-    <div className="flex items-center gap-2 rounded-md bg-neutral-50 px-3 py-2">
+    <div className="flex items-center gap-2 rounded-md bg-surface-container px-3 py-2">
       {verified ? (
-        <CheckCircle2 className="h-4 w-4 text-emerald-600" aria-hidden="true" />
+        <CheckCircle2 className="h-4 w-4 text-primary" aria-hidden="true" />
       ) : (
-        <MinusCircle className="h-4 w-4 text-neutral-400" aria-hidden="true" />
+        <MinusCircle className="h-4 w-4 text-onSurface-variant/40" aria-hidden="true" />
       )}
-      <span className="text-sm font-medium text-neutral-700">{label}</span>
+      <span className="text-sm font-medium text-onSurface-variant">{label}</span>
     </div>
   )
 }

@@ -23,15 +23,15 @@ import {
 
 const Kyc = dynamic(() => import('./kyc'), {
   ssr: false,
-  loading: () => <div className="p-4 text-sm text-neutral-600">Loading KYC form...</div>,
+  loading: () => <div className="p-4 text-sm text-onSurface-variant">Loading KYC form...</div>,
 })
 const PhoneComp = dynamic(() => import('./phone').then((mod) => mod.PhoneComp), {
   ssr: false,
-  loading: () => <div className="p-4 text-sm text-neutral-600">Loading phone verification...</div>,
+  loading: () => <div className="p-4 text-sm text-onSurface-variant">Loading phone verification...</div>,
 })
 const EmailComp = dynamic(() => import('./emailcomp'), {
   ssr: false,
-  loading: () => <div className="p-4 text-sm text-neutral-600">Loading email editor...</div>,
+  loading: () => <div className="p-4 text-sm text-onSurface-variant">Loading email editor...</div>,
 })
 
 interface Props {
@@ -72,21 +72,21 @@ export default function AccountComponent({ userData, is_Admin, userId }: Props) 
       />
 
       {userMatch && !is_Admin && (
-        <div className="mb-6 rounded-md border border-neutral-200 bg-neutral-50 p-4">
+        <div className="mb-6 rounded-md border border-outline-variant bg-surface-container p-4">
           <div className="flex flex-wrap items-center gap-2">
-            <p className="text-sm font-semibold text-neutral-900">KYC status</p>
+            <p className="text-sm font-semibold text-onSurface">KYC status</p>
             <StatusBadge tone={statusTone}>{statusLabel}</StatusBadge>
-            {kyc?.pending && <Clock3 className="h-4 w-4 text-amber-600" aria-hidden="true" />}
+            {kyc?.pending && <Clock3 className="h-4 w-4 text-yellow-600" aria-hidden="true" />}
             {kyc?.isVerified && (
-              <CheckCircle2 className="h-4 w-4 text-emerald-600" aria-hidden="true" />
+              <CheckCircle2 className="h-4 w-4 text-primary" aria-hidden="true" />
             )}
             {!kyc?.pending && !kyc?.isVerified && (
-              <XCircle className="h-4 w-4 text-red-600" aria-hidden="true" />
+              <XCircle className="h-4 w-4 text-error" aria-hidden="true" />
             )}
           </div>
 
           {kyc?.message && (
-            <p className="mt-2 text-sm font-medium text-red-600">
+            <p className="mt-2 text-sm font-medium text-error">
               Message: {kyc.message}
             </p>
           )}
@@ -94,12 +94,12 @@ export default function AccountComponent({ userData, is_Admin, userId }: Props) 
       )}
 
       {!hasKycInfo && !is_Admin && (
-        <div className="mb-6 flex flex-col gap-3 rounded-md border border-amber-200 bg-amber-50 p-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mb-6 flex flex-col gap-3 rounded-md border border-warning/30 bg-warning/10 p-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h2 className="text-sm font-semibold text-neutral-950">
+            <h2 className="text-sm font-semibold text-onSurface">
               Provide KYC information?
             </h2>
-            <p className="mt-1 text-sm text-neutral-600">
+            <p className="mt-1 text-sm text-onSurface-variant">
               Verified identity is required before creating listings.
             </p>
           </div>
@@ -124,7 +124,7 @@ export default function AccountComponent({ userData, is_Admin, userId }: Props) 
       )}
 
       {canViewPrivateInfo && (
-        <div className="mt-6 space-y-3 border-t border-neutral-200 pt-6">
+        <div className="mt-6 space-y-3 border-t border-outline-variant pt-6">
           {phonemail != 'email' && (
             <Info
               title="Email"
@@ -132,7 +132,7 @@ export default function AccountComponent({ userData, is_Admin, userId }: Props) 
                 kycInfo?.email ||
                 (email?.mail ? `${email.mail}${email.isVerified ? '' : ' -- verify mail'}` : 'Not provided')
               }
-              icon={<Mail className="h-4 w-4 text-themeColor" aria-hidden="true" />}
+              icon={<Mail className="h-4 w-4 text-primary" aria-hidden="true" />}
               action={
                 !adminKycView && (
                   <Button
@@ -148,7 +148,7 @@ export default function AccountComponent({ userData, is_Admin, userId }: Props) 
           )}
 
           {phonemail == 'email' && (
-            <Surface className="bg-neutral-50">
+            <Surface className="bg-surface-container">
               <EmailComp email={kycInfo?.email || ''} setphonemail={setphonemail} />
             </Surface>
           )}
@@ -157,7 +157,7 @@ export default function AccountComponent({ userData, is_Admin, userId }: Props) 
             <Info
               title="Phone number"
               value={kycInfo?.phoneNumber || 'Not provided'}
-              icon={<Phone className="h-4 w-4 text-themeColor" aria-hidden="true" />}
+              icon={<Phone className="h-4 w-4 text-primary" aria-hidden="true" />}
               action={
                 !adminKycView && (
                   <Button
@@ -173,7 +173,7 @@ export default function AccountComponent({ userData, is_Admin, userId }: Props) 
           )}
 
           {phonemail == 'phone' && (
-            <Surface className="bg-neutral-50">
+            <Surface className="bg-surface-container">
               <PhoneComp
                 phoneNumber={kycInfo?.phoneNumber || ''}
                 setphonemail={setphonemail}
@@ -184,10 +184,10 @@ export default function AccountComponent({ userData, is_Admin, userId }: Props) 
       )}
 
       {hasKycInfo && canViewPrivateInfo && (
-        <div className="mt-6 border-t border-neutral-200 pt-6">
+        <div className="mt-6 border-t border-outline-variant pt-6">
           <div className="mb-3 flex items-center gap-2">
-            <FileText className="h-4 w-4 text-themeColor" aria-hidden="true" />
-            <h2 className="text-sm font-semibold text-neutral-950">Identity document</h2>
+            <FileText className="h-4 w-4 text-primary" aria-hidden="true" />
+            <h2 className="text-sm font-semibold text-onSurface">Identity document</h2>
           </div>
           {kycImageSrc ? (
             <Image
@@ -195,10 +195,10 @@ export default function AccountComponent({ userData, is_Admin, userId }: Props) 
               height={480}
               src={kycImageSrc}
               alt="KYC document"
-              className="h-auto max-h-[420px] w-full rounded-md border border-neutral-200 object-contain"
+              className="h-auto max-h-[420px] w-full rounded-md border border-outline-variant object-contain"
             />
           ) : (
-            <div className="flex min-h-[180px] w-full items-center justify-center rounded-md border border-dashed border-neutral-300 bg-neutral-50 px-4 text-center text-sm text-neutral-500">
+            <div className="flex min-h-[180px] w-full items-center justify-center rounded-md border border-dashed border-outline-variant bg-surface-container px-4 text-center text-sm text-onSurface-variant">
               KYC image unavailable
             </div>
           )}
@@ -206,7 +206,7 @@ export default function AccountComponent({ userData, is_Admin, userId }: Props) 
       )}
 
       {hasKycInfo && !is_Admin && (
-        <div className="mt-6 flex justify-end border-t border-neutral-200 pt-5">
+        <div className="mt-6 flex justify-end border-t border-outline-variant pt-5">
           {!adminKycView && (
             <Button type="button" tone="secondary" onClick={() => setopenKyc('edit')}>
               Edit all
@@ -227,12 +227,12 @@ interface InfoProps {
 
 function Info({ title, value, icon, action }: InfoProps) {
   return (
-    <div className="flex flex-col gap-3 rounded-md border border-neutral-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
+    <div className="flex flex-col gap-3 rounded-md border border-outline-variant bg-surface-container-lowest p-4 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex items-start gap-3">
-        {icon || <ShieldCheck className="mt-0.5 h-4 w-4 text-themeColor" aria-hidden="true" />}
+        {icon || <ShieldCheck className="mt-0.5 h-4 w-4 text-primary" aria-hidden="true" />}
         <div>
-          <h3 className="text-sm font-semibold text-neutral-950">{title}</h3>
-          <p className="mt-1 text-sm text-neutral-600">{value}</p>
+          <h3 className="text-sm font-semibold text-onSurface">{title}</h3>
+          <p className="mt-1 text-sm text-onSurface-variant">{value}</p>
         </div>
       </div>
       {action}
