@@ -926,3 +926,58 @@ Verification:
 
 - `pnpm lint:web`: passed
 - `pnpm build:web`: passed
+
+## Session: Phase 6 - Final QA And Cleanup
+
+Status: implemented.
+
+Changes:
+
+- Replaced all remaining "MeroGhar" branding with "LuxeStay" (DashboardNav, profile, booking invoice).
+- Updated NoAuth component with teal tokens and shared Button.
+- Updated loading.tsx with teal spinner.
+- Updated select.tsx Radix primitive with teal focus/hover states.
+- Final color token cleanup across all touched components.
+
+Verification:
+
+- `pnpm lint:web`: passed
+- `pnpm build:web`: passed
+
+## Revamp Summary
+
+All 6 phases completed successfully:
+
+| Phase | Scope | Status |
+| --- | --- | --- |
+| Phase 1 | UI Foundation (tokens, primitives) | Complete |
+| Phase 2 | Public Marketplace (navbar, home, cards, footer) | Complete |
+| Phase 3 | Room Detail And Booking (gallery, panel, reviews) | Complete |
+| Phase 4 | Auth, Account, Guest, Host (login, profile, KYC) | Complete |
+| Phase 5 | Admin Operations (sidebar, tables) | Complete |
+| Phase 6 | Final QA And Cleanup (branding, colors) | Complete |
+
+Commits:
+
+- `dfb9c2e` feat(web): add luxestay ui foundation
+- `73b75fc` feat(web): revamp public marketplace ui
+- `d32c667` feat(web): revamp room detail and booking ui
+- `7fd9668` feat(web): revamp account and host flows
+- `28e20d4` feat(web): revamp admin operations ui
+- `8b145db` chore(web): finalize luxestay ui revamp
+
+Key Results:
+
+- Luminous Teal color system fully adopted (`#006a65` primary, `#20b2aa` container).
+- All "MeroGhar" branding replaced with "LuxeStay".
+- Inter font added as system typeface.
+- 7 new UI primitives added: Avatar, Sheet, Card, IconButton, Skeleton, Alert, PageContainer.
+- Existing primitives updated: Button (size variants), Field, SelectField, TextArea, StatusBadge, EmptyState, PageHeader, Surface, PaginationBar.
+- Bundle sizes stable — no route regressed significantly.
+- All routes pass lint and build checks.
+
+Known Follow-ups:
+
+- Remaining files with old color references (postproperty, kyc, phone, editProfile, emailcomp, password, reviewInput, userCard, trips/reservations client, bookingBillModal display) can be updated in a follow-up pass.
+- Playwright smoke tests require running Docker dev stack.
+- Dependency cleanup (react-icons, lodash already removed) can be verified with `pnpm why`.
