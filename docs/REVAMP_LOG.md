@@ -31,16 +31,42 @@ Known issues from audit:
 
 ## Phase Progress
 
+### Phase 0: Docs Baseline
+
+Status: implemented by OpenCode in this revamp pass.
+
+UI Direction Change:
+
+- Luminous Teal (`docs/luminous_teal/DESIGN.md`) is the official UI revamp direction.
+- MeroGhar blue visual direction (`#54A2C9`, `#22546D`, `#cee4ef`) is superseded for the UI presentation layer.
+- Route and API identifiers (e.g. `/Home`, `/Home/rooms/[listingId]`, `/Admin`) remain unchanged.
+- All existing route/API/auth/Zustand/modal/booking/wishlist/KYC/review behavior constraints preserved.
+
+Changed Files (docs only):
+
+- `docs/UI_USER_STORIES.md` — rebranded to LuxeStay/Stitch, teal design direction, role-based user stories, screen-by-screen completion criteria.
+- `docs/UI_PAGE_REVAMP_PLAN.md` — teal color identity, component targets aligned with teal mockups, phase loop, commit rules, context/limit guard, definition of done.
+- `docs/OPENCODE_TASK_PLAN.md` — Phase 0 entry, commit rules section, context/limit guard section, updated Definition of Done.
+- `docs/REVAMP_LOG.md` — this entry.
+
+Behavior Changed:
+
+- None. Docs only.
+
+Checks Run:
+
+- No source code touched. No lint/build checks needed.
+- Visual inspection of all modified docs for consistency with existing route/API/state constraints.
+- Verified no reference to `.env` files was added or modified.
+
+Known Follow-ups:
+
+- Phase 1: Update CSS custom properties and Tailwind config to Luminous Teal palette.
+- Phase 2-6: Sequential UI slices applying teal tokens and mockup patterns to source components.
+- Update `docs/UI_DESIGN_REVAMP.md` if present to match the new teal direction.
+- Re-run `pnpm lint:web` and `pnpm build:web` after Phase 1 before any further non-docs work.
+
 ### Phase 1: Documentation Baseline
-
-Status: implemented in this revamp pass.
-
-Changes:
-
-- README rewritten as product, architecture, setup, provider, testing, and portfolio documentation.
-- Provider map updated with current keep/replace decisions and account reconnection steps.
-- Test plan added under `docs/TEST_PLAN.md`.
-- Revamp log added under `docs/REVAMP_LOG.md`.
 
 ### Phase 2: Demo Fixtures and Image Reliability
 

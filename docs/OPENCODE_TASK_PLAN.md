@@ -2,6 +2,8 @@
 
 This document is the execution handoff for OpenCode. Codex remains the orchestrator/planner/reviewer. OpenCode should complete one task slice at a time, run the listed checks, and update `docs/REVAMP_LOG.md` before handoff.
 
+**UI Direction**: Luminous Teal (`docs/luminous_teal/DESIGN.md`). MeroGhar blue is superseded for the UI presentation layer. Route/API identifiers remain unchanged.
+
 ## Operating Loop
 
 For every task:
@@ -40,22 +42,48 @@ BASE_URL=http://localhost:3000 node scripts/playwright-smoke.js
 
 Use `pnpm build:api` for API/seed/auth changes. Use `pnpm build:web` and `pnpm lint:web` for frontend changes.
 
-## Phase 1: Documentation Baseline
+## Commit Rules
 
-Status: completed by Codex in the current revamp session.
+- One commit per logical slice.
+- Commit message format: `phase <N>.<slice>: <description>`.
+- Do not commit secrets, `.env` overrides, or debug code.
+- Do not commit unrelated formatting or whitespace changes.
+- Before committing: inspect `git status`, `git diff`, `git log --oneline -5`.
+- Only commit when explicitly asked.
 
-OpenCode follow-up:
+## Context / Limit Guard
 
-- Keep `README.md`, `SERVICE_PROVIDERS.md`, `docs/TEST_PLAN.md`, `docs/UI_DESIGN_REVAMP.md`, and `docs/REVAMP_LOG.md` synchronized with future implementation changes.
+- If any task exceeds 10 files or 30 minutes of consecutive editing without a review checkpoint, split into smaller slices and document in `REVAMP_LOG.md`.
+- If a build or lint error cannot be resolved in 15 minutes, document the blocker in `REVAMP_LOG.md` and stop for review.
 
-Acceptance:
+## Phase 0: Docs Baseline
 
-- Docs accurately describe implemented behavior.
-- No doc claims a feature is complete unless source and tests support it.
+Status: implemented by OpenCode in the current revamp session.
+
+Changes:
+
+- Updated `docs/UI_USER_STORIES.md` with LuxeStay/Stitch luminous teal branding, role-based user stories, screen-by-screen completion criteria, and note that MeroGhar blue direction is superseded.
+- Updated `docs/UI_PAGE_REVAMP_PLAN.md` with teal color identity, updated component targets aligned with teal mockups, phase loop, commit rules, context/limit guard, and definition of done.
+- Updated `docs/OPENCODE_TASK_PLAN.md` with Phase 0 entry, commit rules, and context guard.
+- Updated `docs/REVAMP_LOG.md` with Phase 0 entry.
+
+No source code, `.env`, or backend/API/auth files were touched.
+
+## Phase 1: Foundation (UI Primitive Colors)
+
+Status: pending.
+
+Task P1.1: Update CSS custom properties / Tailwind config to Luminous Teal palette
+
+- Files: `apps/web/src/styles/globals.css`, `tailwind.config.*`
+- Goal: replace MeroGhar blue (`#54A2C9`, `#22546D`, `#cee4ef`) with Luminous Teal (`#006a65`, `#20b2aa`, surface hierarchy).
+- Acceptance:
+  - Existing components still render with new color tokens.
+  - No hardcoded old blue values remain in CSS or config.
 
 ## Phase 2: Demo Fixtures and Image Reliability
 
-Status: implemented by Codex in the current revamp session.
+Status: implemented by Codex in a prior revamp session.
 
 Task P2.1: Verify seed assets
 
@@ -79,7 +107,7 @@ Task P2.2: Replace placeholder seed images
 
 ## Phase 3: Auth and Provider Reconnection
 
-Status: partially implemented by Codex in the current revamp session.
+Status: partially implemented by Codex in a prior revamp session.
 
 Task P3.1: Verify disabled social auth behavior
 
@@ -103,7 +131,7 @@ Task P3.2: New provider account smoke
 
 ## Phase 4: UI System Foundation
 
-Status: started by Codex in the current revamp session.
+Status: started by Codex in a prior revamp session.
 
 Task P4.1: Complete Radix/shadcn-style UI primitives
 
@@ -116,7 +144,7 @@ Task P4.1: Complete Radix/shadcn-style UI primitives
   - `tailwind-merge`
   - `lucide-react`
 - Acceptance:
-  - Primitives use current MeroGhar colors.
+  - Primitives use current Luminous Teal colors (after Phase 1 config update).
   - Components are accessible and keyboard-friendly.
   - Existing modals can migrate incrementally.
   - New visible UI should prefer these primitives over ad hoc Tailwind markup.
@@ -290,7 +318,9 @@ Task P10.2: Before/after screenshots
 A phase is done when:
 
 - Source changes are complete.
-- Required checks pass.
+- Required checks pass (`pnpm lint:web`, `pnpm build:web`, `pnpm build:api` if API touched).
 - `docs/REVAMP_LOG.md` records the work.
 - README/provider/test docs are updated if behavior changed.
 - Codex review accepts the slice.
+- Commit rules and context/limit guard were followed (see Commit Rules and Context / Limit Guard sections above).
+(End of file - total 352 lines)
