@@ -176,6 +176,7 @@ Performance rules:
 - Private account settings should be tabbed and lazy-loaded.
 - KYC/phone/email/password editors should not load until opened.
 - Verification states should use badges, not long text.
+- Current implementation progress: the profile overview and account information shell now use shared `Surface`, `Button`, `PageHeader`, `StatusBadge`, `EmptyState`, and lucide icons. Public/non-owner profile views are forced to the public overview even if the local account tab store was previously opened, while KYC/email/phone/password editors remain lazy-loaded.
 
 ### Host Listings and Reservations
 

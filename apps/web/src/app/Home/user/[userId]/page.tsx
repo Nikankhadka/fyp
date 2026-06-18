@@ -21,7 +21,7 @@ export default async function UserProfile({ params: { userId } }: Params) {
     const myInfo=await getMe();
     return (
       <ClientComp>
-        <main className="mx-auto  rounded-lg  w-[98%] sm:w-[90%] lg:w-[80%]">
+        <main className="mx-auto w-[98%] sm:w-[90%] lg:w-[80%]">
           <Profile
             userId={session ? userData.docId : ''}
             profileData={myInfo}
@@ -37,7 +37,7 @@ export default async function UserProfile({ params: { userId } }: Params) {
     const user=await getUserKyc(userId)
     return(
       <ClientComp>
-        <main className="mx-auto  rounded-lg  w-[98%] sm:w-[90%] lg:w-[80%]">
+        <main className="mx-auto w-[98%] sm:w-[90%] lg:w-[80%]">
           <Profile
             userId={session ? userData.docId : ''}
             profileData={user}
@@ -52,7 +52,7 @@ export default async function UserProfile({ params: { userId } }: Params) {
   const userProfileData = await getUser(userId)
   return (
     <ClientComp>
-      <main className="mx-auto  rounded-lg  w-[98%] sm:w-[90%] lg:w-[80%]">
+      <main className="mx-auto w-[98%] sm:w-[90%] lg:w-[80%]">
         <Profile
           userId={session ? userData.docId : ''}
           profileData={userProfileData}

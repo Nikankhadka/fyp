@@ -301,6 +301,47 @@ Smoke status:
 
 - Playwright smoke still needs a running web/API stack. Manual follow-up should cover country/state/city selects, one and multiple amenities, clear-filter behavior, and mobile modal scroll.
 
+## Session: Account/Profile Shadcn Overview Migration
+
+Status: implemented after commit `2028506`.
+
+Goal:
+
+- Modernize the Phase 6 account/profile overview shell while preserving lazy-loaded private editors and current profile/account behavior.
+
+Changes:
+
+- Rebuilt `apps/web/src/components/user/profile.tsx` with:
+  - shared `Surface`, `Button`, `PageHeader`, `StatusBadge`, and `EmptyState`
+  - lucide icons instead of react-icons
+  - public overview sections for profile image, trust metrics, verification states, about text, and public listings
+  - stable non-owner/public overview behavior even if the local account tab store was previously opened
+- Rebuilt `apps/web/src/components/user/account.tsx` with:
+  - shared `Surface`, `Button`, `PageHeader`, and `StatusBadge`
+  - lucide KYC/email/phone/document status icons
+  - valid markup for information rows
+  - preserved lazy loading for KYC, phone/Firebase OTP, and email editors
+- Removed the account page debug log and simplified public profile page wrapper styling.
+
+Verification:
+
+- `pnpm lint:web`: passed
+- `pnpm build:web`: passed
+
+Updated first-load JS notes after account/profile overview migration:
+
+| Route | After search migration | After account/profile overview migration |
+| --- | ---: | ---: |
+| `/Home/Account` | about `161 kB` | about `160 kB` |
+| `/Home/user/[userId]` | about `161 kB` | about `160 kB` |
+| `/Admin/account` | about `161 kB` | about `160 kB` |
+| `/Home/Account/reservations` | about `159 kB` | about `158 kB` |
+| `/Home/Account/trips` | about `159 kB` | about `158 kB` |
+
+Smoke status:
+
+- Playwright smoke still needs a running web/API stack. Manual follow-up should cover own account tabs, public profile listing visibility, admin KYC profile viewing, and lazy editor loading.
+
 ## Remaining Production Hardening
 
 - Add API-side Cloudinary signed upload and deletion endpoints.
