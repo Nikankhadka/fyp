@@ -482,6 +482,46 @@ Smoke status:
 
 - Playwright smoke still needs a running web/API stack. Manual follow-up should cover dashboard with zero data, popular properties table with empty array, links opening in new tabs, responsive layout on mobile.
 
+## Session: Auth Modals Shadcn Migration
+
+Status: implemented after admin dashboard migration.
+
+Goal:
+
+- Migrate login/signup, forgot password, and booking bill modals to shared shadcn-style primitives while preserving auth flows, social login, and payment checkout.
+
+Changes:
+
+- Rebuilt `apps/web/src/components/loginSignup.tsx` with:
+  - shared `Field` and `Button` instead of ad hoc inputs and submit buttons
+  - lucide `X` icon for close button instead of image-based cross
+  - preserved login/signup toggle, social login conditional rendering, form validation, API calls, modal state management
+- Rebuilt `apps/web/src/components/fogotpassword.tsx` with:
+  - shared `Field` and `Button` instead of `inputStyle` from variants
+  - proper form submit handling with Cancel/Reset layout
+  - preserved email validation and API flow
+- Rebuilt `apps/web/src/components/modals/bookingBillModal.tsx` with:
+  - shared `Button` variants for demo checkout, cancel, and download actions
+  - lucide `Star` icon instead of `react-icons/ai`
+  - preserved booking flow, demo/PayPal checkout branching, bill PDF generation
+
+Verification:
+
+- `pnpm lint:web`: passed
+- `pnpm build:web`: passed
+
+Updated first-load JS notes after auth modals migration:
+
+| Route | After admin dashboard migration | After auth modals migration |
+| --- | ---: | ---: |
+| `/Home/login` | about `135 kB` | about `148 kB` |
+| `/Home/signup` | about `135 kB` | about `148 kB` |
+| `/Home/forgotpassword` | about `120 kB` | about `139 kB` |
+
+Smoke status:
+
+- Playwright smoke still needs a running web/API stack. Manual follow-up should cover login with invalid credentials, signup with duplicate user, forgot password flow, booking bill modal rendering, demo checkout completion.
+
 ## Remaining Production Hardening
 
 - Add API-side Cloudinary signed upload and deletion endpoints.
