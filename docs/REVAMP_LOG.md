@@ -218,6 +218,49 @@ Note:
 
 - The card routes increased modestly because cards now use Tooltip/lucide/shared primitives, but the main previously heavy routes remain far below the original `~2.43-2.49 MB` baseline.
 
+## Session: Room Detail and Booking Shadcn Migration
+
+Status: implemented after commit `4afec05`.
+
+Goal:
+
+- Replace the room-detail customer surface with owned shadcn-style primitives while preserving booking validation, wishlist behavior, review editing, and route/API contracts.
+
+Changes:
+
+- Rebuilt `apps/web/src/app/Home/rooms/[listingId]/client.tsx` with:
+  - `Surface`, `LinkButton`, `StatusBadge`, and `EmptyState`
+  - lucide icons
+  - native title casing instead of the broad lodash namespace import
+  - null-safe banned/verification checks to avoid room-page status crashes
+  - responsive host, amenity, rules, unavailable, and reviews sections
+- Rebuilt `apps/web/src/components/carousel.tsx` with stable aspect ratio, shared `Button`, lucide image controls, and accessible image indicators.
+- Rebuilt `apps/web/src/components/listing/BookProperty.tsx` with shared `Surface`, `Field`, `Button`, and `StatusBadge`; removed debug logs while preserving date, guest, owner, anonymous, and overlap validation.
+- Rebuilt `apps/web/src/components/Svg/wishSvg.tsx` with a lucide heart button and removed debug logs/custom SVG markup.
+- Rebuilt `apps/web/src/components/review.tsx` and `apps/web/src/components/reviewInput.tsx` with shared controls, lucide icons, valid React key usage, and a fixed `preventDefault()` call.
+- Removed the server-side room-route debug log from `apps/web/src/app/Home/rooms/[listingId]/page.tsx`.
+
+Verification:
+
+- `pnpm lint:web`: passed
+- `pnpm build:api`: passed
+- `pnpm build:web`: passed
+
+Updated first-load JS notes after room migration:
+
+| Route | After card migration | After room migration |
+| --- | ---: | ---: |
+| `/Home/rooms/[listingId]` | not recorded in prior table | about `145 kB` |
+| `/Home` | about `158 kB` | about `158 kB` |
+| `/Home/Account/favourites` | about `157 kB` | about `157 kB` |
+| `/Home/Account/listings` | about `159 kB` | about `159 kB` |
+| `/Home/Account` | about `162 kB` | about `161 kB` |
+| `/Home/user/[userId]` | about `162 kB` | about `161 kB` |
+
+Smoke status:
+
+- Playwright smoke still needs a running web/API stack. Next evidence task remains: start the dev stack, run `pnpm seed:demo`, then run `BASE_URL=http://localhost:3000 node scripts/playwright-smoke.js`.
+
 ## Remaining Production Hardening
 
 - Add API-side Cloudinary signed upload and deletion endpoints.

@@ -47,8 +47,6 @@ export default async function Room({ params }: { params: IParams }) {
     }
   })
 
-  console.log('property population',property)
-  
   return (
     <ClientComp>
       <RoomClient

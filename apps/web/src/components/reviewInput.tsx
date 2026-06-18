@@ -1,157 +1,192 @@
 'use client'
 
 import { useState } from 'react'
-import {AiFillStar} from 'react-icons/ai'
-import { ErrorText } from './random';
-import { FetchedMe} from '../interface/response';
-import Api from '../api/client/axios';
-import { toast } from 'react-hot-toast';
-import { useRouter } from 'next/navigation';
-import useConfirm from '../store/useConfirm';
-import useModal from '../store/useModal';
-import Image from 'next/image';
-import { normalizeImageSrc } from './common/normalizeImageSrc';
+import Image from 'next/image'
+import { Star } from 'lucide-react'
+import { toast } from 'react-hot-toast'
+import { useRouter } from 'next/navigation'
+import { ErrorText } from './random'
+import { FetchedMe } from '../interface/response'
+import Api from '../api/client/axios'
+import useConfirm from '../store/useConfirm'
+import useModal from '../store/useModal'
+import { normalizeImageSrc } from './common/normalizeImageSrc'
+import { Button, TextArea } from './ui/primitives'
+import { cn } from '../utils/cn'
 
-
-interface Props{
-  userData:Partial<FetchedMe>,
-  propertyId:string,
-  reviewId?:string,
-  setEdit?:React.Dispatch<React.SetStateAction<string>>;
-  edit:boolean
-  rating:number,
-  Review:string
+interface Props {
+  userData: Partial<FetchedMe>
+  propertyId: string
+  reviewId?: string
+  setEdit?: React.Dispatch<React.SetStateAction<string>>
+  edit: boolean
+  rating: number
+  Review: string
 }
 
-export default function ReviewInput({userData,propertyId,edit,rating,Review,setEdit,reviewId}:Props) {
-  const [rate, setrate] = useState(rating-1)
-  const [review,setreview]=useState(Review);
-  const [err,seterr]=useState(false);
+export default function ReviewInput({
+  userData,
+  propertyId,
+  edit,
+  rating,
+  Review,
+  setEdit,
+  reviewId,
+}: Props) {
+  const [rate, setrate] = useState(rating - 1)
+  const [review, setreview] = useState(Review)
+  const [err, seterr] = useState(false)
   const profileImageSrc = normalizeImageSrc(userData.profileImg?.imgUrl)
-  const router=useRouter()
-  const confirm=useConfirm();
-  const modal=useModal();
-  
+  const router = useRouter()
+  const confirm = useConfirm()
+  const modal = useModal()
 
   const ratings = [1, 2, 3, 4, 5]
+  const memberYear = userData.createdAt
+    ? new Date(userData.createdAt).getFullYear()
+    : 'Member'
+
   return (
     <main className="my-3">
       <div>
-        <div className="flex w-full items-center gap-x-3 ">
+        <div className="flex w-full items-center gap-x-3">
           {profileImageSrc ? (
             <Image
               height={48}
               width={48}
               src={profileImageSrc}
               alt="User"
-              className={`block h-12 w-12 ${edit? 'rounded-lg':'rounded-full'}`}
+              className={`block h-12 w-12 object-cover ${edit ? 'rounded-lg' : 'rounded-full'}`}
             />
           ) : (
-            <div className={`flex h-12 w-12 items-center justify-center bg-gray-100 text-center text-[10px] text-gray-500 ${edit? 'rounded-lg':'rounded-full'}`}>
+            <div
+              className={`flex h-12 w-12 items-center justify-center bg-neutral-100 text-center text-[10px] text-neutral-500 ${edit ? 'rounded-lg' : 'rounded-full'}`}
+            >
               No image
             </div>
           )}
           <p>
-            <span className="text-md block font-semibold">{userData.userName}</span>
-            <span className="text-sm text-gray-700 ">{new Date(userData.createdAt!).getFullYear()}</span>
+            <span className="block text-sm font-semibold text-neutral-950">
+              {userData.userName || 'Guest'}
+            </span>
+            <span className="text-sm text-neutral-500">{memberYear}</span>
           </p>
         </div>
 
-        {/* rating stars */}
-        <div className='my-2 mt-3'>
-          {ratings.map((ratevalue,index) => {
+        <div className="my-2 mt-3 flex items-center gap-1">
+          {ratings.map((ratevalue, index) => {
             return (
               <button
-              key={index}
-                onClick={(e) => {
+                type="button"
+                key={index}
+                aria-label={`Rate ${ratevalue} star${ratevalue === 1 ? '' : 's'}`}
+                aria-pressed={index <= rate}
+                className="rounded-md p-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-300"
+                onClick={() => {
                   setrate(index)
-                 
                 }}
               >
-                <AiFillStar className={
-                    index<=rate
-                      ? 'h-6  w-6 fill-themeColor stroke-gray-100'
-                      : 'h-6 w-6 fill-gray-400  stroke-gray-300  transition-all  hover:fill-themeColor'
-                  }/>
-                
-                
+                <Star
+                  className={cn(
+                    'h-6 w-6 transition',
+                    index <= rate
+                      ? 'fill-themeColor text-themeColor'
+                      : 'text-neutral-300 hover:text-themeColor',
+                  )}
+                />
               </button>
             )
           })}
         </div>
         <form>
-          <label className="mb-2 mt-2 block text-left text-sm font-medium text-gray-900 dark:text-white">
+          <label className="mb-2 mt-2 block text-left text-sm font-semibold text-neutral-800">
             Your Review
           </label>
-          <textarea
+          <TextArea
             id="message"
             rows={4}
-            className="block w-full rounded-lg border my-2 border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+            className="my-2"
             placeholder="Leave a comment..."
             defaultValue={review}
-            onChange={(e)=>setreview(e.target.value)}
-          ></textarea>
+            onChange={(e) => setreview(e.target.value)}
+          />
 
-          {err&&<ErrorText  text='Please Provide rating and review Both!'/>}
+          {err && <ErrorText text="Please Provide rating and review Both!" />}
 
-          <div className=' flex  justify-between items-center'>
-          {edit&&<button className='text-md font-semibold underline' 
-          
-          onClick={(e)=>{
-            setEdit!('');
-          }}>Cancel</button>}
-          <button type='button' className="my-3   block rounded-lg font-semibold bg-themeColor p-2 px-3 text-center text-sm text-white hover:bg-mainColor"
-          onClick={(e)=>{
-            e.preventDefault;
-            const newrate=rate+1
-            if(newrate<1||review.length<=2){
-              return seterr(true)
-            }
-          
-          const onSubmit=()=>{
-            if(!edit){
-              Api.post(`/property/v1/review/${propertyId}`,{rating:newrate,review},{withCredentials:true}).then((res)=>{
-                toast.success("Review Posted Successfully!!");
-                setrate(0);
-                setreview('')
-                router.refresh()
-                return modal.onClose()
-              }).catch((e)=>{
-                toast.error("Failed to Post Review!!!");
-                return modal.onClose();
-              })
-            }
+          <div className="flex items-center justify-between">
+            {edit && (
+              <Button
+                type="button"
+                tone="ghost"
+                className="px-0"
+                onClick={() => {
+                  setEdit!('')
+                }}
+              >
+                Cancel
+              </Button>
+            )}
+            <Button
+              type="button"
+              className="my-3"
+              onClick={(e) => {
+                e.preventDefault()
+                const newrate = rate + 1
+                if (newrate < 1 || review.length <= 2) {
+                  return seterr(true)
+                }
 
-            if(edit){
-              Api.patch(`/property/v1/review/${reviewId}`,{rating:newrate,review},{withCredentials:true}).then((res)=>{
-                toast.success("Review updated Successfully!!");
-                router.refresh()
-                setEdit!('')
-                return modal.onClose()
-              }).catch((e)=>{
-                toast.error("Failed to update Review!!!");
-                return modal.onClose();
-              })
-            }
-          }
+                const onSubmit = () => {
+                  if (!edit) {
+                    Api.post(
+                      `/property/v1/review/${propertyId}`,
+                      { rating: newrate, review },
+                      { withCredentials: true },
+                    )
+                      .then((res) => {
+                        toast.success('Review Posted Successfully!!')
+                        setrate(0)
+                        setreview('')
+                        router.refresh()
+                        return modal.onClose()
+                      })
+                      .catch((e) => {
+                        toast.error('Failed to Post Review!!!')
+                        return modal.onClose()
+                      })
+                  }
 
-          //change confirmation
+                  if (edit) {
+                    Api.patch(
+                      `/property/v1/review/${reviewId}`,
+                      { rating: newrate, review },
+                      { withCredentials: true },
+                    )
+                      .then((res) => {
+                        toast.success('Review updated Successfully!!')
+                        router.refresh()
+                        setEdit!('')
+                        return modal.onClose()
+                      })
+                      .catch((e) => {
+                        toast.error('Failed to update Review!!!')
+                        return modal.onClose()
+                      })
+                  }
+                }
 
-          confirm.onContent({
-            header:"Are You Sure To Post Review",
-            actionBtn:"Submit Review",
-            onAction:onSubmit
-          })
+                confirm.onContent({
+                  header: 'Are You Sure To Post Review',
+                  actionBtn: 'Submit Review',
+                  onAction: onSubmit,
+                })
 
-          modal.onOpen('confirm');
-
-
-          }}
-          >
-            Submit
-          </button>
+                modal.onOpen('confirm')
+              }}
+            >
+              Submit
+            </Button>
           </div>
-          
         </form>
       </div>
     </main>

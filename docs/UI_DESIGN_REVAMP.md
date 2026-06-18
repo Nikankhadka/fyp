@@ -157,6 +157,7 @@ Performance rules:
 - Booking panel sticky on desktop and full-width on mobile.
 - Clear unavailable state for banned/unverified listings.
 - Reviews with empty state and reported/review actions separated.
+- Current implementation progress: the room detail surface now uses shadcn-style `Surface`, `Button`, `Field`, `StatusBadge`, `EmptyState`, lucide icons, and the shared wishlist button. The gallery has stable responsive aspect ratios, the booking panel is sticky on desktop, review cards/input use shared controls, and null-safe listing status checks prevent banned/verification data from crashing the route.
 
 ### Account/Profile
 
@@ -207,6 +208,7 @@ Design an operations admin dashboard for a property rental platform. Include com
 - Preserve route and API contracts unless a specific task says otherwise.
 - Keep Zustand for cross-component UI state.
 - Prefer Radix/shadcn-style owned components for new UI.
+- Replace legacy premade/ad hoc controls on touched screens instead of adding parallel one-off styles.
 - Prefer lucide-react icons for new or touched controls.
 - Avoid nested cards and decorative gradients.
 - Use `next/image` with stable dimensions.

@@ -159,6 +159,13 @@ Task P5.2: Redesign room detail
   - Unavailable listings show clear state.
   - Booking still rejects invalid/overlapping dates.
 
+Status:
+
+- Codex migrated the room detail route, image carousel, booking panel, wishlist button, review card, and review input to the owned shadcn-style primitives/lucide icon stack.
+- Removed the room surface's broad lodash import, react-icons imports, custom carousel SVG controls, and debug logs.
+- Added null-safe `isBanned`/`isVerified` checks so incomplete listing status data renders a controlled unavailable state instead of crashing.
+- Next OpenCode task: visually verify public guest, logged-in guest, owner, and admin room states on desktop and mobile after the dev stack is running.
+
 Task P5.3: Search modal redesign
 
 - Files: `apps/web/src/components/modals/searchModal.tsx`
