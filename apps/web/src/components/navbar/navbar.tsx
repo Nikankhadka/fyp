@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Home, LogIn, Menu, UserPlus } from 'lucide-react'
+import { Home, Menu } from 'lucide-react'
 import Search from './searchButton'
 import {
   DropdownMenu,
@@ -48,12 +48,12 @@ const NavBar = ({ authState, img, is_Admin }: NavProps): JSX.Element => {
   }
 
   return (
-    <nav className="fixed inset-x-0 top-0 z-20 border-b border-neutral-200 bg-white dark:bg-slate-700">
+    <nav className="fixed inset-x-0 top-0 z-20 border-b border-outline-variant/50 bg-surface-container-lowest/80 backdrop-blur-md dark:bg-inverse-surface/80">
       <div className="mx-auto flex h-20 w-full max-w-7xl items-center gap-3 px-3 sm:px-4 lg:px-6">
         <Link href="/Home" className="flex shrink-0 items-center gap-2">
-          <Image width={40} height={40} src="/airbnb.png" alt="MeroGhar logo" />
-          <span className="hidden text-lg font-semibold text-mainColor drop-shadow-xl dark:text-themeColor sm:inline">
-            MeroGhar
+          <Image width={40} height={40} src="/airbnb.png" alt="LuxeStay logo" />
+          <span className="hidden text-lg font-semibold text-primary drop-shadow-xl sm:inline">
+            LuxeStay
           </span>
         </Link>
 
@@ -64,28 +64,6 @@ const NavBar = ({ authState, img, is_Admin }: NavProps): JSX.Element => {
         </div>
 
         <div className="flex shrink-0 items-center gap-2">
-          {!authState && (
-            <div className="hidden items-center gap-2 md:flex">
-              <Button
-                type="button"
-                tone="ghost"
-                className="gap-2 px-3"
-                onClick={() => modal.onOpen('login')}
-              >
-                <LogIn className="h-4 w-4" aria-hidden="true" />
-                Log in
-              </Button>
-              <Button
-                type="button"
-                className="gap-2 px-3"
-                onClick={() => modal.onOpen('signup')}
-              >
-                <UserPlus className="h-4 w-4" aria-hidden="true" />
-                Sign up
-              </Button>
-            </div>
-          )}
-
           {authState && !is_Admin && (
             <Button asChild tone="secondary" className="hidden gap-2 px-3 md:inline-flex">
               <Link href="/Home/Account/listings">

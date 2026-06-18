@@ -2,7 +2,7 @@
 
 import { SessionUser } from '../../api/server/auth'
 import Card from '../../components/card/card'
-import { Button, EmptyState, PageHeader } from '../../components/ui/primitives'
+import { Button, EmptyState, PageHeader, PageContainer } from '../../components/ui/primitives'
 import { Property, wishlist } from '../../interface/response'
 
 interface HomeProps {
@@ -26,10 +26,10 @@ export function HomeClient({ properties, wishList, userData }: HomeProps) {
 
   return (
     <main className="w-full">
-      <div className="mx-auto w-[95%]">
+      <PageContainer className="pb-24 pt-24">
         <PageHeader
           title="Explore stays"
-          description="Browse verified homes, apartments, cabins, and guest houses across the MeroGhar marketplace."
+          description="Browse verified homes, apartments, cabins, and guest houses across the LuxeStay marketplace."
         />
 
         {properties.length === 0 && (
@@ -61,7 +61,7 @@ export function HomeClient({ properties, wishList, userData }: HomeProps) {
             <Button type="button">Load more</Button>
           </div>
         )}
-      </div>
+      </PageContainer>
     </main>
   )
 }

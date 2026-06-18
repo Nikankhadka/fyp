@@ -162,10 +162,10 @@ export default function Card({ use, data, wish = false, user = '', index }: Card
   }
 
   return (
-    <article className="group overflow-hidden rounded-md border border-neutral-200 bg-white transition hover:-translate-y-0.5 hover:border-neutral-300 hover:shadow-md">
+    <article className="group overflow-hidden rounded-lg border border-outline-variant bg-surface-container-lowest transition hover:-translate-y-0.5 hover:shadow-md">
       <div className="relative">
         <Link href={`/Home/rooms/${_id}`} target="_blank" className="block">
-          <div className="relative aspect-[4/3] w-full overflow-hidden bg-neutral-100">
+          <div className="relative aspect-square w-full overflow-hidden bg-surface-container">
             <SafeImage
               fill
               src={images?.[img]?.imgUrl}
@@ -185,7 +185,7 @@ export default function Card({ use, data, wish = false, user = '', index }: Card
                   aria-label="Previous property image"
                   disabled={img === 0}
                   onClick={previousImage}
-                  className="absolute left-2 top-1/2 inline-flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-neutral-900 opacity-0 shadow transition hover:bg-white disabled:pointer-events-none disabled:opacity-0 group-hover:opacity-100"
+                  className="absolute left-2 top-1/2 inline-flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-surface-container-lowest/90 text-onSurface opacity-0 shadow transition hover:bg-surface-container-lowest disabled:pointer-events-none disabled:opacity-0 group-hover:opacity-100"
                 >
                   <ChevronLeft className="h-5 w-5" />
                 </button>
@@ -200,7 +200,7 @@ export default function Card({ use, data, wish = false, user = '', index }: Card
                   aria-label="Next property image"
                   disabled={img >= imageCount - 1}
                   onClick={nextImage}
-                  className="absolute right-2 top-1/2 inline-flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-neutral-900 opacity-0 shadow transition hover:bg-white disabled:pointer-events-none disabled:opacity-0 group-hover:opacity-100"
+                  className="absolute right-2 top-1/2 inline-flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-surface-container-lowest/90 text-onSurface opacity-0 shadow transition hover:bg-surface-container-lowest disabled:pointer-events-none disabled:opacity-0 group-hover:opacity-100"
                 >
                   <ChevronRight className="h-5 w-5" />
                 </button>
@@ -237,18 +237,18 @@ export default function Card({ use, data, wish = false, user = '', index }: Card
           <Link
             href={`/Home/rooms/${_id}`}
             target="_blank"
-            className="line-clamp-2 text-base font-semibold text-neutral-950 hover:text-mainColor"
+            className="line-clamp-2 text-base font-semibold text-onSurface hover:text-primary"
           >
             {name || 'Untitled property'}
           </Link>
 
-          <div className="flex shrink-0 items-center gap-1 text-sm font-semibold text-neutral-700">
-            <Star className="h-4 w-4 fill-themeColor text-themeColor" />
+          <div className="flex shrink-0 items-center gap-1 text-sm font-semibold text-onSurface-variant">
+            <Star className="h-4 w-4 fill-primary text-primary" />
             <span>{avgRating ?? 0}</span>
           </div>
         </div>
 
-        <p className="truncate text-sm font-medium text-neutral-600">
+        <p className="truncate text-sm font-medium text-onSurface-variant">
           {[country, city].filter(Boolean).join(', ') || 'Location not set'}
         </p>
 
@@ -266,12 +266,12 @@ export default function Card({ use, data, wish = false, user = '', index }: Card
           </div>
         )}
 
-        <p className="text-sm text-neutral-700">
-          <span className="font-bold text-neutral-950">${rate ?? 0}</span> night
+        <p className="text-sm text-onSurface-variant">
+          <span className="font-bold text-onSurface">${rate ?? 0}</span> night
         </p>
 
         {showModerationActions && (
-          <div className="flex flex-wrap gap-2 border-t border-neutral-100 pt-3">
+          <div className="flex flex-wrap gap-2 border-t border-outline-variant pt-3">
             <Button type="button" onClick={verifyListing}>
               <CheckCircle2 className="mr-2 h-4 w-4" />
               Verify
@@ -284,7 +284,7 @@ export default function Card({ use, data, wish = false, user = '', index }: Card
         )}
 
         {showOwnerActions && (
-          <div className="flex flex-wrap gap-2 border-t border-neutral-100 pt-3">
+          <div className="flex flex-wrap gap-2 border-t border-outline-variant pt-3">
             <Button
               type="button"
               onClick={(e) => {

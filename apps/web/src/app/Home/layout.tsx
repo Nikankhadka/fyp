@@ -1,11 +1,12 @@
 
 
+
+
 import { checkSession } from '../../api/server/auth';
 import ClientComp from '../../components/clientComp';
 import NavBar from '../../components/navbar/navbar';
+import { PrimaryFooter, SecondaryFooter } from '../../components/footer';
 import { cookies } from 'next/headers';
-
-
 
 
 
@@ -19,14 +20,13 @@ export default async function Layout({children}: {children: React.ReactNode}) {
 
   return (
 
-      <main className=' flex flex-col'>
+      <main className='flex flex-col'>
       
 
         <ClientComp>
         <NavBar authState={session} img={userData.img} theme={theme} is_Admin={userData.is_Admin} />
         </ClientComp>
       
-        {/* this children represents each page component  that is rendered */}
 
         <main className='my-[90px]'>
       
@@ -35,11 +35,10 @@ export default async function Layout({children}: {children: React.ReactNode}) {
       
         </main>
       
-        
-       
-       
-        
-        
+        <ClientComp>
+          <PrimaryFooter />
+          <SecondaryFooter />
+        </ClientComp>
         
       </main>
     
