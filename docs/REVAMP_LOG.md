@@ -885,7 +885,44 @@ Bundle sizes stable — color token changes are CSS-only with no JS impact.
 
 Known Follow-ups:
 
-- Phase 2: Apply teal tokens to navbar (replace "MeroGhar" branding, update active states).
-- Phase 2: Update Home page to use PageContainer instead of `w-[95%]`.
-- Phase 2: Fix mobile footer routes to match actual app routes.
 - Phase 6: Replace remaining hardcoded old blue references in component files.
+
+## Session: Phase 2 - Public Marketplace
+
+Status: implemented.
+
+Goal:
+
+- Update navbar with LuxeStay branding and teal tokens.
+- Update Home page with PageContainer and teal styling.
+- Update listing cards with teal colors and square aspect ratio.
+- Fix footer routes and branding.
+
+Changes:
+
+- Updated navbar: LuxeStay branding, teal colors, backdrop blur, removed redundant desktop login/signup.
+- Updated HomeClient: PageContainer instead of `w-[95%]`, LuxeStay description.
+- Updated card: square aspect ratio, teal tokens, teal star, hover shadow.
+- Updated footer: fixed routes (favourites, trips, profile), LuxeStay branding, teal colors.
+- Added footer to Home layout.
+
+Verification:
+
+- `pnpm lint:web`: passed
+- `pnpm build:web`: passed
+
+## Session: Phase 3 - Room Detail And Booking
+
+Status: implemented.
+
+Changes:
+
+- Updated room detail client: PageContainer, teal tokens for all text/borders/surfaces, "LuxeStay host" branding.
+- Updated BookProperty: teal labels, error state, border colors.
+- Updated carousel: teal border, rounded-lg, surface container background.
+- Updated review: teal avatar border, star, text colors, error tone.
+
+Verification:
+
+- `pnpm lint:web`: passed
+- `pnpm build:web`: passed

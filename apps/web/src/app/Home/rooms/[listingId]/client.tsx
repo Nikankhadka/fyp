@@ -15,6 +15,7 @@ import {
   LinkButton,
   StatusBadge,
   Surface,
+  PageContainer,
 } from '../../../../components/ui/primitives'
 
 interface RoomProps {
@@ -83,15 +84,15 @@ export function RoomClient({
   const canSave = !(is_Admin || user == 'owner')
 
   return (
-    <main className="w-full bg-white">
-      <div className="mx-auto w-[95%] py-6 md:w-[82%]">
-        <div className="flex flex-col gap-4 border-b border-neutral-200 pb-5 sm:flex-row sm:items-end sm:justify-between">
+    <main className="w-full bg-surface">
+      <PageContainer className="pb-24 pt-24">
+        <div className="flex flex-col gap-4 border-b border-outline-variant pb-5 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-neutral-950 md:text-3xl">
+            <h1 className="text-2xl font-bold tracking-tight text-onSurface md:text-3xl">
               {toTitleCase(name)}
             </h1>
 
-            <p className="mt-2 flex items-center gap-2 text-sm font-medium text-neutral-600">
+            <p className="mt-2 flex items-center gap-2 text-sm font-medium text-onSurface-variant">
               <MapPin className="h-4 w-4" aria-hidden="true" />
               {location || 'Location unavailable'}
             </p>
@@ -99,9 +100,9 @@ export function RoomClient({
 
           <div className="flex items-center gap-2">
             {canSave && (
-              <div className="flex items-center gap-1 rounded-md border border-neutral-200 bg-white px-2 py-1">
+              <div className="flex items-center gap-1 rounded-md border border-outline-variant bg-surface-container-lowest px-2 py-1">
                 <Wish active={inWishList} id={_id!} user={user} />
-                <span className="pr-2 text-sm font-semibold text-neutral-700">
+                <span className="pr-2 text-sm font-semibold text-onSurface-variant">
                   Save
                 </span>
               </div>
@@ -122,11 +123,11 @@ export function RoomClient({
           <div className="w-full space-y-6 md:w-[60%]">
             <Surface className="flex w-full items-center justify-between gap-4">
               <div>
-                <h2 className="text-lg font-semibold text-neutral-950">
+                <h2 className="text-lg font-semibold text-onSurface">
                   {toTitleCase(propertyType)} hosted by{' '}
-                  {host?.userName || 'MeroGhar host'}
+                  {host?.userName || 'LuxeStay host'}
                 </h2>
-                <p className="mt-1 text-sm text-neutral-600">
+                <p className="mt-1 text-sm text-onSurface-variant">
                   Verified marketplace host profile
                 </p>
               </div>
@@ -138,7 +139,7 @@ export function RoomClient({
                     alt="userProfile"
                     height={56}
                     width={56}
-                    className="h-14 w-14 rounded-full border border-neutral-300 object-cover"
+                    className="h-14 w-14 rounded-full border border-outline-variant object-cover"
                     fallbackText="No image"
                   />
                 </Link>
@@ -148,7 +149,7 @@ export function RoomClient({
                   alt="userProfile"
                   height={56}
                   width={56}
-                  className="h-14 w-14 rounded-full border border-neutral-300 object-cover"
+                  className="h-14 w-14 rounded-full border border-outline-variant object-cover"
                   fallbackText="No image"
                 />
               )}
@@ -156,31 +157,31 @@ export function RoomClient({
 
             <Surface className="space-y-4">
               <div className="flex items-center gap-3">
-                <Home className="h-5 w-5 text-themeColor" aria-hidden="true" />
-                <p className="text-sm font-semibold text-neutral-800">
+                <Home className="h-5 w-5 text-primary" aria-hidden="true" />
+                <p className="text-sm font-semibold text-onSurface-variant">
                   {toTitleCase(propertyType)}
                 </p>
               </div>
 
               <div className="flex items-center gap-3">
-                <MapPin className="h-5 w-5 text-themeColor" aria-hidden="true" />
-                <p className="text-sm font-semibold text-neutral-800">
+                <MapPin className="h-5 w-5 text-primary" aria-hidden="true" />
+                <p className="text-sm font-semibold text-onSurface-variant">
                   {location || 'Location unavailable'}
                 </p>
               </div>
             </Surface>
 
             <Surface>
-              <h2 className="text-lg font-semibold text-neutral-950">
+              <h2 className="text-lg font-semibold text-onSurface">
                 Description
               </h2>
-              <p className="mt-2 text-sm leading-6 text-neutral-700">
+              <p className="mt-2 text-sm leading-6 text-onSurface-variant">
                 {toTitleCase(discription) || 'No description provided.'}
               </p>
             </Surface>
 
             <Surface>
-              <h2 className="text-lg font-semibold text-neutral-950">
+              <h2 className="text-lg font-semibold text-onSurface">
                 What this place offers
               </h2>
               <div className="mt-3 grid gap-2 sm:grid-cols-2">
@@ -188,24 +189,24 @@ export function RoomClient({
                   return (
                     <div
                       key={index}
-                      className="flex items-center gap-2 rounded-md bg-neutral-50 px-3 py-2"
+                      className="flex items-center gap-2 rounded-md bg-surface-container px-3 py-2"
                     >
-                      <span className="h-1.5 w-1.5 rounded-full bg-themeColor" />
-                      <p className="text-sm text-neutral-700">{items}</p>
+                      <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                      <p className="text-sm text-onSurface-variant">{items}</p>
                     </div>
                   )
                 })}
               </div>
               {(amenities || []).length === 0 && (
-                <p className="mt-2 text-sm text-neutral-500">
+                <p className="mt-2 text-sm text-onSurface-variant/60">
                   Amenities have not been added yet.
                 </p>
               )}
             </Surface>
 
             <Surface>
-              <h2 className="text-lg font-semibold text-neutral-950">Rules</h2>
-              <p className="mt-2 text-sm leading-6 text-neutral-700">
+              <h2 className="text-lg font-semibold text-onSurface">Rules</h2>
+              <p className="mt-2 text-sm leading-6 text-onSurface-variant">
                 {toTitleCase(rules) || 'No specific rules provided.'}
               </p>
             </Surface>
@@ -220,20 +221,20 @@ export function RoomClient({
             />
           )}
           {!canBook && !is_Admin && (
-            <Surface className="my-4 w-full bg-neutral-50 md:w-[35%]">
+            <Surface className="my-4 w-full bg-surface-container md:w-[35%]">
               <StatusBadge tone={isBannedListing ? 'danger' : 'warning'}>
                 {isBannedListing ? 'Unavailable' : 'Pending approval'}
               </StatusBadge>
-              <p className="mt-3 text-sm text-neutral-600">
+              <p className="mt-3 text-sm text-onSurface-variant">
                 This property is not currently available for booking.
               </p>
             </Surface>
           )}
         </div>
 
-        <hr className="my-8 border-neutral-200" />
+        <hr className="my-8 border-outline-variant" />
 
-        <div className="my-10 w-fit border-b-2 border-neutral-800 pb-3 text-lg font-semibold text-neutral-950 sm:text-xl">
+        <div className="my-10 w-fit border-b-2 border-primary pb-3 text-lg font-semibold text-onSurface sm:text-xl">
           Reviews
         </div>
 
@@ -252,14 +253,14 @@ export function RoomClient({
         <div>
           <div className="my-8 flex items-center gap-2">
             <Star
-              className="h-5 w-5 fill-themeColor text-themeColor"
+              className="h-5 w-5 fill-primary text-primary"
               aria-hidden="true"
             />
-            <p className="text-lg font-semibold text-neutral-950 sm:text-xl">
+            <p className="text-lg font-semibold text-onSurface sm:text-xl">
               {avgRating || 'New'}
             </p>
-            <span className="text-neutral-300">/</span>
-            <p className="text-lg font-semibold text-neutral-950 sm:text-xl">
+            <span className="text-outline-variant">/</span>
+            <p className="text-lg font-semibold text-onSurface sm:text-xl">
               {ratingCount || 0} reviews
             </p>
           </div>
@@ -282,7 +283,7 @@ export function RoomClient({
             })}
           </div>
         </div>
-      </div>
+      </PageContainer>
     </main>
   )
 }

@@ -21,7 +21,7 @@ export default function Carousel({ images }: Props) {
 
   return (
     <div className="relative z-10 mx-auto my-4 w-full">
-      <div className="relative aspect-[4/3] overflow-hidden rounded-md border border-neutral-200 bg-neutral-100 sm:aspect-[16/9] md:aspect-[21/9]">
+      <div className="relative aspect-[4/3] overflow-hidden rounded-lg border border-outline-variant bg-surface-container sm:aspect-[16/9] md:aspect-[21/9]">
         <SafeImage
           fill
           src={images?.[img]?.imgUrl}

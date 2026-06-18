@@ -40,20 +40,20 @@ export default function Review({ reviewData, currentUser }: Props) {
                     alt="User"
                     height={48}
                     width={48}
-                    className="block h-12 w-12 rounded-md border border-neutral-200 object-cover"
+                    className="block h-12 w-12 rounded-md border border-outline-variant object-cover"
                   />
                 ) : (
-                  <div className="flex h-12 w-12 items-center justify-center rounded-md bg-neutral-100 text-center text-[10px] text-neutral-500">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-md bg-surface-container text-center text-[10px] text-onSurface-variant">
                     No image
                   </div>
                 )}
               </Link>
 
               <p>
-                <span className="block text-sm font-semibold text-neutral-950">
+                <span className="block text-sm font-semibold text-onSurface">
                   {reviewData.userId.userName}
                 </span>
-                <span className="text-sm text-neutral-500">
+                <span className="text-sm text-onSurface-variant">
                   Date: {dayjs(reviewData.createdAt).format('MM/YY/DD')}
                 </span>
               </p>
@@ -76,7 +76,7 @@ export default function Review({ reviewData, currentUser }: Props) {
                 <Button
                   type="button"
                   tone="ghost"
-                  className="h-9 w-9 p-0 text-red-600 hover:bg-red-50"
+                  className="h-9 w-9 p-0 text-error hover:bg-error/10"
                   aria-label="Delete review"
                   onClick={() => {
                     const onDelete = () => {
@@ -109,23 +109,23 @@ export default function Review({ reviewData, currentUser }: Props) {
             )}
           </div>
 
-          <p className="my-3 mt-4 text-sm leading-6 text-neutral-700">
+          <p className="my-3 mt-4 text-sm leading-6 text-onSurface-variant">
             {reviewData.review}
           </p>
           <div className="flex items-center justify-between">
             <p className="my-2 ml-1 flex items-center gap-2">
               <Star
-                className="h-4 w-4 fill-themeColor text-themeColor"
+                className="h-4 w-4 fill-primary text-primary"
                 aria-hidden="true"
               />
-              <span className="block text-sm font-semibold">
+              <span className="block text-sm font-semibold text-onSurface">
                 {reviewData.rating}.0
               </span>
             </p>
           </div>
 
           {currentUser == reviewData.hostId && (
-            <Button type="button" tone="ghost" className="px-0 text-neutral-600">
+            <Button type="button" tone="ghost" className="px-0 text-onSurface-variant">
               <Flag className="mr-2 h-4 w-4" aria-hidden="true" />
               Report Review
             </Button>

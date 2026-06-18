@@ -100,10 +100,10 @@ export function BookProperty({ reservations, user, propertyData }: Booking) {
     <Surface className="my-4 w-full p-5 md:sticky md:top-24 md:w-[35%]">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="text-2xl font-bold text-neutral-950">
+          <p className="text-2xl font-bold text-onSurface">
             ${propertyData.rate}
           </p>
-          <p className="text-sm font-medium text-neutral-500">per night</p>
+          <p className="text-sm font-medium text-onSurface-variant">per night</p>
         </div>
         <StatusBadge tone="info" className="gap-1">
           <Star className="h-3.5 w-3.5 fill-current" aria-hidden="true" />
@@ -113,7 +113,7 @@ export function BookProperty({ reservations, user, propertyData }: Booking) {
 
       <form className="mt-5" onSubmit={onReserve}>
         <div className="grid gap-3 sm:grid-cols-2">
-          <label className="text-sm font-semibold text-neutral-700">
+          <label className="text-sm font-semibold text-onSurface-variant">
             Check in
             <Field
               type="date"
@@ -134,7 +134,7 @@ export function BookProperty({ reservations, user, propertyData }: Booking) {
             />
           </label>
 
-          <label className="text-sm font-semibold text-neutral-700">
+          <label className="text-sm font-semibold text-onSurface-variant">
             Check out
             <Field
               type="date"
@@ -152,7 +152,7 @@ export function BookProperty({ reservations, user, propertyData }: Booking) {
           </label>
         </div>
 
-        <label className="mt-3 block text-sm font-semibold text-neutral-700">
+        <label className="mt-3 block text-sm font-semibold text-onSurface-variant">
           Guests
           <Field
             type="number"
@@ -165,16 +165,16 @@ export function BookProperty({ reservations, user, propertyData }: Booking) {
         </label>
 
         {bookingStore.error && (
-          <p className="mt-3 rounded-md bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          <p className="mt-3 rounded-md bg-error/10 px-3 py-2 text-sm font-medium text-error">
             Please enter valid dates and at least one guest.
           </p>
         )}
 
-        <div className="mt-5 border-t border-neutral-200 pt-5">
+        <div className="mt-5 border-t border-outline-variant pt-5">
           <Button type="submit" className="w-full">
             Reserve
           </Button>
-          <p className="mt-3 text-center text-xs text-neutral-500">
+          <p className="mt-3 text-center text-xs text-onSurface-variant/60">
             Demo checkout opens before a booking is finalized.
           </p>
         </div>
