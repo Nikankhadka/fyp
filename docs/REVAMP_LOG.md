@@ -342,6 +342,42 @@ Smoke status:
 
 - Playwright smoke still needs a running web/API stack. Manual follow-up should cover own account tabs, public profile listing visibility, admin KYC profile viewing, and lazy editor loading.
 
+## Session: Account Editor Shadcn Migration
+
+Status: implemented after commit `dbb9196`.
+
+Goal:
+
+- Modernize the lazy-loaded profile, email, and password editors that sit inside the Phase 6 account/profile shell.
+
+Changes:
+
+- Rebuilt `apps/web/src/components/user/editProfile.tsx` with:
+  - shared `Field`, `TextArea`, and `Button`
+  - lucide upload/save/cancel icons
+  - stable profile image preview using normalized existing URLs and selected file previews
+  - separated form `FileList` type from the uploaded image API payload type
+  - preserved Cloudinary upload, confirmation modal, profile update API call, and account close/refresh flow
+- Rebuilt `apps/web/src/components/user/emailcomp.tsx` with shared `Field` and `Button`, valid form submit handling, and preserved email API/refresh behavior.
+- Rebuilt `apps/web/src/components/user/pasword.tsx` with shared `Field`, `Button`, and `PageHeader`, password inputs, preserved confirm modal, and removed debug logging.
+
+Verification:
+
+- `pnpm lint:web`: passed
+- `pnpm build:web`: passed
+
+Updated first-load JS notes after account editor migration:
+
+| Route | After account/profile overview migration | After account editor migration |
+| --- | ---: | ---: |
+| `/Home/Account` | about `160 kB` | about `160 kB` |
+| `/Home/user/[userId]` | about `160 kB` | about `160 kB` |
+| `/Admin/account` | about `160 kB` | about `160 kB` |
+
+Smoke status:
+
+- Playwright smoke still needs a running web/API stack. Manual follow-up should cover profile image upload preview, profile update confirmation, email add/update, and password update validation.
+
 ## Remaining Production Hardening
 
 - Add API-side Cloudinary signed upload and deletion endpoints.

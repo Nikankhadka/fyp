@@ -1,126 +1,124 @@
-'use client';
+'use client'
 
-import {useState} from 'react'
-import {useForm,SubmitHandler} from 'react-hook-form'
-
+import { useState } from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import { KeyRound, Save, X } from 'lucide-react'
 import toast from 'react-hot-toast'
-import useAccount from '../../store/AccountState';
-import useConfirm from '../../store/useConfirm';
-import Api from '../../api/client/axios';
-import { useRouter } from 'next/navigation';
-import useModal from '../../store/useModal';
-import { bg } from '../../styles/variants';
-import { ErrorText } from '../random';
-interface passwordform{
-    oldPassword:string,
-    newPassword:string,
-    confirmNewPassword:string
+import useAccount from '../../store/AccountState'
+import useConfirm from '../../store/useConfirm'
+import Api from '../../api/client/axios'
+import { useRouter } from 'next/navigation'
+import useModal from '../../store/useModal'
+import { ErrorText } from '../random'
+import { Button, Field, PageHeader } from '../ui/primitives'
+
+interface PasswordForm {
+  oldPassword: string
+  newPassword: string
+  confirmNewPassword: string
 }
 
-const inputStyle="text-md my-2 h-10 w-[90%]  rounded-md border-2  border-gray-400 p-1 text-gray-700 hover:bg-hoverColor focus:border-themeColor"
+export default function Password() {
+  const account = useAccount()
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<PasswordForm>()
+  const [error, seterror] = useState(0)
+  const router = useRouter()
+  const confirm = useConfirm()
+  const confirmModal = useModal()
 
-export default function Password(){
-    const account=useAccount();
+  const onSubmit: SubmitHandler<PasswordForm> = async (formdata) => {
+    const { oldPassword, newPassword, confirmNewPassword } = formdata
+    if (newPassword != confirmNewPassword) return seterror(1)
+    seterror(0)
 
-    const {register,handleSubmit,watch,formState: { errors },control} = useForm<passwordform>()
-    const [error,seterror]=useState(0)
-    const router=useRouter()
-    const confirm=useConfirm()
-    const confirmModal=useModal()
+    const onSubmit = async () => {
+      await Api.patch(
+        '/user/v1/updateProfile',
+        { oldPassword, newPassword },
+        { withCredentials: true },
+      )
+        .then((res) => {
+          toast.success('Password successfully updated')
+          router.refresh()
+          account.onClose()
+          return confirmModal.onClose()
+        })
+        .catch((e) => {
+          confirmModal.onClose()
+          seterror(2)
+          return toast.error('Password update failed')
+        })
+    }
 
-
-    const onSubmit: SubmitHandler<passwordform> =async(formdata)=>{
-      console.log(formdata)
-        const{oldPassword,newPassword,confirmNewPassword}=formdata
-        if(newPassword!=confirmNewPassword) return seterror(1);
-        seterror(0);
-
-        const onSubmit=async()=>{
-          const updateProfile=await Api.patch('/user/v1/updateProfile',{oldPassword,newPassword},{withCredentials:true}).then(
-            (res)=>{
-              toast.success("Password SuccessFully Updated");
-              router.refresh();
-              account.onClose()
-             
-             return confirmModal.onClose();
-            }
-          ).catch((e)=>{
-            confirmModal.onClose();
-            seterror(2)
-            return toast.error("password update Failed")
-          })
-        }
-
-        
-        
-    // for confirmation update default state 
     confirm.onContent({
-      header:"Are you sure U Want to Update Password?",
-      actionBtn:"Update",
-      onAction:onSubmit
+      header: 'Are you sure you want to update password?',
+      actionBtn: 'Update',
+      onAction: onSubmit,
     })
 
-    confirmModal.onOpen('confirm');
-       
-}
+    confirmModal.onOpen('confirm')
+  }
 
-    return(
-        <main  className={`mx-auto rounded-lg ${bg}`} >
-        <div className='w-[95%] sm:w-[70%] md:w-[50%] md:p-2'>
-        <h2 className=" mb-5 text-2xl font-semibold text-slate-700">Change Your Password</h2>
-        <form >
-            <div className='w-full my-2'>
-        <label className=' block text-md  font-semibold text-slate-700'>Old password</label>
-        <input
-            type="text"
-            placeholder="old Password"
-            className={inputStyle}
+  return (
+    <main className="mx-auto max-w-2xl">
+      <PageHeader
+        title="Change password"
+        description="Update the password used for email and password login."
+      />
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <label className="block text-sm font-semibold text-neutral-800">
+          Old password
+          <Field
+            type="password"
+            placeholder="Old password"
+            className="mt-1"
             {...register('oldPassword', { required: true })}
           />
-          {errors.oldPassword && ( <ErrorText text='Please Enter Valid Password'/>)}
-        </div>
-        <div className='w-full my-2'>
-        <label className=' block text-md  font-semibold text-slate-700'>New Password</label>
-        <input
-            type="text"
+          {errors.oldPassword && <ErrorText text="Please enter your current password" />}
+        </label>
+
+        <label className="block text-sm font-semibold text-neutral-800">
+          New password
+          <Field
+            type="password"
             placeholder="New password"
-            className={inputStyle}
+            className="mt-1"
             {...register('newPassword', { required: true })}
           />
-          {errors.newPassword && ( <ErrorText text='Please Enter Valid newPassword'/>)}
+          {errors.newPassword && <ErrorText text="Please enter a new password" />}
+        </label>
 
-        </div>
-        <div className='w-full my-2'>
-        <label className=' block text-md  font-semibold text-slate-700'>Confirm Password</label>
-        <input
+        <label className="block text-sm font-semibold text-neutral-800">
+          Confirm password
+          <Field
             type="password"
-            placeholder="Password"
-            className={inputStyle}
+            placeholder="Confirm password"
+            className="mt-1"
             {...register('confirmNewPassword', { required: true })}
           />
-          {errors.confirmNewPassword && ( <ErrorText text='Please Enter Valid confirmed Password'/>)}
+          {errors.confirmNewPassword && (
+            <ErrorText text="Please confirm your new password" />
+          )}
+        </label>
+
+        {error == 1 && <ErrorText text="New passwords do not match" />}
+        {error == 2 && <ErrorText text="Current password or new password is invalid" />}
+
+        <div className="flex items-center justify-between border-t border-neutral-200 pt-4">
+          <Button type="button" tone="ghost" onClick={() => account.onClose()}>
+            <X className="mr-2 h-4 w-4" aria-hidden="true" />
+            Cancel
+          </Button>
+          <Button type="submit">
+            <Save className="mr-2 h-4 w-4" aria-hidden="true" />
+            Update
+          </Button>
         </div>
-
-        {error==1&&<ErrorText text='Wrong New Passwords/Please match new Passwords' />}
-
-        {error==2&&<ErrorText text='Old password Wrong/Invalid New password' />}
-        <hr className="my-5 border-gray-400" />  
-        <div className='flex justify-between items-center mb-4'>
-          <button className='text-md font-semibold underline'
-          onClick={()=>{
-            account.onClose();
-          }}>Cancel</button>
-            <button type='submit' className=' mt-2   text-white p-2 px-4 bg-themeColor transition-all rounded-lg hover:bg-mainColor' 
-                onClick={handleSubmit(onSubmit)}
-            >Update</button>
-        </div>
-
-      
-
-        </form>
-        </div>
-        
-          
-        </main>
-    )
+      </form>
+    </main>
+  )
 }

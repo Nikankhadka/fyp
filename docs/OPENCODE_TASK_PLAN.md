@@ -196,9 +196,10 @@ Status:
 
 - Codex migrated the profile overview and account information shell to shared shadcn-style primitives and lucide icons.
 - Private editors remain lazy-loaded: edit profile, account/KYC, phone/Firebase OTP, email, and password.
+- Codex migrated the inner edit profile, email, and password editors to shared `Field`, `TextArea`, `Button`, and `PageHeader` primitives while preserving existing API/confirmation flows.
 - Public and non-owner profile views now force the overview state so a stale local account tab store cannot hide listings or show private edit panels.
 - Removed old profile/account react-icons imports, ad hoc bordered/shadowed profile sections, invalid heading-in-paragraph markup, and account page debug logging.
-- Next OpenCode task: visually verify own account, public profile, and admin KYC profile views; then migrate the inner `editProfile`, `kyc`, `emailcomp`, `phone`, and `pasword` forms to the same shared field/button primitives.
+- Next OpenCode task: visually verify own account, public profile, and admin KYC profile views; then migrate the remaining `kyc` and `phone` forms to the same shared field/button primitives.
 
 Task P6.2: Redesign host listing management
 

@@ -1,216 +1,199 @@
 'use client'
 
-import { useForm, useFieldArray, SubmitHandler } from 'react-hook-form'
+import { useMemo, useState } from 'react'
+import Image from 'next/image'
+import { useRouter } from 'next/navigation'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import { Camera, Save, X } from 'lucide-react'
+import { toast } from 'react-hot-toast'
 import { ErrorText } from '../random'
-import {useState} from 'react'
 import { uploadImage } from '../../api/client/uploadImag'
-import {  toast } from 'react-hot-toast'
 import Api from '../../api/client/axios'
 import useConfirm from '../../store/useConfirm'
 import useModal from '../../store/useModal'
-import { useRouter } from 'next/navigation'
 import useAccount from '../../store/AccountState'
-import Image from 'next/image'
+import { Button, Field, TextArea } from '../ui/primitives'
+import { normalizeImageSrc } from '../common/normalizeImageSrc'
+
 interface EditProfile {
   userName?: string
-  profileImg?: any|{
-    imgId:string,
-    imgUrl:string
+  profileImg?: FileList
+  about?: string
+}
+
+interface ProfilePayload {
+  userName?: string
+  profileImg?: {
+    imgId: string
+    imgUrl: string
   }
   about?: string
 }
 
-const inputStyle =
-  'text-md my-1 h-10 w-[95%]  rounded-md border-2  border-gray-400 p-2 text-gray-700 hover:bg-hoverColor focus:border-themeColor'
-
-interface Prop{
-    userName:string,
-    about:string,
-    img:string,
-   
+interface Prop {
+  userName: string
+  about: string
+  img: string
 }
 
-export function EditBasic({userName,about,img}:Prop) {
+export function EditBasic({ userName, about, img }: Prop) {
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
-    control,
   } = useForm<EditProfile>({
-    defaultValues:{
+    defaultValues: {
       userName,
-      about
-    }
+      about,
+    },
   })
 
-  const confirm=useConfirm();
-  const confirmModal=useModal();
-  const router=useRouter()
-  const account=useAccount()
+  const confirm = useConfirm()
+  const confirmModal = useModal()
+  const router = useRouter()
+  const account = useAccount()
+  const [error, seterror] = useState(false)
 
-  const [error,seterror]=useState(false);
+  const image = watch('profileImg')
+  const existingImageSrc = normalizeImageSrc(img)
+  const selectedFile = image?.[0]
+  const previewSrc = useMemo(() => {
+    if (!selectedFile) return existingImageSrc
+    return URL.createObjectURL(selectedFile)
+  }, [existingImageSrc, selectedFile])
 
-      // every change detected is recorded here we want to fetch the image information only 
-      const image=watch('profileImg')
-      
-      const imageUrl=()=>{
-        try{
-            return  URL.createObjectURL(image[0])
-        }catch(e){
-          
-          return img||''
-        }
-      }
+  const submitHandler: SubmitHandler<EditProfile> = async (formdata) => {
+    const hasName = Boolean(formdata.userName?.trim())
+    const hasAbout = Boolean(formdata.about?.trim())
+    const hasProfileImage = Boolean(formdata.profileImg?.length)
 
+    if (!hasName && !hasAbout && !hasProfileImage) {
+      return seterror(true)
+    }
+    seterror(false)
 
+    const onSubmit = async () => {
+      try {
+        confirmModal.setLoading(true)
 
-      const submitHandler:SubmitHandler<EditProfile>=async(formdata)=>{
-        if(formdata.userName==""&&formdata.about==""&&formdata.profileImg.length===0){
-          return seterror(true);
-        }
-        seterror(false)
-        
-        const onSubmit=async()=>{
-          try{
+        const profileData: ProfilePayload = {}
 
-            //open loading 
-            confirmModal.setLoading(true);
+        if (hasName) profileData.userName = formdata.userName?.trim()
+        if (hasAbout) profileData.about = formdata.about?.trim()
 
-            let profileData:EditProfile={
-              userName:formdata.userName,
-              about:formdata.about,
-              profileImg:{
-                imgUrl:"",
-                imgId:""
-              }
-            }
-  
-  
-            if(formdata.userName==""){
-              delete profileData.userName;
-            }
-  
-            if(formdata.about==""){
-              delete profileData.about;
-            }
-  
-            if(formdata.profileImg.length===0){
-              delete profileData.profileImg;
-            }else{
-              //upload image
-            const upload=await uploadImage(formdata.profileImg[0]);
-            if(upload){
-              profileData.profileImg.imgId=upload.imgId,
-              profileData.profileImg.imgUrl=upload.imgUrl
-            }
-            }
-
-  
-            console.log(profileData);
-            const updateProfile=await Api.patch('/user/v1/updateProfile',{...profileData},{withCredentials:true});
-            if(updateProfile.data.success){
-               toast.success("User profile Data SuccessFully Updated");
-                account.onClose()
-                confirmModal.setLoading(false)
-               confirmModal.onClose();
-               return router.refresh();
-            }
-            confirmModal.setLoading(false)
-            confirmModal.onClose();
-            toast.error("Profile Upload Failed")
-              
-  
-          }catch(e){
-              console.log(e)
-              confirmModal.setLoading(false)
-            confirmModal.onClose();
-             return toast.error("Profile Upload Failed")
-            
+        if (hasProfileImage && formdata.profileImg?.[0]) {
+          const upload = await uploadImage(formdata.profileImg[0])
+          profileData.profileImg = {
+            imgId: upload.imgId,
+            imgUrl: upload.imgUrl,
           }
         }
 
-        // for confirmation update default state 
-        confirm.onContent({
-          header:"Are you sure U Want to Update Profile Details?",
-          actionBtn:"Update",
-          onAction:onSubmit
-        })
-
-        confirmModal.onOpen('confirm');
-
+        const updateProfile = await Api.patch(
+          '/user/v1/updateProfile',
+          { ...profileData },
+          { withCredentials: true },
+        )
+        if (updateProfile.data.success) {
+          toast.success('User profile data successfully updated')
+          account.onClose()
+          confirmModal.setLoading(false)
+          confirmModal.onClose()
+          return router.refresh()
+        }
+        confirmModal.setLoading(false)
+        confirmModal.onClose()
+        toast.error('Profile upload failed')
+      } catch (e) {
+        confirmModal.setLoading(false)
+        confirmModal.onClose()
+        return toast.error('Profile upload failed')
       }
+    }
 
+    confirm.onContent({
+      header: 'Are you sure you want to update profile details?',
+      actionBtn: 'Update',
+      onAction: onSubmit,
+    })
+
+    confirmModal.onOpen('confirm')
+  }
 
   return (
-    <main className='w-[95%]  p-4 md:w-[70%]  '>
-      <form>
-        
-        <div
-          className="my-4 flex  w-full flex-col  gap-y-4   " >
-            <label className=" block text-sm text-black font-semibold">Profile Image</label>
-          {/* initially the value default does not read file casuing to return empty string */}
-          <Image
-          width={160}
-          height={160}
-            src={imageUrl()}
-            alt="ImagePreviewHere"
-            className={
-              imageUrl() == ''
-                ? 'hidden'
-                : ' rounded-full border-2 p-1 border-gray-300 shadow-lg w-[100px] h-[100px] md:w-[160px] md:h-[160px]'
-            }
-          />
+    <main className="w-full max-w-3xl p-2">
+      <form onSubmit={handleSubmit(submitHandler)} className="space-y-5">
+        <div>
+          <label className="block text-sm font-semibold text-neutral-800">
+            Profile image
+          </label>
 
-          {/* for input and label */}
-          <div className="flex bg-white  w-[95%] flex-col items-start justify-around rounded-lg border-2 border-gray-300 p-2 shadow-md md:w-[65%] md:flex-row md:items-center">
-           
-            <input
-              type="file"
-              
-              {...register(`profileImg`,)}
-            ></input>
+          <div className="mt-3 flex flex-col gap-4 sm:flex-row sm:items-center">
+            {previewSrc ? (
+              <Image
+                width={160}
+                height={160}
+                src={previewSrc}
+                alt="Profile preview"
+                className="h-28 w-28 rounded-full border border-neutral-200 object-cover p-1 md:h-40 md:w-40"
+              />
+            ) : (
+              <div className="flex h-28 w-28 items-center justify-center rounded-full border border-dashed border-neutral-300 bg-neutral-50 text-center text-xs text-neutral-500 md:h-40 md:w-40">
+                No image
+              </div>
+            )}
 
-            {/* donot render this button for 1st index */}
-
+            <label className="flex min-h-24 w-full cursor-pointer flex-col items-center justify-center rounded-md border border-dashed border-neutral-300 bg-neutral-50 px-4 py-5 text-center transition hover:bg-neutral-100 sm:max-w-sm">
+              <Camera className="mb-2 h-5 w-5 text-themeColor" aria-hidden="true" />
+              <span className="text-sm font-semibold text-neutral-800">
+                Upload profile image
+              </span>
+              <span className="mt-1 text-xs text-neutral-500">
+                JPG, PNG, or WebP
+              </span>
+              <input type="file" accept="image/*" className="sr-only" {...register('profileImg')} />
+            </label>
           </div>
-         
-
-
         </div>
-        <div className="w-full my-4">
-          <label className=" block my-1 text-sm text-black font-semibold">UserName</label>
-          <input
+
+        <div>
+          <label className="block text-sm font-semibold text-neutral-800">
+            Username
+          </label>
+          <Field
             type="text"
-            placeholder="userName"
-            className='text-md my-1 h-10 w-[95%]  rounded-md border-2  border-gray-400 p-2 text-gray-700 hover:bg-hoverColor focus:border-themeColor md:w-[70%]'
+            placeholder="Username"
+            className="mt-1 max-w-xl"
             {...register('userName')}
           />
-
         </div>
 
-        <div className='w-full my-4'>
-        <label className='block text-sm text-black font-semibold'>About</label>
-            <textarea rows={5}
-            placeholder="Desription"
-            className={inputStyle}
-            {...register('about')}>
-
-           </textarea>
-           
-          
-         
+        <div>
+          <label className="block text-sm font-semibold text-neutral-800">
+            About
+          </label>
+          <TextArea
+            rows={5}
+            placeholder="Tell guests and hosts a little about yourself"
+            className="mt-1 max-w-2xl"
+            {...register('about')}
+          />
         </div>
 
-      { error&& <ErrorText text='Please Enter Valid Profile Update Input '/>}
-        <div className='flex my-2 items-center justify-between p-2'>
-        <button onClick={(e)=>{
-            e.preventDefault();
-          account.onClose()
-        }} className='underline font-semibold text-sm'>Cancel</button>
-        <button type='submit' onClick={handleSubmit(submitHandler)} className='font-semibold text-white py-2 px-4 rounded-lg bg-themeColor hover:bg-mainColor transition-all' >save</button>
+        {errors.profileImg && <ErrorText text="Please select a valid image" />}
+        {error && <ErrorText text="Please enter at least one profile update" />}
+
+        <div className="flex items-center justify-between border-t border-neutral-200 pt-4">
+          <Button type="button" tone="ghost" onClick={() => account.onClose()}>
+            <X className="mr-2 h-4 w-4" aria-hidden="true" />
+            Cancel
+          </Button>
+          <Button type="submit">
+            <Save className="mr-2 h-4 w-4" aria-hidden="true" />
+            Save
+          </Button>
         </div>
-       
       </form>
     </main>
   )

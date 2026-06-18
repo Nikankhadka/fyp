@@ -1,73 +1,79 @@
 'use client'
 
-import { useForm, SubmitHandler, set } from 'react-hook-form'
-import { inputStyle } from '../../styles/variants'
-import { ErrorText
- } from '../random'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import { Mail, Save, X } from 'lucide-react'
 import Api from '../../api/client/axios'
+import { ErrorText } from '../random'
 import { toast } from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
+import { Button, Field } from '../ui/primitives'
 
-
-interface props{
-    email:string
-    setphonemail: React.Dispatch<React.SetStateAction<string>>;
+interface Props {
+  email: string
+  setphonemail: React.Dispatch<React.SetStateAction<string>>
 }
 
-export default function EmailComp({email,setphonemail}:props){
+export default function EmailComp({ email, setphonemail }: Props) {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<{ email: string }>({
+    defaultValues: {
+      email,
+    },
+  })
 
-    const {
-        register,
-        handleSubmit,
-        watch,
-        formState: { errors },
-        control,
-      } = useForm<{email:string}>({
-        defaultValues:{
-          email
-        
-          //donot put image here since onlyfile can be default 
-        }
+  const router = useRouter()
+  const onSubmit: SubmitHandler<{ email: string }> = async (formdata) => {
+    await Api.post(
+      `/user/v1/addEmail`,
+      { email: formdata.email },
+      { withCredentials: true },
+    )
+      .then((res) => {
+        toast.success('Please verify email for completion')
+        router.refresh()
+        setphonemail('close')
       })
+      .catch((e) => {
+        toast.error('Email update failed')
+      })
+  }
 
-      const router=useRouter()
-      const onSubmit:SubmitHandler<{email:string}>=async(formdata)=>{
-        const res=await Api.post(`/user/v1/addEmail`,{email:formdata.email},{withCredentials:true}).then(
-            (res)=>{
-                toast.success("Please Verify Email for completion!")
-                router.refresh()
-                setphonemail("close")
-            }
-        ).catch((e)=>{
-            toast.error("Email Post Failed")
-        })
-      }
-    return(
-        <div className="w-full my-3 ">
-        <label className=" text-md font-semibold block  text-slate-700">Email</label>
-        <div className='flex items-center justify-between flex-wrap'>
-        <div className='mt-1 w-full sm:w-[70%]'>
-        <input
+  return (
+    <form className="w-full space-y-3" onSubmit={handleSubmit(onSubmit)}>
+      <label className="block text-sm font-semibold text-neutral-800">
+        Email
+        <Field
           type="email"
           placeholder="Email"
-          className={inputStyle}
+          className="mt-1"
           {...register('email', {
             required: true,
             pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
           })}
         />
-        </div>
-       
-        <button className='text-sm my-2 text-white font-semibold px-4 py-2 transition-all rounded-lg bg-themeColor hover:bg-mainColor' onClick={handleSubmit(onSubmit)}>{email==''? 'Add Email' :"Update Email"}</button>
-        </div>
-       
-        {errors?.email && (
-          <ErrorText text="Please Enter Valid Email/Formatted Email" />
-        )}
-    
-    {/* <p className='text-sm font-semibold text-themeColor my-2'>New Mail/verify Existing Email</p> */}
-    <button className=' ml-1 text-sm font-semibold underline mt-2' onClick={(e)=>setphonemail('close')}>Cancel</button>
-    </div>
-    
-    )
+      </label>
+
+      {errors?.email && (
+        <ErrorText text="Please enter a valid email address" />
+      )}
+
+      <div className="flex items-center justify-between border-t border-neutral-200 pt-3">
+        <Button type="button" tone="ghost" onClick={() => setphonemail('close')}>
+          <X className="mr-2 h-4 w-4" aria-hidden="true" />
+          Cancel
+        </Button>
+        <Button type="submit">
+          {email == '' ? (
+            <Mail className="mr-2 h-4 w-4" aria-hidden="true" />
+          ) : (
+            <Save className="mr-2 h-4 w-4" aria-hidden="true" />
+          )}
+          {email == '' ? 'Add email' : 'Update email'}
+        </Button>
+      </div>
+    </form>
+  )
 }
