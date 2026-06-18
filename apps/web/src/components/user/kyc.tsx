@@ -1,14 +1,11 @@
 'use client'
 
 
-import { useState } from 'react'
-
+import { useState, useEffect } from 'react'
 
 import { useForm, SubmitHandler } from 'react-hook-form'
 
 import { ErrorText } from '../random'
-
-const inputStyle='text-md my-1 h-10 w-[90%]  rounded-md border-2  border-gray-400 p-1 text-gray-700 hover:bg-hoverColor focus:border-themeColor'
 
 import 'react-phone-input-2/lib/style.css'
 
@@ -20,11 +17,12 @@ import useConfirm from '../../store/useConfirm'
 import { toast } from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
 import { PhoneComp } from './phone'
-import { useEffect } from 'react'
 import useCountry from '../../store/useCountry'
-import { ICountry, IState, ICity } from 'country-state-city'
+import { ICountry } from 'country-state-city'
 import { FetchedMe } from '../../interface/response'
 import Image from 'next/image'
+import { Camera, Save, X } from 'lucide-react'
+import { Button, Field, SelectField, PageHeader, Surface } from '../ui/primitives'
 
 interface form {
   firstName: string
@@ -51,7 +49,6 @@ export default function Kyc({ setopenKyc,userData }: kycprops) {
   const {email,kyc,kycInfo}=userData
  
   const confirmData=useConfirm();
-        // for country state and city
         const [countries, setCountries] = useState<ICountry[]>([]);
         const country=useCountry();
         const confirm=useConfirm();
@@ -82,7 +79,6 @@ export default function Kyc({ setopenKyc,userData }: kycprops) {
   const gender = ['Male', 'Female', 'Others']
   const img = watch('img')
 
-  // here if file reads image then image is previewed else default image fetched is shwos
   const imageUrl = () => {
     try {
       return URL.createObjectURL(img[0])
@@ -102,8 +98,6 @@ useEffect(()=>{
     const submitAction=async()=>{
 
       confirmModal.setLoading(true)
-      //create new object  to be passed into api request
-      //data which is not passed will not replce or update existing data in db so careful what u pass
       let kycdata: KycData = {
         kycInfo: {
           firstName:formdata.firstName,
@@ -126,7 +120,6 @@ useEffect(()=>{
 
       
       if(formdata.img.length!=0){
-        // for update image can be empty so u have to use old image 
       const uploadedImage= await uploadImage(formdata.img[0]);
       if(uploadedImage){
         kycdata.kycInfo.img!.imgId=uploadedImage.imgId;
@@ -142,7 +135,6 @@ useEffect(()=>{
 
   
       console.log('kycdata',kycdata)
-      // post kyc information ssa
       const kyc=await postKyc(kycdata)
       if(!kyc){
         toast.error("Failed to Post/Update Kyc")
@@ -182,107 +174,107 @@ useEffect(()=>{
 
 
   return (
-    <main key={'fuckU'} className="mt-5 w-full rounded-lg   p-4  ">
+    <main className="w-full">
+      <PageHeader title="KYC Form" description="Submit your identity verification to become a host." />
 
-      <h2 className='text-xl font-semibold mb-5'>Kyc Form</h2>
-      <hr className="my-5 border-gray-400" />
-      
       <form>
+        <Surface className="mb-4">
+          <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div>
+              <label className="block text-sm font-semibold text-neutral-800">
+                First Name
+              </label>
+              <Field
+                type="text"
+                placeholder="First Name"
+                className="mt-1"
+                {...register('firstName', { required: true })}
+              />
+              {errors.firstName && (
+                <ErrorText text="Please Enter Valid firstName" />
+              )}
+            </div>
 
-<div className="grid my-3  w-full grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
+            <div>
+              <label className="block text-sm font-semibold text-neutral-800">
+                Last Name
+              </label>
+              <Field
+                type="text"
+                placeholder="Last Name"
+                className="mt-1"
+                {...register('lastName', { required: true })}
+              />
+              {errors.lastName && (
+                <ErrorText text="Please Enter Valid lastName" />
+              )}
+            </div>
 
-          <div className="w-full">
-            <label className=" text-sm font-semibold block  text-slate-700">First Name</label>
-            <input
-              type="text"
-              placeholder="First Name"
-              className={inputStyle}
-              {...register('firstName', { required: true })}
-            />
-            {errors.firstName && (
-              <ErrorText text="Please Enter Valid firstName" />
-            )}
+
+            <div>
+              <label className="block text-sm font-semibold text-neutral-800">Gender</label>
+
+              <SelectField
+                className="mt-1"
+                {...register('gender', { required: true })}
+              >
+                  <option value="" >Select Gender</option>
+                {gender.map((type,index) => (
+                  <option key={index} value={type}>{type}</option>
+                ))}
+              </SelectField>
+
+              {errors.gender && <ErrorText text="Select Property Type Pls" />}
+            </div>
           </div>
+        </Surface>
 
-          <div className="w-full">
-            <label className="  text-sm font-semibold block  text-slate-700">Last Name</label>
-            <input
-              type="text"
-              placeholder="Last Name"
-              className={inputStyle}
-              {...register('lastName', { required: true })}
-            />
-            {errors.lastName && (
-              <ErrorText text="Please Enter Valid lastName" />
-            )}
-          </div>
+        <Surface className="mb-4">
+          <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div>
+                <label className="block text-sm font-semibold text-neutral-800">Country </label>
+                <SelectField className="mt-1" defaultValue={kycInfo!.country} {...register('country', { required: true})}>
+                <option value={kycInfo!.country}>{kycInfo!.country==''?'Select a Country':kycInfo!.country}</option>
+                        {
+                            countries.map((country,index)=><option key={index} value={index}>{country.name}</option>)
+                        }
+                </SelectField>
 
 
-          <div className="w-full">
-            <label className=" text-sm font-semibold block  text-slate-700">Gender</label>
+                  {errors?.country && ( <ErrorText text='Please Select Valid Country'/>)}
+              </div>
 
-            <select
-              className={inputStyle}
-              {...register('gender', { required: true })}
-            >
-                <option value="" >Select Gender</option>
-              {gender.map((type,index) => (
-                <option key={index} value={type}>{type}</option>
-              ))}
-            </select>
+              <div>
+                <label className="block text-sm font-semibold text-neutral-800">State </label>
+                <SelectField className="mt-1"  {...register('state', { required: true})}>
+                <option value={kycInfo!.state}>{kycInfo!.state==''?'Select a State':kycInfo!.state}</option>
+                        {
+                            
+                            country.getStates(parseInt(watch('country'))).map((state,index)=><option key={index} value={index}>{state.name}</option>)
+                        }
+                </SelectField>
+                  {errors?.state && ( <ErrorText text='Please Select Valid State'/>)}
+                </div>
 
-            {errors.gender && <ErrorText text="Select Property Type Pls" />}
-          </div>
-
-</div>
+                <div>
+                <label className="block text-sm font-semibold text-neutral-800">City</label>
+                <SelectField className="mt-1"  {...register('city', { required: true})}>
+                        <option value={kycInfo!.city}>{kycInfo!.city==''?'Select a City':kycInfo!.city}</option>
+                        {
+                            
+                            country.getCities(parseInt(watch('country')),parseInt(watch('state'))).map((city,index)=><option key={index} value={city.name}>{city.name}</option>)
+                        }
+                </SelectField>
+                  {errors?.city && ( <ErrorText text='Please Select Valid City'/>)}
+                </div>
+              </div>
+        </Surface>
           
-
-  <div className='w-full my-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3'>
-    <div className='w-full'>
-        <label className='block my-1 text-sm font-semibold'>Country </label>
-        <select className={inputStyle} defaultValue={kycInfo!.country} {...register('country', { required: true})}>
-        <option value={kycInfo!.country}>{kycInfo!.country==''?'Select a Country':kycInfo!.country}</option>
-                {
-                    countries.map((country,index)=><option key={index} value={index}>{country.name}</option>)
-                }
-        </select>
-
-
-          {errors?.country && ( <ErrorText text='Please Select Valid Country'/>)}
-      </div>
-
-      <div className='w-full'>
-        <label className='block my-1 text-sm font-semibold'>State </label>
-        <select className={inputStyle}  {...register('state', { required: true})}>
-        <option value={kycInfo!.state}>{kycInfo!.state==''?'Select a State':kycInfo!.state}</option>
-                {
-                    
-                    country.getStates(parseInt(watch('country'))).map((state,index)=><option key={index} value={index}>{state.name}</option>)
-                }
-        </select>
-          {errors?.state && ( <ErrorText text='Please Select Valid State'/>)}
-        </div>
-
-        <div className='w-full'>
-        <label className='block my-1 text-sm font-semibold'>City</label>
-        <select className={inputStyle}  {...register('city', { required: true})}>
-                <option value={kycInfo!.city}>{kycInfo!.city==''?'Select a City':kycInfo!.city}</option>
-                {
-                    
-                    country.getCities(parseInt(watch('country')),parseInt(watch('state'))).map((city,index)=><option key={index} value={city.name}>{city.name}</option>)
-                }
-        </select>
-          {errors?.city && ( <ErrorText text='Please Select Valid City'/>)}
-        </div>
-      
-      </div>
         
-       
 
         
-        <div className="w-full my-6">
-          <div className="my-2 flex  w-full flex-col items-center gap-y-3">
-            {/* initially the value default does not read file casuing to return empty string */}
+        <Surface className="mb-4">
+          <div className="my-2 flex w-full flex-col items-center gap-y-3">
               <div   className={
                 imageUrl() == ''
                   ? 'hidden'
@@ -298,47 +290,38 @@ useEffect(()=>{
             </div>
           
 
-            {/* for input and label */}
-            <div className="flex w-full flex-col items-start justify-around rounded-lg border-2 border-gray-300 p-[6px] shadow-md md:w-[60%] md:flex-row md:items-center">
-              <label className="text-sm font-semibold block  text-slate-700 ">Upload Image </label>
+            <label className="flex w-full cursor-pointer flex-col items-center justify-center rounded-md border border-dashed border-neutral-300 bg-neutral-50 px-4 py-5 text-center transition hover:bg-neutral-100 sm:max-w-sm">
+              <Camera className="mb-2 h-5 w-5 text-themeColor" aria-hidden="true" />
+              <span className="text-sm font-semibold text-neutral-800">
+                Upload KYC image
+              </span>
+              <span className="mt-1 text-xs text-neutral-500">
+                CitizenShip / Passport / Driving License
+              </span>
               <input
                 type="file"
+                className="sr-only"
                 {...register(`img`, { required:kycInfo!.img.imgUrl==''?true:false })}
-              ></input>
-
-              {/* donot render this button for 1st index */}
-            </div>
-            <p className="text-sm text-themeColor font-semibold">
-              Please provide proof of Identification CitizenShip/Passport/Driving License
-            </p>
+              />
+            </label>
             {errors?.img && (
-              <p className="block w-[95%] text-center text-sm text-red-700">
-                Please Upload image for the Field
-              </p>
+              <ErrorText text="Please Upload image for the Field" />
             )}
           </div>
-        </div>
+        </Surface>
 
-        <hr className="my-5 border-gray-400" />
-
-        <div className="my-2 bg-slate-200 p-4 rounded-lg flex items-center justify-between">
-          <button
-            className="text-md font-semibold underline"
-            onClick={(e) => {
+        <div className="flex items-center justify-between border-t border-neutral-200 pt-4">
+          <Button type="button" tone="ghost" onClick={(e) => {
               e.preventDefault()
-
               setopenKyc('close')
-            }}
-          >
+            }}>
+            <X className="mr-2 h-4 w-4" aria-hidden="true" />
             Cancel
-          </button>
-          <button
-            type="submit"
-            className="rounded-lg border border-white bg-themeColor p-2 text-white transition-all hover:bg-mainColor"
-            onClick={handleSubmit(onSubmit)}
-          >
-            Submit Kyc
-          </button>
+          </Button>
+          <Button type="submit" onClick={handleSubmit(onSubmit)}>
+            <Save className="mr-2 h-4 w-4" aria-hidden="true" />
+            Submit KYC
+          </Button>
         </div>
       </form>
     </main>

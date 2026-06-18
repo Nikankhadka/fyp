@@ -3,7 +3,7 @@
 
 import { useState } from 'react'
 import PhoneInput from 'react-phone-input-2'
-import { ImSpinner4 } from 'react-icons/im'
+import { Loader2 } from 'lucide-react'
 import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth'
 import { ErrorText } from '../random'
 import 'react-phone-input-2/lib/style.css'
@@ -13,6 +13,7 @@ import { checkPhone,postPhone } from '../../api/client/user'
 import { toast } from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
 import { isFirebaseConfigured } from '../../configs/firebase'
+import { Button } from '../ui/primitives'
 
 
 interface phone {
@@ -20,7 +21,6 @@ interface phone {
     setphonemail: React.Dispatch<React.SetStateAction<string>>;
 }
   
-
  export  function PhoneComp({phoneNumber,setphonemail}:phone) {
     const [otp, setOtp] = useState('')
     const [ph, setPh] = useState(phoneNumber)
@@ -124,11 +124,11 @@ interface phone {
         <div className="my-3 ">
           {!showOTP && (
             <div>
-              <label className=" mb-2 text-md block font-semibold text-slate-700">
+              <label className=" mb-2 text-sm font-semibold text-neutral-800">
                 Phone Number
               </label>
   
-              <div className=" flex flex-col items-start  sm:flex-row sm:items-center">
+              <div className=" flex flex-col items-start gap-3 sm:flex-row sm:items-center">
                 <div className="w-full">
                   <PhoneInput country={'us'} value={ph} onChange={setPh} />
                   <div className="my-2">
@@ -144,27 +144,24 @@ interface phone {
                   </div>
                 </div>
                 <div id="recaptcha-container"></div>
-                <button
-                  onClick={onSignup}
-                  className="text-sm font-semibold text-gray-700 underline"
-                >
+                <Button type="button" tone="secondary" onClick={onSignup}>
                   SendCode
-                </button>
+                </Button>
               </div>
 
-              <button className='text-sm font-semibold underline mt-2' onClick={(e)=>setphonemail('close')}>Cancel</button>
+              <button className="text-sm font-semibold text-neutral-700 underline mt-2 hover:text-neutral-900" onClick={(e)=>setphonemail('close')}>Cancel</button>
             </div>
           )}
   
           {loading && (
             <div className="flex items-center justify-center">
-              <ImSpinner4 className="h-5 w-5 animate-spin fill-themeColor stroke-themeColor" />
+              <Loader2 className="h-5 w-5 animate-spin text-themeColor" />
             </div>
           )}
   
           {showOTP && (
             <div>
-              <h1 className=" my-2 text-lg font-semibold text-gray-700">
+              <h1 className=" my-2 text-lg font-semibold text-neutral-800">
                 Enter Your OTP
               </h1>
               <OtpInput
@@ -192,21 +189,22 @@ interface phone {
               <hr className="my-5 border-gray-400" />
   
               <div className="flex items-center justify-between">
-                <button
+                <Button
+                  type="button"
+                  tone="ghost"
                   onClick={(e) => {
                     e.preventDefault()
                     setShowOTP(false)
                   }}
-                  className="text-md font-semibold text-gray-700 underline"
                 >
                   Cancel
-                </button>
-                <button
+                </Button>
+                <Button
+                  type="button"
                   onClick={onOTPVerify}
-                  className="rounded-lg border font-semibold border-white bg-themeColor p-2 px-4 text-white transition-all hover:bg-mainColor"
                 >
                   Verify Code
-                </button>
+                </Button>
               </div>
 
               
@@ -218,4 +216,3 @@ interface phone {
       </main>
     )
   }
-  

@@ -378,6 +378,44 @@ Smoke status:
 
 - Playwright smoke still needs a running web/API stack. Manual follow-up should cover profile image upload preview, profile update confirmation, email add/update, and password update validation.
 
+## Session: KYC and Phone Form Shadcn Migration
+
+Status: implemented after account editor migration.
+
+Goal:
+
+- Migrate KYC form and phone verification to shared shadcn-style primitives while preserving existing API/confirmation flows.
+
+Changes:
+
+- Rebuilt `apps/web/src/components/user/kyc.tsx` with:
+  - shared `Field`, `SelectField`, `Button`, `PageHeader`, and `Surface`
+  - lucide `Camera`, `Save`, `X` icons instead of ad hoc markup
+  - file upload replaced with accessible label + sr-only input pattern
+  - preserved react-hook-form logic, Cloudinary upload flow, country→state→city cascading selects, confirmation modal flow
+- Rebuilt `apps/web/src/components/user/phone.tsx` with:
+  - shared `Button` variants for SendCode, Verify, and Cancel actions
+  - lucide `Loader2` instead of `react-icons/im` spinner
+  - preserved Firebase OTP flow, recaptcha logic, phone reuse check, error state machine
+
+Verification:
+
+- `pnpm lint:web`: passed
+- `pnpm build:web`: passed
+- `pnpm build:api`: passed
+
+Updated first-load JS notes after KYC/phone migration:
+
+| Route | After account editor migration | After KYC/phone migration |
+| --- | ---: | ---: |
+| `/Home/Account` | about `160 kB` | about `160 kB` |
+| `/Home/user/[userId]` | about `160 kB` | about `160 kB` |
+| `/Admin/account` | about `160 kB` | about `160 kB` |
+
+Smoke status:
+
+- Playwright smoke still needs a running web/API stack. Manual follow-up should cover KYC form pre-fill, country/state/city cascade, image preview, phone OTP flow with unconfigured Firebase.
+
 ## Remaining Production Hardening
 
 - Add API-side Cloudinary signed upload and deletion endpoints.
