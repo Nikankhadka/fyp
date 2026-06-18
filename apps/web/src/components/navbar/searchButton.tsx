@@ -1,97 +1,46 @@
-'use client';
+'use client'
 
-import { useSearchParams } from 'next/navigation';
-import { useMemo } from 'react';
-import { BiSearch } from 'react-icons/bi';
-import useModal from '../../store/useModal';
+import { useSearchParams } from 'next/navigation'
+import { Search, SlidersHorizontal } from 'lucide-react'
+import useModal from '../../store/useModal'
 
+const SearchButton = () => {
+  const params = useSearchParams()
+  const modal = useModal()
 
-const Search = () => {
-  
-  const params = useSearchParams();
- 
+  const location =
+    params?.get('city') || params?.get('state') || params?.get('country') || 'Anywhere'
+  const propertyType = params?.get('propertyType') || 'Any stay'
+  const rating = params?.get('rating')
+  const detail = rating && Number(rating) > 0 ? `${rating}+ stars` : 'Any rating'
 
-  const  locationValue = params?.get('locationValue'); 
-  const  startDate = params?.get('startDate');
-  const  endDate = params?.get('endDate');
-  const  guestCount = params?.get('guestCount');
-  const modal=useModal();
-
-  
-  return ( 
-    <div
-       onClick={(e)=>modal.onOpen('search')}
-      className="
-        border-[2px] 
-        w-full 
-        md:w-auto 
-        py-1 
-        rounded-full 
-        shadow-sm 
-        hover:shadow-md 
-        transition 
-        cursor-pointer
-        overflow-hidden
-      "
+  return (
+    <button
+      type="button"
+      onClick={() => modal.onOpen('search')}
+      className="w-full overflow-hidden rounded-full border border-neutral-300 bg-white py-1 shadow-sm transition hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-300 md:w-auto"
+      aria-label="Open rental filters"
     >
-      <div 
-        className="
-          flex 
-          flex-row 
-          items-center 
-          justify-between
-        "
-      >
-        <div 
-          className="
-            text-sm 
-            font-semibold 
-            px-3
-          "
-        >
-         Anywhere
+      <div className="flex flex-row items-center justify-between">
+        <div className="max-w-[120px] truncate px-3 text-sm font-semibold text-neutral-950">
+          {location}
         </div>
-        <div 
-          className="
-            hidden 
-            sm:block 
-            text-sm 
-            font-semibold 
-            px-3 
-            border-x-[2px] 
-            flex-1 
-            text-center
-          "
-        >
-         AnyWeek
+        <div className="hidden max-w-[130px] flex-1 truncate border-x border-neutral-200 px-3 text-center text-sm font-semibold text-neutral-800 sm:block">
+          {propertyType}
         </div>
-        <div 
-          className="
-            text-sm 
-            pl-3 
-            pr-1 
-            text-gray-600 
-            flex 
-            flex-row 
-            items-center 
-            gap-2
-          "
-        >
-          <div className="hidden sm:block text-gray-600">Guest</div>
-          <div 
-            className="
-              p-2 
-              bg-themeColor
-              rounded-full 
-              text-white
-            "
-          >
-            <BiSearch size={18} />
+        <div className="flex flex-row items-center gap-2 pl-3 pr-1 text-sm text-neutral-600">
+          <div className="hidden max-w-[90px] truncate sm:block">{detail}</div>
+          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-themeColor text-white">
+            {params?.toString() ? (
+              <SlidersHorizontal className="h-[18px] w-[18px]" aria-hidden="true" />
+            ) : (
+              <Search className="h-[18px] w-[18px]" aria-hidden="true" />
+            )}
           </div>
         </div>
       </div>
-    </div>
-  );
+    </button>
+  )
 }
- 
-export default Search;
+
+export default SearchButton

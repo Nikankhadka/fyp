@@ -1,4 +1,4 @@
-import { SearchForm } from "../../components/modals/searchModal"
+import type { SearchForm } from "../../components/modals/searchModal"
 import ClientComp from "../../components/clientComp"
 import { checkSession } from "../../api/server/auth"
 import { getProperties } from "../../api/server/property/getProperty"
@@ -14,10 +14,6 @@ interface HomeProps{
 
 
 export default async function Home({searchParams}:HomeProps){
-
-    console.log("queryParams",searchParams);
-
-
     const properties=await getProperties(1,10,searchParams)
     const {session,userData}=await checkSession()
 

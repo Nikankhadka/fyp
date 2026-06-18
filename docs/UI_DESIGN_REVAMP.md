@@ -120,6 +120,16 @@ Next components to add:
 - `Sheet` for mobile filters/navigation
 - `Toast` wrapper if replacing `react-hot-toast` later
 
+Implemented route/domain examples:
+
+- Marketplace listing card
+- Room image gallery
+- Booking panel
+- Wishlist icon button
+- Review card and review input
+- Search/filter modal
+- Admin management table
+
 ## Replacement Strategy
 
 Use this order so the app keeps working while the UI becomes shadcn-based:
@@ -148,6 +158,7 @@ Performance rules:
 - Empty and loading states.
 - Keep cards dense enough for browsing.
 - Current implementation progress: the shared listing `Card` now uses shadcn-style primitives, stable image ratio, status badges, lucide icons, accessible carousel controls, and preserved wishlist/moderation actions.
+- Current filter progress: the search modal and navbar trigger now use shared `Button`, `Field`, `SelectField`, `StatusBadge`, lucide icons, accessible checkbox rows, sticky header/footer, mobile-safe scrolling, and URL-backed query generation with the existing filter keys.
 
 ### Room Detail
 

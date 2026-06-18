@@ -174,6 +174,14 @@ Task P5.3: Search modal redesign
   - URL query behavior remains unchanged.
   - Mobile modal fits viewport.
 
+Status:
+
+- Codex migrated the search modal and navbar search trigger to shared shadcn-style primitives and lucide icons.
+- Preserved the existing URL query keys for `minRate`, `maxRate`, `propertyType`, `country`, `state`, `city`, `rating`, and repeated `amenities`.
+- Fixed state query conversion so selected states are pushed by state name instead of a numeric index.
+- Converted server consumers of `SearchForm` to type-only imports so the client modal implementation is not imported as runtime code by server files.
+- Next OpenCode task: manually verify country/state/city dependent selects, one-amenity and multi-amenity URLs, clear-filter behavior, and mobile scroll/footer layout.
+
 ## Phase 6: Account, Host, KYC, Profile
 
 Task P6.1: Lazy-load private account editors

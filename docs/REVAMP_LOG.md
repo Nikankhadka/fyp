@@ -261,6 +261,46 @@ Smoke status:
 
 - Playwright smoke still needs a running web/API stack. Next evidence task remains: start the dev stack, run `pnpm seed:demo`, then run `BASE_URL=http://localhost:3000 node scripts/playwright-smoke.js`.
 
+## Session: Search Filter Shadcn Migration
+
+Status: implemented after commit `7af0dd3`.
+
+Goal:
+
+- Replace the customer search/filter modal and navbar trigger with owned shadcn-style primitives while preserving URL-backed marketplace filtering.
+
+Changes:
+
+- Rebuilt `apps/web/src/components/modals/searchModal.tsx` with:
+  - shared `Button`, `Field`, `SelectField`, and `StatusBadge`
+  - lucide icons
+  - accessible checkbox rows for amenities
+  - sticky header and footer
+  - mobile-safe modal scrolling
+  - cleaner query generation that omits no-op numeric filters
+- Preserved the existing filter keys: `minRate`, `maxRate`, `propertyType`, `country`, `state`, `city`, `rating`, and repeated `amenities`.
+- Fixed state filter conversion so selected states are sent by name instead of leaving the numeric UI index in the query.
+- Rebuilt `apps/web/src/components/navbar/searchButton.tsx` with a real button, lucide icon, accessible label, and active-filter summary text.
+- Converted `SearchForm` imports in server files to type-only imports and removed the Home route query debug log.
+
+Verification:
+
+- `pnpm lint:web`: passed
+- `pnpm build:web`: passed
+
+Updated first-load JS notes after search migration:
+
+| Route | After room migration | After search migration |
+| --- | ---: | ---: |
+| `/Home` | about `158 kB` | about `158 kB` |
+| `/Home/rooms/[listingId]` | about `145 kB` | about `145 kB` |
+| `/Home/Account` | about `161 kB` | about `161 kB` |
+| `/Home/user/[userId]` | about `161 kB` | about `161 kB` |
+
+Smoke status:
+
+- Playwright smoke still needs a running web/API stack. Manual follow-up should cover country/state/city selects, one and multiple amenities, clear-filter behavior, and mobile modal scroll.
+
 ## Remaining Production Hardening
 
 - Add API-side Cloudinary signed upload and deletion endpoints.

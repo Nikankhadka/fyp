@@ -1,355 +1,358 @@
 'use client'
 
-import useRandom from "../../store/randomStore"
-import { useForm, SubmitHandler } from 'react-hook-form'
-import useModal from "../../store/useModal"
-import { ErrorText } from "../random"
-import { inputStyle } from "../../styles/variants"
-import { propertyOptions } from "../../configs/constant"
-import useCountry from "../../store/useCountry"
-import { useState } from "react"
-import { ICountry } from "country-state-city"
-import { amenities } from "../../configs/constant"
+import { type ReactNode } from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import { useRouter } from 'next/navigation'
+import { Home, MapPin, RotateCcw, Search, SlidersHorizontal, Star } from 'lucide-react'
+import useModal from '../../store/useModal'
+import { ErrorText } from '../random'
+import { amenities, propertyOptions } from '../../configs/constant'
+import useCountry from '../../store/useCountry'
+import Modal from './modal'
+import {
+  Button,
+  Field,
+  SelectField,
+  StatusBadge,
+} from '../ui/primitives'
 
-export interface SearchForm{
-  minRate:number,
-  maxRate:number,
-  propertyType:string,
-  country:string,
-  state:string,
-  city:string,
-  // startDate?:string,
-  // endDate?:string,
-  rating:number,
-  amenities:string[]
+export interface SearchForm {
+  minRate: number
+  maxRate: number
+  propertyType: string
+  country: string
+  state: string
+  city: string
+  rating: number
+  amenities: string[]
 }
 
+function FilterSection({
+  icon,
+  title,
+  description,
+  children,
+}: {
+  icon: ReactNode
+  title: string
+  description?: string
+  children: ReactNode
+}) {
+  return (
+    <section className="border-b border-neutral-200 px-5 py-5 last:border-b-0">
+      <div className="mb-4 flex items-start gap-3">
+        <div className="mt-0.5 flex h-9 w-9 items-center justify-center rounded-md bg-sky-50 text-themeColor">
+          {icon}
+        </div>
+        <div>
+          <h2 className="text-base font-semibold text-neutral-950">{title}</h2>
+          {description && (
+            <p className="mt-1 text-sm leading-5 text-neutral-600">
+              {description}
+            </p>
+          )}
+        </div>
+      </div>
+      {children}
+    </section>
+  )
+}
 
-import Modal from "./modal"
-import { useRouter } from "next/navigation"
+export function SearchModal() {
+  const modal = useModal()
+  const countryhook = useCountry()
+  const router = useRouter()
 
-export function SearchModal(){
-  const modal=useModal()
-  const list = useRandom()
   const {
     register,
     handleSubmit,
     watch,
+    reset,
     formState: { errors },
-    control,
   } = useForm<SearchForm>({
-    defaultValues:{
-      country:"",
-      state:"",
-      city:"",
-      propertyType:'',
-      amenities:[''],
-      minRate:0,
-      maxRate:0,
-      rating:0
+    defaultValues: {
+      country: '',
+      state: '',
+      city: '',
+      propertyType: '',
+      amenities: [],
+      minRate: 0,
+      maxRate: 0,
+      rating: 0,
     },
     mode: 'onChange',
   })
 
-    // for country state and city
- 
-    const countryhook = useCountry()
-    const [countries, setCountries] = useState<ICountry[]>(countryhook.Countries)
-    const router=useRouter()
+  const selectedCountryIndex = Number.parseInt(watch('country'), 10)
+  const selectedStateIndex = Number.parseInt(watch('state'), 10)
+  const states = countryhook.getStates(selectedCountryIndex)
+  const cities = countryhook.getCities(selectedCountryIndex, selectedStateIndex)
 
-    //form handler 
-    const onSubmit:SubmitHandler<SearchForm>=(formdata)=>{
-      try{
-        //filter amenities 
-        const amenities = formdata.amenities.filter((item) => item != '')
-        formdata.amenities=amenities;
-        
-       let query:any={...formdata}
+  const onSubmit: SubmitHandler<SearchForm> = (formdata) => {
+    const selectedAmenities = (formdata.amenities || []).filter(Boolean)
+    const minRate = Number.isFinite(formdata.minRate) ? formdata.minRate : 0
+    const maxRate = Number.isFinite(formdata.maxRate) ? formdata.maxRate : 0
+    const rating = Number.isFinite(formdata.rating) ? formdata.rating : 0
 
-       if(query.country!=''){
-        query.country=countryhook.getCountryData(parseInt(formdata.country)).name
-        
-       }
+    const query: Partial<SearchForm> = {
+      propertyType: formdata.propertyType,
+      city: formdata.city,
+      amenities: selectedAmenities,
+    }
 
-       if(query.state !=''){
-         countryhook.getStateData(
-          parseInt(formdata.country),
-          parseInt(formdata.state)
-        ).name
-       }
+    if (maxRate > 0) {
+      query.minRate = Math.max(0, minRate)
+      query.maxRate = maxRate
+    }
 
+    if (rating >= 1) {
+      query.rating = rating
+    }
 
-       console.log('query',query)
+    if (formdata.country !== '') {
+      query.country = countryhook.getCountryData(Number.parseInt(formdata.country, 10)).name
+    }
 
+    if (formdata.country !== '' && formdata.state !== '') {
+      query.state = countryhook.getStateData(
+        Number.parseInt(formdata.country, 10),
+        Number.parseInt(formdata.state, 10),
+      ).name
+    }
 
-        // if (query.startDate) {
-        //   query.startDate! = formatISO(query.startDate);
-        // }
-    
-        // if (query.endDate) {
-        //   query.endDate! = formatISO(query.endDate);
-        // }
+    const params = new URLSearchParams()
 
-        const params = new URLSearchParams();
+    Object.entries(query).forEach(([key, value]) => {
+      if (value == null || value === '') return
 
-        Object.entries(query).forEach(([key, value]) => {
-          if (value == null || value === '') return;
-
-          if (Array.isArray(value)) {
-            value
-              .filter((item) => item != null && item !== '')
-              .forEach((item) => params.append(key, String(item)));
-            return;
-          }
-
-          params.set(key, String(value));
-        });
-
-        const url = params.toString() ? `/Home?${params.toString()}` : '/Home';
-
-        modal.onClose();
-        return router.push(url);
-
-
-
-      }catch(e){
-        console.log(e)
+      if (Array.isArray(value)) {
+        value
+          .filter((item) => item != null && item !== '')
+          .forEach((item) => params.append(key, String(item)))
+        return
       }
-    }
 
+      params.set(key, String(value))
+    })
 
-    if(modal.isOpen!='search'){
-        return null;
-    }
-    return(
-        <div>
-        <Modal isOpen={modal.isOpen}>
+    const url = params.toString() ? `/Home?${params.toString()}` : '/Home'
 
-        {/* enitre login hai */}
-        <div className="bg-white  w-full h-[500px] overflow-y-scroll md:w-[600px] rounded-lg">
+    modal.onClose()
+    return router.push(url)
+  }
 
-        <header className=" top-0 sticky bg-white text-center text-md p-3 sm:text-lg font-semibold border-b-2 border-gray-200">
-        Filters
+  const onClear = () => {
+    reset()
+    modal.onClose()
+    router.push('/Home')
+  }
+
+  if (modal.isOpen != 'search') {
+    return null
+  }
+
+  return (
+    <Modal isOpen={modal.isOpen}>
+      <div className="flex max-h-[86vh] w-[calc(100vw-1rem)] flex-col overflow-hidden rounded-md border border-neutral-200 bg-white shadow-xl sm:w-[680px]">
+        <header className="sticky top-0 z-10 border-b border-neutral-200 bg-white px-5 py-4">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <div className="flex items-center gap-2">
+                <SlidersHorizontal className="h-5 w-5 text-themeColor" aria-hidden="true" />
+                <h1 className="text-lg font-semibold text-neutral-950">
+                  Filters
+                </h1>
+              </div>
+              <p className="mt-1 text-sm text-neutral-600">
+                Narrow rentals by price, property type, location, rating, and amenities.
+              </p>
+            </div>
+            <StatusBadge tone="info">Search</StatusBadge>
+          </div>
         </header>
 
-        {/* for body */}
-        <div className="p-5">
-        <h1 className=" text-lg sm:text-xl font-semibold ">Price Range</h1>
-        <p className="my-2 text-md text-gray-600 ">Please Provide range of Rate per Night for better Result!</p>
-       
-       {/* price range input */}
-        <div className="p-5 flex justify-center gap-x-6 items-center flex-wrap">
-
-        {/* price input */}
-        <div className="w-full sm:w-fit">
-              <label className="my-1 block text-sm font-semibold">MinRate/Night</label>
-              <input
-                type="number"
-                placeholder="Min price"
-                className={inputStyle}
-                {...register('minRate', {minLength: 1, min:{value:0,message:"Please enter non negative no."} })}
-              />
-              {errors.minRate && <ErrorText text="Please Enter Valid Price" />}
-            </div>
-         
-
-          <div className="w-full sm:w-fit">
-              <label className="my-1 block text-sm font-semibold">MaxRate/Night</label>
-              <input
-                type="number"
-                placeholder="Max Price"
-                className={inputStyle}
-                {...register('maxRate', {minLength: 1, min:{value:0,message:"Please enter non negative no."} })}
-              />
-              {errors.maxRate && <ErrorText text="Please Enter Valid Price" />}
-            </div>
-          </div>
-
-      <hr className="bg-gray-200 mb-5" />
-      {/* property Type */}
-      <h1 className=" text-lg sm:text-xl font-semibold ">Property Type</h1>
-
-      <div className="p-5">
-
-      <div className="w-full">
-              <label className="my-1 block text-sm font-semibold">
-                Property Type
+        <form className="overflow-y-auto" onSubmit={handleSubmit(onSubmit)}>
+          <FilterSection
+            icon={<Search className="h-4 w-4" aria-hidden="true" />}
+            title="Price range"
+            description="Set a nightly range. Leave max empty to keep all prices."
+          >
+            <div className="grid gap-3 sm:grid-cols-2">
+              <label className="block text-sm font-semibold text-neutral-700">
+                Min rate / night
+                <Field
+                  type="number"
+                  min={0}
+                  placeholder="Min price"
+                  className="mt-1"
+                  {...register('minRate', {
+                    valueAsNumber: true,
+                    min: {
+                      value: 0,
+                      message: 'Please enter a non-negative price.',
+                    },
+                  })}
+                />
+                {errors.minRate && <ErrorText text="Please enter a valid price" />}
               </label>
-              <select
-                className={inputStyle}
-                {...register('propertyType')}
-              >
 
-            <option value={''}>
-                 
-                 Select Property Type
-                 
-             </option>
-                {propertyOptions.map((type,index) => (
-                  <option key={index} value={type}>{type}</option>
-                ))}
-              </select>
-
-              {errors.propertyType && (
-                <ErrorText text="Select Property Type Pls" />
-              )}
-            </div>
-
-      </div>
-
-      <hr className="bg-gray-200 mb-5" />
-      {/* property Type */}
-      <h1 className=" text-lg sm:text-xl font-semibold ">Location Information</h1>
-
-
-      <div className="my-2 grid w-full grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-            <div className="w-full">
-              <label className="my-1 block text-sm font-semibold">
-                Country{' '}
+              <label className="block text-sm font-semibold text-neutral-700">
+                Max rate / night
+                <Field
+                  type="number"
+                  min={0}
+                  placeholder="Max price"
+                  className="mt-1"
+                  {...register('maxRate', {
+                    valueAsNumber: true,
+                    min: {
+                      value: 0,
+                      message: 'Please enter a non-negative price.',
+                    },
+                    validate: (value) => {
+                      const min = Number(watch('minRate')) || 0
+                      return !value || value >= min || 'Max must be greater than min.'
+                    },
+                  })}
+                />
+                {errors.maxRate && <ErrorText text="Please enter a valid max price" />}
               </label>
-              <select
-                className={inputStyle}
-                {...register('country')}
-              >
-                <option value={''}>
-                 
-                    Select a Country
-                    
-                </option>
-                {countries.map((country, index) => (
-                  <option key={index} value={index}>{country.name}</option>
+            </div>
+          </FilterSection>
+
+          <FilterSection
+            icon={<Home className="h-4 w-4" aria-hidden="true" />}
+            title="Property type"
+          >
+            <label className="block text-sm font-semibold text-neutral-700">
+              Type
+              <SelectField className="mt-1" {...register('propertyType')}>
+                <option value="">Any property type</option>
+                {propertyOptions.map((type) => (
+                  <option key={type} value={type}>
+                    {type}
+                  </option>
                 ))}
-              </select>
+              </SelectField>
+            </label>
+          </FilterSection>
 
-              {errors?.country && (
-                <ErrorText text="Please Select Valid Country" />
-              )}
-            </div>
-
-            <div className="w-full">
-              <label className="my-1 block text-sm font-semibold">State </label>
-              <select
-                className={inputStyle}
-                {...register('state')}
-              >
-                <option value={''}>
-                  
-                   Select a state
-                  
-                </option>
-                {countryhook
-                  .getStates(parseInt(watch('country')))
-                  .map((state, index) => (
-                    <option key={index} value={index}>{state.name}</option>
+          <FilterSection
+            icon={<MapPin className="h-4 w-4" aria-hidden="true" />}
+            title="Location"
+          >
+            <div className="grid gap-3 md:grid-cols-3">
+              <label className="block text-sm font-semibold text-neutral-700">
+                Country
+                <SelectField className="mt-1" {...register('country')}>
+                  <option value="">Any country</option>
+                  {countryhook.Countries.map((country, index) => (
+                    <option key={country.isoCode} value={index}>
+                      {country.name}
+                    </option>
                   ))}
-              </select>
-              {errors?.state && (
-                <ErrorText text="Please Select Valid State" />
-              )}
-            </div>
+                </SelectField>
+              </label>
 
-            <div className="w-full">
-              <label className="my-1 block text-sm font-semibold">City</label>
-              <select
-                className={inputStyle}
-                {...register('city')}
-              >
-                <option value={''}>
-                 
-                     Select a City
-                    
-                </option>
-                {countryhook
-                  .getCities(
-                    parseInt(watch('country')),
-                    parseInt(watch('state'))
-                  )
-                  .map((city,index) => (
-                    <option key={index} value={city.name}>{city.name}</option>
+              <label className="block text-sm font-semibold text-neutral-700">
+                State
+                <SelectField className="mt-1" {...register('state')}>
+                  <option value="">Any state</option>
+                  {states.map((state, index) => (
+                    <option key={state.isoCode} value={index}>
+                      {state.name}
+                    </option>
                   ))}
-              </select>
-              {errors?.city && (
-                <ErrorText text="Please Select Valid City" />
-              )}
+                </SelectField>
+              </label>
+
+              <label className="block text-sm font-semibold text-neutral-700">
+                City
+                <SelectField className="mt-1" {...register('city')}>
+                  <option value="">Any city</option>
+                  {cities.map((city) => (
+                    <option key={city.name} value={city.name}>
+                      {city.name}
+                    </option>
+                  ))}
+                </SelectField>
+              </label>
             </div>
-          </div>
+          </FilterSection>
 
-
-      <hr className="bg-gray-200 my-5" />
-      {/* property Type */}
-      <h1 className=" text-lg mb-3 sm:text-xl font-semibold ">Minimum Rating</h1>
-
-                  {/* price input */}
-        <div className="w-full sm:w-fit">
-             
-              <input
+          <FilterSection
+            icon={<Star className="h-4 w-4" aria-hidden="true" />}
+            title="Minimum rating"
+          >
+            <label className="block max-w-xs text-sm font-semibold text-neutral-700">
+              Rating
+              <Field
                 type="number"
-                placeholder="Min Rate"
-                className={inputStyle}
-                {...register('rating', {maxLength: 1, min:{value:0,message:"Please enter valid value."} ,max:{value:5,message:"Please enter valid value"} })}
+                min={0}
+                max={5}
+                placeholder="0 to 5"
+                className="mt-1"
+                {...register('rating', {
+                  valueAsNumber: true,
+                  min: {
+                    value: 0,
+                    message: 'Please enter a valid rating.',
+                  },
+                  max: {
+                    value: 5,
+                    message: 'Please enter a valid rating.',
+                  },
+                })}
               />
-              {errors.minRate && <ErrorText text="Please Enter Valid Rating" />}
-            </div>
+              {errors.rating && <ErrorText text="Please enter a valid rating" />}
+            </label>
+          </FilterSection>
 
-        
-
-      <hr className="bg-gray-200 my-5" />
-      {/* property Type */}
-    
-      <h1 className=" text-lg mb-3 sm:text-xl font-semibold ">Amenities</h1>
-
-          {/* checkBox */}
-          <div className="w-full ">
-         
-           
-            <div className=" my-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
-              {amenities.map((items, index) => {
+          <FilterSection
+            icon={<SlidersHorizontal className="h-4 w-4" aria-hidden="true" />}
+            title="Amenities"
+          >
+            <div className="grid gap-2 sm:grid-cols-2 md:grid-cols-3">
+              {amenities.map((item) => {
                 return (
-                  <div key={index}>
+                  <label
+                    key={item}
+                    className="flex min-h-10 cursor-pointer items-center gap-2 rounded-md border border-neutral-200 bg-white px-3 py-2 text-sm font-medium text-neutral-700 transition hover:bg-neutral-50"
+                  >
                     <input
                       type="checkbox"
-                      value={items}
-                      {...register(`amenities.${index}` as const)}
-                      className="cursor-pointer"
+                      value={item}
+                      {...register('amenities')}
+                      className="h-4 w-4 rounded border-neutral-300 accent-themeColor"
                     />
-                    <label className="mx-2 text-sm text-gray-600">
-                      {items}
-                    </label>
-                  </div>
+                    <span>{item}</span>
+                  </label>
                 )
               })}
             </div>
-          
-        </div>         
+          </FilterSection>
 
-
-
-
+          <div className="sticky bottom-0 flex w-full items-center justify-between gap-3 border-t border-neutral-200 bg-white px-5 py-4">
+            <Button type="button" tone="ghost" onClick={onClear}>
+              <RotateCcw className="mr-2 h-4 w-4" aria-hidden="true" />
+              Clear
+            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                type="button"
+                tone="secondary"
+                onClick={() => modal.onClose()}
+              >
+                Cancel
+              </Button>
+              <Button type="submit">
+                <Search className="mr-2 h-4 w-4" aria-hidden="true" />
+                Search
+              </Button>
+            </div>
           </div>
-
-        <div className=" bottom-0 sticky w-full py-2 bg-white border-t-2 flex items-center justify-between">
-          <button className="ml-3 text-md font-semibold underline text-black"
-          onClick={(e)=>{
-            e.preventDefault();
-           return  modal.onClose()
-          }}
-          >Cancel</button>
-        <button type="submit" className=" mr-3 px-4 py-2 font-semibold text-white bg-themeColor hover:bg-mainColor rounded-lg" onClick={handleSubmit(onSubmit)}> Search</button>
-        </div>
-
-
-        </div>
-
-        
-       
-
-       
-
-        
-
-        </Modal>
-        
-        </div>
-      
-    )
+        </form>
+      </div>
+    </Modal>
+  )
 }
