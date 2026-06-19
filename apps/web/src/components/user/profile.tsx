@@ -123,7 +123,7 @@ export default function Profile({
     <main className="my-5 space-y-4">
       <Surface className="p-5">
         <PageHeader
-          title={`Hi, I am ${userName || 'LuxeStay user'}`}
+          title={`Hi, I am ${userName || 'Meroghar user'}`}
           description={`Joined in ${joinedYear}`}
           action={
             <StatusBadge tone={identityVerified ? 'success' : 'warning'}>
@@ -152,7 +152,7 @@ export default function Profile({
           <div className="space-y-5">
             <div className="grid gap-3 sm:grid-cols-3">
               <div className="rounded-md border border-neutral-200 p-3">
-                <div className="flex items-center gap-2 text-themeColor">
+                <div className="flex items-center gap-2 text-primary">
                   <Star className="h-4 w-4 fill-current" aria-hidden="true" />
                   <span className="text-xs font-semibold uppercase text-neutral-500">
                     Reviews
@@ -164,7 +164,7 @@ export default function Profile({
               </div>
 
               <div className="rounded-md border border-neutral-200 p-3">
-                <div className="flex items-center gap-2 text-themeColor">
+                <div className="flex items-center gap-2 text-primary">
                   <Star className="h-4 w-4 fill-current" aria-hidden="true" />
                   <span className="text-xs font-semibold uppercase text-neutral-500">
                     Rating
@@ -176,7 +176,7 @@ export default function Profile({
               </div>
 
               <div className="rounded-md border border-neutral-200 p-3">
-                <div className="flex items-center gap-2 text-themeColor">
+                <div className="flex items-center gap-2 text-primary">
                   {identityVerified ? (
                     <ShieldCheck className="h-4 w-4" aria-hidden="true" />
                   ) : (

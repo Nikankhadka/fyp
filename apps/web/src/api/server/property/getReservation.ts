@@ -35,7 +35,7 @@ export default async function getReservations(propertyId:string,user:string,page
         if(reservations.data.success){
             return reservations.data.reservations;
         }
-        throw new Error("faile to fetch data")
+        throw new Error("failed to fetch data")
       }
     
       if(propertyId!=''&&user=='host'){
@@ -50,7 +50,7 @@ export default async function getReservations(propertyId:string,user:string,page
       if(reservations.data.success){
         return reservations.data.reservations;
     }
-    throw new Error("faile to fetch data")
+    throw new Error("failed to fetch data")
       //return safeReservations;
     } catch (error: any) {
       throw error;

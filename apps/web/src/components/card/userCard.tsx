@@ -33,28 +33,28 @@ export default function UserCard({userData}:UserProps){
 
 
     return(
-    <main className="w-[95%] sm:w-[80%] mx-auto p-4 rounded-lg border border-neutral-200 bg-white hover:shadow-xl duration-300">
+    <main className="mx-auto w-full rounded-lg border border-outline-variant bg-surface-container-lowest p-4 duration-300 hover:shadow-xl sm:w-[80%]">
      
-      <Link href={`/Home/user/${_id}`} target="_space">
+      <Link href={`/Home/user/${_id}`} target="_blank" rel="noopener noreferrer">
       <div className="mt-2 mb-4 w-fit">
         {profileImageSrc ? (
           <Image
             src={profileImageSrc}
-            alt="property"
+            alt={`${userName}'s profile photo`}
             height={112}
             width={112}
             className="rounded-full"
           />
         ) : (
-          <div className="flex h-28 w-28 items-center justify-center rounded-full bg-gray-100 text-center text-xs text-gray-500">
+          <div className="flex h-28 w-28 items-center justify-center rounded-full bg-surface-container text-center text-xs text-onSurface-variant">
             No image available
           </div>
         )}
       </div>
       </Link>
 
-      <div className="mt-3 text-sm font-semibold text-neutral-700">{capitalize(userName)}</div>
-      <p className="mt-1 text-sm font-semibold text-neutral-500">{about} dfsa sd fsadf sadf asd fsd fasdfsdfsdf</p>
+      <div className="mt-3 text-sm font-semibold text-onSurface">{capitalize(userName)}</div>
+      <p className="mt-1 text-sm font-semibold text-onSurface-variant">{about}</p>
 
       
 

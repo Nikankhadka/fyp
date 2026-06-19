@@ -28,12 +28,12 @@ export default async function Layout({children}: {children: React.ReactNode}) {
         </ClientComp>
       
 
-        <main className='my-[90px]'>
+        <div className="flex-1 pt-20">
       
           {children}
         
-      
-        </main>
+    
+        </div>
       
         <ClientComp>
           <PrimaryFooter />

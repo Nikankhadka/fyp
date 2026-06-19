@@ -1,4 +1,3 @@
-import AccountComponent from "../../../components/user/account";
 import { checkSession } from "../../../api/server/auth";
 import ClientComp from "../../../components/clientComp";
 import { getMe } from "../../../api/server/user/getUser";

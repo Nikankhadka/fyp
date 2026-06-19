@@ -10,7 +10,7 @@
 }
 
 body {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family: var(--font-nunito-sans), 'Nunito Sans', system-ui, -apple-system, sans-serif;
   background-color: #f8f9ff;
   color: #0d1c2e;
   -webkit-font-smoothing: antialiased;
@@ -48,5 +48,4 @@ body {
     --outline-variant: 174 10% 30%;
   }
 }
-
 

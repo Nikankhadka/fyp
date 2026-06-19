@@ -94,7 +94,7 @@ export default function AccountComponent({ userData, is_Admin, userId }: Props) 
       )}
 
       {!hasKycInfo && !is_Admin && (
-        <div className="mb-6 flex flex-col gap-3 rounded-md border border-warning/30 bg-warning/10 p-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mb-6 flex flex-col gap-3 rounded-md border border-yellow-200 bg-yellow-50 p-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h2 className="text-sm font-semibold text-onSurface">
               Provide KYC information?

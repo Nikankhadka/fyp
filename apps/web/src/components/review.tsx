@@ -33,7 +33,7 @@ export default function Review({ reviewData, currentUser }: Props) {
         <div>
           <div className="flex items-center justify-between">
             <div className="flex w-full items-center gap-x-3">
-              <Link href={`/Home/user/${reviewData.userId._id}`} target="_space">
+              <Link href={`/Home/user/${reviewData.userId._id}`} target="_blank" rel="noopener noreferrer">
                 {profileImageSrc ? (
                   <Image
                     src={profileImageSrc}
@@ -89,7 +89,7 @@ export default function Review({ reviewData, currentUser }: Props) {
                           return modal.onClose()
                         })
                         .catch((e) => {
-                          toast.error('Failed to Deleted Review')
+                          toast.error('Failed to Delete Review')
                           return modal.onClose()
                         })
                     }

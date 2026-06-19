@@ -54,7 +54,7 @@ export default function LoginSignup({ login,modal }: loginSignupModal): JSX.Elem
     const res=await Api.post("/auth/v1/registerUser",{userId,password},{withCredentials:true})
     if(res.data.success){
      
-      toast.success("User Registeres Successfully!")
+      toast.success("User Registered Successfully!")
      return  loginSignupModal.onOpen('login')
       
     }
@@ -70,7 +70,7 @@ export default function LoginSignup({ login,modal }: loginSignupModal): JSX.Elem
 
 
   return (
-    <div className="flex w-full flex-col items-center rounded-lg border border-outline-variant bg-surface-container-lowest shadow-lg md:w-[540px]">
+    <div className="flex w-full flex-col items-center rounded-lg border border-outline-variant bg-white shadow-lg">
       <div className="flex w-full items-center border-b border-outline-variant p-4">
         <p className="w-11/12 text-center text-lg font-semibold text-primary">
           {login ? 'Log in' : 'Sign up'}
@@ -92,7 +92,7 @@ export default function LoginSignup({ login,modal }: loginSignupModal): JSX.Elem
       <div className="w-full p-4">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
           <p className="text-xl font-semibold text-primary">
-            Welcome to LuxeStay
+            Welcome to Meroghar
           </p>
 
           <div>
@@ -159,7 +159,7 @@ export default function LoginSignup({ login,modal }: loginSignupModal): JSX.Elem
               {login ? "Don't Have Account?" : 'Have Account?'}{' '}
               {!modal && (
                 <Link
-                  href={login ? '/signup' : '/login'}
+                  href={login ? '/Home/signup' : '/Home/login'}
                   className="text-primary hover:underline"
                 >
                   {login ? 'Sign Up' : 'Login'}

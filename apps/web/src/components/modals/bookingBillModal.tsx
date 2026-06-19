@@ -96,7 +96,7 @@ export function BookingModal(){
         const hostName = typeof userId === 'string' ? userId : userId?.userName || 'Host'
 
         pdf.setFontSize(18)
-        pdf.text('LuxeStay Booking Invoice', 14, 20)
+        pdf.text('Meroghar Booking Invoice', 14, 20)
         pdf.setFontSize(11)
         pdf.text(`Invoice #: ${paymentId}`, 14, 32)
         pdf.text(`Property: ${name || 'Property'}`, 14, 42)

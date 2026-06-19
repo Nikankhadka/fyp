@@ -13,7 +13,7 @@ export function RegisterModal(){
     }
     return(
         <>
-        <Modal isOpen={registerModal.isOpen}>
+        <Modal isOpen={registerModal.isOpen} size="auth">
         <LoginSignup login={false} modal={true}/>
         </Modal>
         

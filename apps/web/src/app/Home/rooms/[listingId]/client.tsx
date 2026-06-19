@@ -85,7 +85,7 @@ export function RoomClient({
 
   return (
     <main className="w-full bg-surface">
-      <PageContainer className="pb-24 pt-24">
+      <PageContainer className="pb-14 pt-8">
         <div className="flex flex-col gap-4 border-b border-outline-variant pb-5 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h1 className="text-2xl font-bold tracking-tight text-onSurface md:text-3xl">
@@ -125,7 +125,7 @@ export function RoomClient({
               <div>
                 <h2 className="text-lg font-semibold text-onSurface">
                   {toTitleCase(propertyType)} hosted by{' '}
-                  {host?.userName || 'LuxeStay host'}
+                  {host?.userName || 'Meroghar host'}
                 </h2>
                 <p className="mt-1 text-sm text-onSurface-variant">
                   Verified marketplace host profile

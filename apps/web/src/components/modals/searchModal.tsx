@@ -39,15 +39,15 @@ function FilterSection({
   children: ReactNode
 }) {
   return (
-    <section className="border-b border-neutral-200 px-5 py-5 last:border-b-0">
+    <section className="border-b border-outline-variant px-5 py-5 last:border-b-0">
       <div className="mb-4 flex items-start gap-3">
-        <div className="mt-0.5 flex h-9 w-9 items-center justify-center rounded-md bg-sky-50 text-themeColor">
+        <div className="mt-0.5 flex h-9 w-9 items-center justify-center rounded-md bg-primary/10 text-primary">
           {icon}
         </div>
         <div>
-          <h2 className="text-base font-semibold text-neutral-950">{title}</h2>
+          <h2 className="text-base font-semibold text-onSurface">{title}</h2>
           {description && (
-            <p className="mt-1 text-sm leading-5 text-neutral-600">
+            <p className="mt-1 text-sm leading-5 text-onSurface-variant">
               {description}
             </p>
           )}
@@ -153,17 +153,17 @@ export function SearchModal() {
 
   return (
     <Modal isOpen={modal.isOpen}>
-      <div className="flex max-h-[86vh] w-[calc(100vw-1rem)] flex-col overflow-hidden rounded-md border border-neutral-200 bg-white shadow-xl sm:w-[680px]">
-        <header className="sticky top-0 z-10 border-b border-neutral-200 bg-white px-5 py-4">
+      <div className="flex max-h-[86vh] w-full flex-col overflow-hidden rounded-md border border-outline-variant bg-white shadow-xl">
+        <header className="sticky top-0 z-10 border-b border-outline-variant bg-white px-5 py-4">
           <div className="flex items-start justify-between gap-3">
             <div>
               <div className="flex items-center gap-2">
-                <SlidersHorizontal className="h-5 w-5 text-themeColor" aria-hidden="true" />
-                <h1 className="text-lg font-semibold text-neutral-950">
+                <SlidersHorizontal className="h-5 w-5 text-primary" aria-hidden="true" />
+                <h1 className="text-lg font-semibold text-onSurface">
                   Filters
                 </h1>
               </div>
-              <p className="mt-1 text-sm text-neutral-600">
+              <p className="mt-1 text-sm text-onSurface-variant">
                 Narrow rentals by price, property type, location, rating, and amenities.
               </p>
             </div>
@@ -178,7 +178,7 @@ export function SearchModal() {
             description="Set a nightly range. Leave max empty to keep all prices."
           >
             <div className="grid gap-3 sm:grid-cols-2">
-              <label className="block text-sm font-semibold text-neutral-700">
+              <label className="block text-sm font-semibold text-onSurface-variant">
                 Min rate / night
                 <Field
                   type="number"
@@ -196,7 +196,7 @@ export function SearchModal() {
                 {errors.minRate && <ErrorText text="Please enter a valid price" />}
               </label>
 
-              <label className="block text-sm font-semibold text-neutral-700">
+              <label className="block text-sm font-semibold text-onSurface-variant">
                 Max rate / night
                 <Field
                   type="number"
@@ -224,7 +224,7 @@ export function SearchModal() {
             icon={<Home className="h-4 w-4" aria-hidden="true" />}
             title="Property type"
           >
-            <label className="block text-sm font-semibold text-neutral-700">
+            <label className="block text-sm font-semibold text-onSurface-variant">
               Type
               <SelectField className="mt-1" {...register('propertyType')}>
                 <option value="">Any property type</option>
@@ -242,7 +242,7 @@ export function SearchModal() {
             title="Location"
           >
             <div className="grid gap-3 md:grid-cols-3">
-              <label className="block text-sm font-semibold text-neutral-700">
+              <label className="block text-sm font-semibold text-onSurface-variant">
                 Country
                 <SelectField className="mt-1" {...register('country')}>
                   <option value="">Any country</option>
@@ -254,7 +254,7 @@ export function SearchModal() {
                 </SelectField>
               </label>
 
-              <label className="block text-sm font-semibold text-neutral-700">
+              <label className="block text-sm font-semibold text-onSurface-variant">
                 State
                 <SelectField className="mt-1" {...register('state')}>
                   <option value="">Any state</option>
@@ -266,7 +266,7 @@ export function SearchModal() {
                 </SelectField>
               </label>
 
-              <label className="block text-sm font-semibold text-neutral-700">
+              <label className="block text-sm font-semibold text-onSurface-variant">
                 City
                 <SelectField className="mt-1" {...register('city')}>
                   <option value="">Any city</option>
@@ -284,7 +284,7 @@ export function SearchModal() {
             icon={<Star className="h-4 w-4" aria-hidden="true" />}
             title="Minimum rating"
           >
-            <label className="block max-w-xs text-sm font-semibold text-neutral-700">
+            <label className="block max-w-xs text-sm font-semibold text-onSurface-variant">
               Rating
               <Field
                 type="number"
@@ -317,13 +317,13 @@ export function SearchModal() {
                 return (
                   <label
                     key={item}
-                    className="flex min-h-10 cursor-pointer items-center gap-2 rounded-md border border-neutral-200 bg-white px-3 py-2 text-sm font-medium text-neutral-700 transition hover:bg-neutral-50"
+                    className="flex min-h-10 cursor-pointer items-center gap-2 rounded-md border border-outline-variant bg-white px-3 py-2 text-sm font-medium text-onSurface-variant transition hover:bg-surface-container-low"
                   >
                     <input
                       type="checkbox"
                       value={item}
                       {...register('amenities')}
-                      className="h-4 w-4 rounded border-neutral-300 accent-themeColor"
+                      className="h-4 w-4 rounded border-neutral-300 accent-primary"
                     />
                     <span>{item}</span>
                   </label>
@@ -332,7 +332,7 @@ export function SearchModal() {
             </div>
           </FilterSection>
 
-          <div className="sticky bottom-0 flex w-full items-center justify-between gap-3 border-t border-neutral-200 bg-white px-5 py-4">
+          <div className="sticky bottom-0 flex w-full items-center justify-between gap-3 border-t border-outline-variant bg-white px-5 py-4">
             <Button type="button" tone="ghost" onClick={onClear}>
               <RotateCcw className="mr-2 h-4 w-4" aria-hidden="true" />
               Clear

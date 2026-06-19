@@ -1,11 +1,12 @@
 import Link from 'next/link'
-import { ComponentProps, ElementType, ReactNode } from 'react'
+import Image from 'next/image'
+import { ComponentProps, ElementType, ReactNode, forwardRef } from 'react'
 import { Slot } from '@radix-ui/react-slot'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '../../utils/cn'
 
 export const buttonVariants = cva(
-  'inline-flex min-h-10 items-center justify-center rounded-md px-4 py-2 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-60',
+  'inline-flex min-h-10 items-center justify-center rounded-md px-4 py-2 text-sm font-semibold leading-none transition focus:outline-none focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-60',
   {
     variants: {
       tone: {
@@ -61,50 +62,47 @@ export function LinkButton({
   )
 }
 
-export function Field({
-  className,
-  ...props
-}: ComponentProps<'input'>) {
-  return (
+export const Field = forwardRef<HTMLInputElement, ComponentProps<'input'>>(
+  ({ className, ...props }, ref) => (
     <input
+      ref={ref}
       {...props}
       className={cn(
         'h-11 w-full rounded-md border border-outline-variant bg-surface-container-lowest px-3 text-sm text-onSurface outline-none transition placeholder:text-onSurface-variant/60 hover:bg-surface-container-low focus:border-primary focus:ring-2 focus:ring-primary/20',
         className,
       )}
     />
-  )
-}
+  ),
+)
+Field.displayName = 'Field'
 
-export function SelectField({
-  className,
-  ...props
-}: ComponentProps<'select'>) {
-  return (
+export const SelectField = forwardRef<HTMLSelectElement, ComponentProps<'select'>>(
+  ({ className, ...props }, ref) => (
     <select
+      ref={ref}
       {...props}
       className={cn(
         'h-11 w-full rounded-md border border-outline-variant bg-surface-container-lowest px-3 text-sm text-onSurface outline-none transition hover:bg-surface-container-low focus:border-primary focus:ring-2 focus:ring-primary/20',
         className,
       )}
     />
-  )
-}
+  ),
+)
+SelectField.displayName = 'SelectField'
 
-export function TextArea({
-  className,
-  ...props
-}: ComponentProps<'textarea'>) {
-  return (
+export const TextArea = forwardRef<HTMLTextAreaElement, ComponentProps<'textarea'>>(
+  ({ className, ...props }, ref) => (
     <textarea
+      ref={ref}
       {...props}
       className={cn(
         'min-h-[120px] w-full rounded-md border border-outline-variant bg-surface-container-lowest px-3 py-2 text-sm text-onSurface outline-none transition placeholder:text-onSurface-variant/60 hover:bg-surface-container-low focus:border-primary focus:ring-2 focus:ring-primary/20',
         className,
       )}
     />
-  )
-}
+  ),
+)
+TextArea.displayName = 'TextArea'
 
 export function StatusBadge({
   children,
@@ -150,9 +148,9 @@ export function EmptyState({
   return (
     <div className="mx-auto my-10 flex max-w-xl flex-col items-center justify-center rounded-lg border border-dashed border-outline-variant bg-surface-container-lowest px-6 py-10 text-center">
       {icon && <div className="mb-4 text-onSurface-variant/50">{icon}</div>}
-      <h2 className="text-lg font-semibold text-onSurface">{title}</h2>
+      <h2 className="text-lg font-semibold leading-snug text-onSurface">{title}</h2>
       {description && (
-        <p className="mt-2 text-sm leading-6 text-onSurface-variant">{description}</p>
+        <p className="mt-2 text-sm font-normal leading-6 text-onSurface-variant md:text-base">{description}</p>
       )}
       {action && <div className="mt-5">{action}</div>}
     </div>
@@ -171,11 +169,11 @@ export function PageHeader({
   return (
     <div className="mb-6 flex flex-col gap-4 border-b border-outline-variant pb-5 sm:flex-row sm:items-end sm:justify-between">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-onSurface">
+        <h1 className="text-3xl font-bold leading-tight text-onSurface md:text-4xl">
           {title}
         </h1>
         {description && (
-          <p className="mt-2 max-w-3xl text-sm leading-6 text-onSurface-variant">
+          <p className="mt-2 max-w-3xl text-base font-medium leading-6 text-onSurface-variant">
             {description}
           </p>
         )}
@@ -209,7 +207,7 @@ export function PageContainer({
   className?: string
 }) {
   return (
-    <div className={cn('mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8', className)}>
+    <div className={cn('mx-auto w-full max-w-[1440px] px-4 sm:px-5 lg:px-6', className)}>
       {children}
     </div>
   )
@@ -321,18 +319,20 @@ export function Avatar({
   className?: string
 }) {
   const sizes = {
-    sm: 'h-8 w-8',
-    md: 'h-10 w-10',
-    lg: 'h-14 w-14',
-    xl: 'h-20 w-20',
+    sm: { className: 'h-8 w-8', pixels: 32 },
+    md: { className: 'h-10 w-10', pixels: 40 },
+    lg: { className: 'h-14 w-14', pixels: 56 },
+    xl: { className: 'h-20 w-20', pixels: 80 },
   }
 
   if (src) {
     return (
-      <img
+      <Image
         src={src}
         alt={alt}
-        className={cn('rounded-full object-cover', sizes[size], className)}
+        width={sizes[size].pixels}
+        height={sizes[size].pixels}
+        className={cn('rounded-full object-cover', sizes[size].className, className)}
       />
     )
   }
@@ -341,7 +341,7 @@ export function Avatar({
     <div
       className={cn(
         'flex items-center justify-center rounded-full bg-surface-container text-onSurface-variant font-semibold',
-        sizes[size],
+        sizes[size].className,
         className,
       )}
     >

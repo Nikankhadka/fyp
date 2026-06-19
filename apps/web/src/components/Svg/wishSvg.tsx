@@ -25,7 +25,7 @@ export default function Wish({ active, id, user, className }: WishProps) {
     <button
       type="button"
       className={cn(
-        'inline-flex h-9 w-9 items-center justify-center rounded-full text-neutral-600 transition hover:bg-neutral-100 hover:text-themeColor focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-300',
+        'inline-flex h-9 w-9 items-center justify-center rounded-full text-onSurface-variant transition hover:bg-surface-container hover:text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/25',
         className,
       )}
       aria-label={isActive ? 'Remove from favourites' : 'Save to favourites'}
@@ -68,7 +68,7 @@ export default function Wish({ active, id, user, className }: WishProps) {
       <Heart
         className={cn(
           'h-5 w-5',
-          isActive ? 'fill-themeColor text-themeColor' : 'text-neutral-500',
+          isActive ? 'fill-primary text-primary' : 'text-onSurface-variant',
         )}
         aria-hidden="true"
       />

@@ -9,7 +9,7 @@ import { toast } from "react-hot-toast"
 import { useRouter} from 'next/navigation'
 
 
-const btnstyle="w-full text-sm text-gray-600 text-left p-2 px-3 rounded-md hover:bg-hoverColor"
+const btnstyle="w-full text-sm text-gray-600 text-left p-2 px-3 rounded-md hover:bg-surface-container"
 
  interface NavModal{
     authState:boolean

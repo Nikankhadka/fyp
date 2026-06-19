@@ -7,9 +7,19 @@ import { Dialog, DialogContent } from '../ui/dialog'
 interface ModalProps {
   isOpen?: string
   children?: React.ReactElement
+  surface?: boolean
+  size?: 'auth' | 'md' | 'lg' | 'xl' | 'fit'
 }
 
-function Modal({ isOpen, children }: ModalProps) {
+const modalSizeClasses = {
+  auth: 'w-[92vw] sm:w-[460px]',
+  md: 'w-[92vw] sm:w-[560px]',
+  lg: 'w-[94vw] sm:w-[680px]',
+  xl: 'w-[96vw] sm:w-[840px]',
+  fit: 'w-[92vw] sm:w-auto sm:max-w-fit',
+}
+
+function Modal({ isOpen, children, surface = false, size = 'lg' }: ModalProps) {
   const modal = useModal()
   const open = isOpen !== 'close'
 
@@ -22,12 +32,15 @@ function Modal({ isOpen, children }: ModalProps) {
         }
       }}
     >
-      <DialogContent className="w-[calc(100%-1rem)] max-w-fit border-0 bg-transparent p-0 shadow-none" showClose={false}>
+      <DialogContent
+        className={`${modalSizeClasses[size]} max-w-none bg-white p-0 ${surface ? 'border border-outline-variant shadow-xl' : 'border-0 shadow-none'}`}
+        showClose={false}
+      >
         <div className="relative flex min-h-[120px] items-center justify-center">
           {modal.isLoading && (
-            <Loader2 className="absolute bottom-4 h-8 w-8 animate-spin text-themeColor" />
+            <Loader2 className="absolute bottom-4 h-8 w-8 animate-spin text-primary" />
           )}
-          <div className="w-full sm:w-auto">{children}</div>
+          <div className="w-full">{children}</div>
         </div>
       </DialogContent>
     </Dialog>

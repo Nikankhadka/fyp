@@ -12,7 +12,7 @@ export function SocialLogin({
   return (
     <Link
       href={url}
-      className="text-md group my-1 flex w-[95%]  items-center  rounded-md border-2  border-gray-500 p-2 hover:bg-mainColor"
+      className="text-md group my-1 flex w-[95%]  items-center  rounded-md border-2  border-gray-500 p-2 hover:bg-primary/90"
     >
       <Image
         height={20}

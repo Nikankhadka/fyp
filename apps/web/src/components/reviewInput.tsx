@@ -81,7 +81,7 @@ export default function ReviewInput({
                 key={index}
                 aria-label={`Rate ${ratevalue} star${ratevalue === 1 ? '' : 's'}`}
                 aria-pressed={index <= rate}
-                className="rounded-md p-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-300"
+                className="rounded-md p-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/25"
                 onClick={() => {
                   setrate(index)
                 }}
@@ -90,8 +90,8 @@ export default function ReviewInput({
                   className={cn(
                     'h-6 w-6 transition',
                     index <= rate
-                      ? 'fill-themeColor text-themeColor'
-                      : 'text-neutral-300 hover:text-themeColor',
+                      ? 'fill-primary text-primary'
+                      : 'text-neutral-300 hover:text-primary',
                   )}
                 />
               </button>

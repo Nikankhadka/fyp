@@ -13,7 +13,7 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['var(--font-nunito-sans)', 'Nunito Sans', 'system-ui', 'sans-serif'],
       },
       colors: {
         mainColor:"#006a65",
@@ -81,6 +81,13 @@ module.exports = {
         xl: '1.5rem',
         '2xl': '1.5rem',
         full: '9999px',
+      },
+      spacing: {
+        gutter: '1.5rem',
+        'container-max': '1440px',
+      },
+      maxWidth: {
+        'container-max': '1440px',
       },
     },
   },

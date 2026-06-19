@@ -4,12 +4,12 @@ import Link from "next/link"
 import { Menu } from 'lucide-react'
 import SideBar from "./sidebar"
 
-import { useState, useEffect, createRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Image from "next/image"
 
 export default function DashboardNav() {
   const [openSide, setopenSide] = useState(false)
-  const sideRef = createRef<HTMLDivElement>()
+  const sideRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const clickHandler = (e: any) => {
@@ -22,10 +22,10 @@ export default function DashboardNav() {
     return () => {
       document.removeEventListener('mousedown', clickHandler)
     }
-  })
+  }, [])
 
   return (
-    <main className="fixed z-50 flex h-20 w-full items-center justify-between bg-surface-container-lowest border-b border-outline-variant shadow-md md:hidden">
+    <main className="fixed inset-x-0 top-0 z-50 flex h-20 w-full items-center justify-between border-b border-outline-variant bg-surface-container-lowest px-4 shadow-md md:hidden">
       <div ref={sideRef}>
         <button
           className="rounded-lg p-2 text-onSurface-variant hover:bg-surface-container hover:text-onSurface"
@@ -42,7 +42,7 @@ export default function DashboardNav() {
 
       <Link href="/Home" className="flex items-center gap-2">
         <Image height={40} width={40} src="/airbnb.png" alt="logo" className="block" />
-        <span className="block text-lg font-semibold text-primary drop-shadow-xl">LuxeStay</span>
+        <span className="block text-lg font-semibold text-primary drop-shadow-xl">Meroghar</span>
       </Link>
     </main>
   )

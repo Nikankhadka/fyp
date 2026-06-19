@@ -7,7 +7,6 @@ import { HomeClient } from "./HomeClient"
 
 export const dynamic = 'force-dynamic'
 
-// this is not route parameters hai 
 interface HomeProps{
   searchParams:SearchForm
 }
@@ -18,9 +17,6 @@ export default async function Home({searchParams}:HomeProps){
     const {session,userData}=await checkSession()
 
 
-
-    //for admin since admin/non logged no wishlist
-
   if(!session||userData.is_Admin)return(
     <ClientComp>
     <HomeClient properties={properties}  userData={userData}/>
@@ -28,7 +24,6 @@ export default async function Home({searchParams}:HomeProps){
     )
 
   
-    //user exclusiven wishlist which needs to be checked
     const wishList=await getFavourites(1,20);
    
     return(

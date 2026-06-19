@@ -17,7 +17,7 @@ export const DialogOverlay = forwardRef<
   <DialogPrimitive.Overlay
     ref={ref}
     className={cn(
-      'fixed inset-0 z-50 bg-neutral-950/70 data-[state=closed]:animate-out data-[state=open]:animate-in',
+      'fixed inset-0 z-50 bg-onSurface/70 data-[state=closed]:animate-out data-[state=open]:animate-in',
       className,
     )}
     {...props}
@@ -36,14 +36,14 @@ export const DialogContent = forwardRef<
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
-        'fixed left-1/2 top-1/2 z-50 grid max-h-[92vh] w-[calc(100%-1.5rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 gap-4 overflow-y-auto rounded-md border border-neutral-200 bg-white p-6 shadow-xl outline-none data-[state=closed]:animate-out data-[state=open]:animate-in sm:w-full',
+        'fixed left-1/2 top-1/2 z-50 grid max-h-[92vh] w-[calc(100%-1.5rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 gap-4 overflow-y-auto rounded-md border border-outline-variant bg-surface-container-lowest p-6 shadow-xl outline-none data-[state=closed]:animate-out data-[state=open]:animate-in sm:w-full',
         className,
       )}
       {...props}
     >
       {children}
       {showClose && (
-        <DialogPrimitive.Close className="absolute right-4 top-4 rounded-md p-1 text-neutral-500 transition hover:bg-neutral-100 hover:text-neutral-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-300">
+        <DialogPrimitive.Close className="absolute right-4 top-4 rounded-md p-1 text-onSurface-variant transition hover:bg-surface-container hover:text-onSurface focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/25">
           <X className="h-4 w-4" />
           <span className="sr-only">Close</span>
         </DialogPrimitive.Close>
@@ -76,7 +76,7 @@ export const DialogTitle = forwardRef<
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Title
     ref={ref}
-    className={cn('text-lg font-semibold text-neutral-950', className)}
+    className={cn('text-lg font-semibold text-onSurface', className)}
     {...props}
   />
 ))
@@ -88,7 +88,7 @@ export const DialogDescription = forwardRef<
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Description
     ref={ref}
-    className={cn('text-sm leading-6 text-neutral-600', className)}
+    className={cn('text-sm leading-6 text-onSurface-variant', className)}
     {...props}
   />
 ))

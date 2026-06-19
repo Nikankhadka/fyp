@@ -145,7 +145,7 @@ export function EditBasic({ userName, about, img }: Prop) {
             )}
 
             <label className="flex min-h-24 w-full cursor-pointer flex-col items-center justify-center rounded-md border border-dashed border-neutral-300 bg-neutral-50 px-4 py-5 text-center transition hover:bg-neutral-100 sm:max-w-sm">
-              <Camera className="mb-2 h-5 w-5 text-themeColor" aria-hidden="true" />
+              <Camera className="mb-2 h-5 w-5 text-primary" aria-hidden="true" />
               <span className="text-sm font-semibold text-neutral-800">
                 Upload profile image
               </span>

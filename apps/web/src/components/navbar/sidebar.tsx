@@ -44,7 +44,7 @@ const SideBar = forwardRef<Ref, props>((props, ref): JSX.Element => {
           <div>
             <Link href="/Home" className="my-2 flex items-center gap-2">
               <Image width={40} height={40} src="/airbnb.png" alt="logo" className="block h-10 w-10" />
-              <span className="block font-semibold text-primary drop-shadow-xl md:text-lg">LuxeStay</span>
+              <span className="block font-semibold text-primary drop-shadow-xl md:text-lg">Meroghar</span>
             </Link>
             <hr className="mt-6 border-outline-variant" />
           </div>

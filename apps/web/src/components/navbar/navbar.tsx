@@ -1,6 +1,5 @@
 'use client'
 
-import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -29,10 +28,6 @@ const NavBar = ({ authState, img, is_Admin }: NavProps): JSX.Element => {
   const router = useRouter()
   const modal = useModal()
 
-  useEffect(() => {
-    router.refresh()
-  }, [])
-
   const handleLogout = () => {
     Api.delete('/auth/v1/logout', { withCredentials: true })
       .then(() => {
@@ -48,43 +43,43 @@ const NavBar = ({ authState, img, is_Admin }: NavProps): JSX.Element => {
   }
 
   return (
-    <nav className="fixed inset-x-0 top-0 z-20 border-b border-outline-variant/50 bg-surface-container-lowest/80 backdrop-blur-md dark:bg-inverse-surface/80">
-      <div className="mx-auto flex h-20 w-full max-w-7xl items-center gap-3 px-3 sm:px-4 lg:px-6">
-        <Link href="/Home" className="flex shrink-0 items-center gap-2">
-          <Image width={40} height={40} src="/airbnb.png" alt="LuxeStay logo" />
-          <span className="hidden text-lg font-semibold text-primary drop-shadow-xl sm:inline">
-            LuxeStay
+    <nav className="fixed inset-x-0 top-0 z-50 border-b border-surface-container-highest bg-surface/80 backdrop-blur-md shadow-sm">
+      <div className="relative mx-auto flex h-20 w-full max-w-container-max items-center justify-between px-4 sm:px-5 lg:px-6">
+        <Link href="/Home" className="relative z-10 flex shrink-0 cursor-pointer items-center gap-2 duration-150 active:scale-95">
+          <Image width={40} height={40} src="/airbnb.png" alt="Meroghar logo" />
+          <span className="hidden text-xl font-black text-primary lg:inline">
+            Meroghar
           </span>
         </Link>
 
-        <div className="min-w-0 flex-1 md:flex md:justify-center">
-          <div className="w-full md:max-w-xl">
+        <div className="pointer-events-none absolute left-1/2 top-1/2 w-[min(52vw,340px)] -translate-x-1/2 -translate-y-1/2 md:w-[min(640px,calc(100vw-32rem))]">
+          <div className="pointer-events-auto w-full">
             <Search />
           </div>
         </div>
 
-        <div className="flex shrink-0 items-center gap-2">
+        <div className="relative z-10 flex shrink-0 items-center justify-end gap-2">
           {authState && !is_Admin && (
-            <Button asChild tone="secondary" className="hidden gap-2 px-3 md:inline-flex">
+            <Button asChild tone="secondary" className="hidden lg:inline-flex gap-2 rounded-full px-4 py-3">
               <Link href="/Home/Account/listings">
                 <Home className="h-4 w-4" aria-hidden="true" />
-                Post Room
+                <span className="text-sm">Switch to hosting</span>
               </Link>
             </Button>
           )}
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button tone="secondary" className="gap-2 border-gray-200 px-2 py-1">
-                <Menu className="h-5 w-5" aria-hidden="true" />
+              <button className="flex items-center gap-3 border border-surface-container-highest p-2 pl-3 rounded-full hover:shadow-sm transition-shadow bg-surface-container-lowest cursor-pointer active:scale-95 duration-150">
+                <Menu className="h-5 w-5 text-onSurface" aria-hidden="true" />
                 <Image
                   width={32}
                   height={32}
                   src={img === '' ? '/user.png' : img}
-                  alt="user"
-                  className="h-8 w-8 rounded-full"
+                  alt="User avatar"
+                  className="h-8 w-8 rounded-full bg-surface-container-highest"
                 />
-              </Button>
+              </button>
             </DropdownMenuTrigger>
 
             <DropdownMenuContent align="end" className="w-60">

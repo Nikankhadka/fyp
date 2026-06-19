@@ -142,7 +142,7 @@ export async function getAllProperties(
     if (!propertyData.success)
       throw new Error('failed to fetch property information')
 
-    console.log('prorties Data', propertyData)
+    console.log('properties Data', propertyData)
     return propertyData.properties
   } catch (e) {
     throw e

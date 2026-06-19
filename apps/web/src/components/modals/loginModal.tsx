@@ -15,7 +15,7 @@ export function LoginModal(){
     }
     return(
         <>
-        <Modal isOpen={loginModal.isOpen}>
+        <Modal isOpen={loginModal.isOpen} size="auth">
         <LoginSignup login={true} modal={true}/>
         </Modal>
         

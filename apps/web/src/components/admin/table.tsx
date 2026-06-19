@@ -37,6 +37,10 @@ interface AdminTableProps {
   properties?: Partial<Property>[]
 }
 
+const EMPTY_USERS: Partial<FetchedMe>[] = []
+const EMPTY_PROPERTIES: Partial<Property>[] = []
+const EMPTY_BOOKINGS: Partial<IBooking>[] = []
+
 const titleCase = (value: string) =>
   value
     .split(' ')
@@ -46,9 +50,9 @@ const titleCase = (value: string) =>
 
 export default function AdminTable({
   use,
-  users = [],
-  properties = [],
-  bookings = [],
+  users = EMPTY_USERS,
+  properties = EMPTY_PROPERTIES,
+  bookings = EMPTY_BOOKINGS,
 }: AdminTableProps) {
   const [stateUsers, setStateUsers] = useState(users)
   const [stateProperties, setStateProperties] = useState(properties)
@@ -58,12 +62,14 @@ export default function AdminTable({
   const confirm = useConfirm()
 
   useEffect(() => {
+    if (use !== 'user') return
     setStateUsers(users)
-  }, [users])
+  }, [use, users])
 
   useEffect(() => {
+    if (use !== 'property') return
     setStateProperties(properties)
-  }, [properties])
+  }, [use, properties])
 
   useEffect(() => {
     if (use === 'booking') return
@@ -195,7 +201,7 @@ export default function AdminTable({
   }
 
   return (
-    <main className="mx-auto w-[96%]">
+    <main className="w-full">
       <PageHeader title={pageTitle} description={pageDescription} />
 
       <div className="mb-5 max-w-md">

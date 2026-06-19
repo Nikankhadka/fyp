@@ -25,13 +25,13 @@ export default function PasswordReset(){
         })
     }
     return(
-        <div className="w-full rounded-lg border border-neutral-200 bg-white p-4 shadow-lg sm:w-[560px]">
-            <h1 className="text-xl font-semibold text-neutral-950">Forgot Password?</h1>
-            <p className="mt-2 text-sm text-themeColor">Enter your email to reset your password.</p>
-            <hr className="my-4 border-neutral-200" />
+        <div className="w-full rounded-lg border border-outline-variant bg-white p-4 shadow-lg sm:w-[560px]">
+            <h1 className="text-xl font-semibold text-onSurface">Forgot Password?</h1>
+            <p className="mt-2 text-sm text-primary">Enter your email to reset your password.</p>
+            <hr className="my-4 border-outline-variant" />
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
                 <div>
-                    <label className="block text-sm font-semibold text-neutral-800">Email</label>
+                    <label className="block text-sm font-semibold text-onSurface">Email</label>
                     <Field
                         type="email"
                         className="mt-1"
@@ -45,7 +45,7 @@ export default function PasswordReset(){
                     )}
                 </div>
 
-                <div className="flex items-center justify-between border-t border-neutral-200 pt-4">
+                <div className="flex items-center justify-between border-t border-outline-variant pt-4">
                     <Button type="button" tone="ghost" onClick={() => router.back()}>
                         Cancel
                     </Button>
