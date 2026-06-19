@@ -1,1 +1,163 @@
-[]
+[
+  {
+    "scope": "public",
+    "kind": "console",
+    "route": "http://127.0.0.1:3101/Home",
+    "message": "Failed to fetch RSC payload for http://127.0.0.1:3101/Home/rooms/660100000000000000001011. Falling back to browser navigation. TypeError: Failed to fetch\n    at fetchServerResponse (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:44692)\n    at http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:60616\n    at Object.task (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:31721)\n    at PromiseQueue.processNext (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:32445)\n    at Object.task (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:31783)",
+    "timestamp": "2026-06-19T04:04:12.013Z"
+  },
+  {
+    "scope": "public",
+    "kind": "console",
+    "route": "http://127.0.0.1:3101/Home",
+    "message": "Failed to fetch RSC payload for http://127.0.0.1:3101/Home/rooms/660100000000000000001012. Falling back to browser navigation. TypeError: Failed to fetch\n    at fetchServerResponse (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:44692)\n    at http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:60616\n    at Object.task (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:31721)\n    at PromiseQueue.processNext (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:32445)\n    at Object.task (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:31783)",
+    "timestamp": "2026-06-19T04:04:12.015Z"
+  },
+  {
+    "scope": "public",
+    "kind": "console",
+    "route": "http://127.0.0.1:3101/Home",
+    "message": "Failed to fetch RSC payload for http://127.0.0.1:3101/Home/rooms/660100000000000000001010. Falling back to browser navigation. TypeError: Failed to fetch\n    at fetchServerResponse (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:44692)\n    at http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:60616\n    at Object.task (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:31721)\n    at PromiseQueue.processNext (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:32445)\n    at Object.task (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:31783)",
+    "timestamp": "2026-06-19T04:04:12.015Z"
+  },
+  {
+    "scope": "public",
+    "kind": "console",
+    "route": "http://127.0.0.1:3101/Home",
+    "message": "Failed to fetch RSC payload for http://127.0.0.1:3101/Home/rooms/660100000000000000001003. Falling back to browser navigation. TypeError: Failed to fetch\n    at fetchServerResponse (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:44692)\n    at http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:60616\n    at Object.task (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:31721)\n    at PromiseQueue.processNext (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:32445)\n    at Object.task (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:31783)",
+    "timestamp": "2026-06-19T04:04:12.016Z"
+  },
+  {
+    "scope": "public",
+    "kind": "console",
+    "route": "http://127.0.0.1:3101/Home",
+    "message": "Failed to fetch RSC payload for http://127.0.0.1:3101/Home/rooms/66010000000000000000100e. Falling back to browser navigation. TypeError: Failed to fetch\n    at fetchServerResponse (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:44692)\n    at http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:60616\n    at Object.task (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:31721)\n    at PromiseQueue.processNext (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:32445)\n    at Object.task (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:31783)",
+    "timestamp": "2026-06-19T04:04:12.016Z"
+  },
+  {
+    "scope": "guest",
+    "kind": "console",
+    "route": "http://127.0.0.1:3101/Home/login",
+    "message": "Failed to fetch RSC payload for http://127.0.0.1:3101/Home/login. Falling back to browser navigation. TypeError: Failed to fetch\n    at fetchServerResponse (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:44692)\n    at refreshReducer (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:62092)\n    at reducer (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:69731)\n    at http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:75208\n    at Object.Nf [as useReducer] (http://127.0.0.1:3101/_next/static/chunks/ee8a080f-0c941d2381d4f7e6.js:9:40413)\n    at t.useReducer (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:17:7409)\n    at useReducerWithReduxDevtools (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:75193)\n    at Router (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:10798)\n    at wf (http://127.0.0.1:3101/_next/static/chunks/ee8a080f-0c941d2381d4f7e6.js:9:38363)\n    at $g (http://127.0.0.1:3101/_next/static/chunks/ee8a080f-0c941d2381d4f7e6.js:9:53651)",
+    "timestamp": "2026-06-19T04:04:38.470Z"
+  },
+  {
+    "scope": "host",
+    "kind": "console",
+    "route": "http://127.0.0.1:3101/Home/login",
+    "message": "Failed to fetch RSC payload for http://127.0.0.1:3101/Home/login. Falling back to browser navigation. TypeError: Failed to fetch\n    at fetchServerResponse (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:44692)\n    at refreshReducer (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:62092)\n    at reducer (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:69731)\n    at http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:75208\n    at Object.Nf [as useReducer] (http://127.0.0.1:3101/_next/static/chunks/ee8a080f-0c941d2381d4f7e6.js:9:40413)\n    at t.useReducer (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:17:7409)\n    at useReducerWithReduxDevtools (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:75193)\n    at Router (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:10798)\n    at wf (http://127.0.0.1:3101/_next/static/chunks/ee8a080f-0c941d2381d4f7e6.js:9:38363)\n    at $g (http://127.0.0.1:3101/_next/static/chunks/ee8a080f-0c941d2381d4f7e6.js:9:53651)",
+    "timestamp": "2026-06-19T04:04:55.632Z"
+  },
+  {
+    "scope": "admin",
+    "kind": "console",
+    "route": "http://127.0.0.1:3101/Home/login",
+    "message": "Failed to fetch RSC payload for http://127.0.0.1:3101/Home/login. Falling back to browser navigation. TypeError: Failed to fetch\n    at fetchServerResponse (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:44692)\n    at refreshReducer (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:62092)\n    at reducer (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:69731)\n    at http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:75208\n    at Object.Nf [as useReducer] (http://127.0.0.1:3101/_next/static/chunks/ee8a080f-0c941d2381d4f7e6.js:9:40413)\n    at t.useReducer (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:17:7409)\n    at useReducerWithReduxDevtools (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:75193)\n    at Router (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:10798)\n    at wf (http://127.0.0.1:3101/_next/static/chunks/ee8a080f-0c941d2381d4f7e6.js:9:38363)\n    at $g (http://127.0.0.1:3101/_next/static/chunks/ee8a080f-0c941d2381d4f7e6.js:9:53651)",
+    "timestamp": "2026-06-19T04:05:08.618Z"
+  },
+  {
+    "scope": "admin",
+    "kind": "console",
+    "route": "http://127.0.0.1:3101/Admin",
+    "message": "Failed to fetch RSC payload for http://127.0.0.1:3101/Home/rooms/66010000000000000000100f. Falling back to browser navigation. TypeError: Failed to fetch\n    at fetchServerResponse (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:44692)\n    at http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:60616\n    at Object.task (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:31721)\n    at PromiseQueue.processNext (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:32445)\n    at PromiseQueue.enqueue (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:31849)\n    at prefetchReducer (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:60579)\n    at reducer (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:69850)\n    at http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:75208\n    at Object.Nf [as useReducer] (http://127.0.0.1:3101/_next/static/chunks/ee8a080f-0c941d2381d4f7e6.js:9:40413)\n    at t.useReducer (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:17:7409)",
+    "timestamp": "2026-06-19T04:05:18.444Z"
+  },
+  {
+    "scope": "admin",
+    "kind": "console",
+    "route": "http://127.0.0.1:3101/Admin",
+    "message": "Failed to fetch RSC payload for http://127.0.0.1:3101/Home/user/660100000000000000000005. Falling back to browser navigation. TypeError: Failed to fetch\n    at fetchServerResponse (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:44692)\n    at http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:60616\n    at Object.task (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:31721)\n    at PromiseQueue.processNext (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:32445)\n    at PromiseQueue.enqueue (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:31849)\n    at prefetchReducer (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:60579)\n    at reducer (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:69850)\n    at http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:75208\n    at Object.Nf [as useReducer] (http://127.0.0.1:3101/_next/static/chunks/ee8a080f-0c941d2381d4f7e6.js:9:40413)\n    at t.useReducer (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:17:7409)",
+    "timestamp": "2026-06-19T04:05:18.445Z"
+  },
+  {
+    "scope": "admin",
+    "kind": "console",
+    "route": "http://127.0.0.1:3101/Admin",
+    "message": "Failed to fetch RSC payload for http://127.0.0.1:3101/Home/rooms/660100000000000000001009. Falling back to browser navigation. TypeError: Failed to fetch\n    at fetchServerResponse (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:44692)\n    at http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:60616\n    at Object.task (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:31721)\n    at PromiseQueue.processNext (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:32445)\n    at PromiseQueue.enqueue (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:31849)\n    at prefetchReducer (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:60579)\n    at reducer (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:69850)\n    at http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:75208\n    at Object.Nf [as useReducer] (http://127.0.0.1:3101/_next/static/chunks/ee8a080f-0c941d2381d4f7e6.js:9:40413)\n    at t.useReducer (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:17:7409)",
+    "timestamp": "2026-06-19T04:05:18.445Z"
+  },
+  {
+    "scope": "admin",
+    "kind": "console",
+    "route": "http://127.0.0.1:3101/Admin",
+    "message": "Failed to fetch RSC payload for http://127.0.0.1:3101/Home/user/660100000000000000000003. Falling back to browser navigation. TypeError: Failed to fetch\n    at fetchServerResponse (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:44692)\n    at http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:60616\n    at Object.task (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:31721)\n    at PromiseQueue.processNext (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:32445)\n    at PromiseQueue.enqueue (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:31849)\n    at prefetchReducer (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:60579)\n    at reducer (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:69850)\n    at http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:75208\n    at Object.Nf [as useReducer] (http://127.0.0.1:3101/_next/static/chunks/ee8a080f-0c941d2381d4f7e6.js:9:40413)\n    at t.useReducer (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:17:7409)",
+    "timestamp": "2026-06-19T04:05:18.445Z"
+  },
+  {
+    "scope": "admin",
+    "kind": "console",
+    "route": "http://127.0.0.1:3101/Admin",
+    "message": "Failed to fetch RSC payload for http://127.0.0.1:3101/Home/rooms/660100000000000000001005. Falling back to browser navigation. TypeError: Failed to fetch\n    at fetchServerResponse (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:44692)\n    at http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:60616\n    at Object.task (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:31721)\n    at PromiseQueue.processNext (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:32445)\n    at PromiseQueue.enqueue (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:31849)\n    at prefetchReducer (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:60579)\n    at reducer (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:69850)\n    at http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:75208\n    at Object.Nf [as useReducer] (http://127.0.0.1:3101/_next/static/chunks/ee8a080f-0c941d2381d4f7e6.js:9:40413)\n    at t.useReducer (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:17:7409)",
+    "timestamp": "2026-06-19T04:05:18.445Z"
+  },
+  {
+    "scope": "admin",
+    "kind": "console",
+    "route": "http://127.0.0.1:3101/Admin/users",
+    "message": "Failed to fetch RSC payload for http://127.0.0.1:3101/Home/user/660100000000000000000006. Falling back to browser navigation. TypeError: Failed to fetch\n    at fetchServerResponse (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:44692)\n    at http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:60616\n    at Object.task (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:31721)\n    at PromiseQueue.processNext (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:32445)\n    at Object.task (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:31783)",
+    "timestamp": "2026-06-19T04:05:29.828Z"
+  },
+  {
+    "scope": "admin",
+    "kind": "console",
+    "route": "http://127.0.0.1:3101/Admin/users",
+    "message": "Failed to fetch RSC payload for http://127.0.0.1:3101/Home/user/660100000000000000000003. Falling back to browser navigation. TypeError: Failed to fetch\n    at fetchServerResponse (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:44692)\n    at http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:60616\n    at Object.task (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:31721)\n    at PromiseQueue.processNext (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:32445)\n    at Object.task (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:31783)",
+    "timestamp": "2026-06-19T04:05:29.828Z"
+  },
+  {
+    "scope": "admin",
+    "kind": "console",
+    "route": "http://127.0.0.1:3101/Admin/users",
+    "message": "Failed to fetch RSC payload for http://127.0.0.1:3101/Home/user/660100000000000000000002. Falling back to browser navigation. TypeError: Failed to fetch\n    at fetchServerResponse (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:44692)\n    at http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:60616\n    at Object.task (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:31721)\n    at PromiseQueue.processNext (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:32445)\n    at Object.task (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:31783)",
+    "timestamp": "2026-06-19T04:05:29.828Z"
+  },
+  {
+    "scope": "admin",
+    "kind": "console",
+    "route": "http://127.0.0.1:3101/Admin/users",
+    "message": "Failed to fetch RSC payload for http://127.0.0.1:3101/Home/user/660100000000000000000005. Falling back to browser navigation. TypeError: Failed to fetch\n    at fetchServerResponse (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:44692)\n    at http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:60616\n    at Object.task (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:31721)\n    at PromiseQueue.processNext (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:32445)\n    at Object.task (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:31783)",
+    "timestamp": "2026-06-19T04:05:29.828Z"
+  },
+  {
+    "scope": "admin",
+    "kind": "console",
+    "route": "http://127.0.0.1:3101/Admin/users",
+    "message": "Failed to fetch RSC payload for http://127.0.0.1:3101/Home/user/660100000000000000000004. Falling back to browser navigation. TypeError: Failed to fetch\n    at fetchServerResponse (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:44692)\n    at http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:60616\n    at Object.task (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:31721)\n    at PromiseQueue.processNext (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:32445)\n    at Object.task (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:31783)",
+    "timestamp": "2026-06-19T04:05:29.828Z"
+  },
+  {
+    "scope": "admin",
+    "kind": "console",
+    "route": "http://127.0.0.1:3101/Admin/listing",
+    "message": "Failed to fetch RSC payload for http://127.0.0.1:3101/Home/user/660100000000000000000003. Falling back to browser navigation. TypeError: Failed to fetch\n    at fetchServerResponse (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:44692)\n    at http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:60616\n    at Object.task (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:31721)\n    at PromiseQueue.processNext (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:32445)\n    at PromiseQueue.enqueue (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:31849)\n    at prefetchReducer (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:60579)\n    at reducer (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:69850)\n    at http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:75208\n    at Object.Nf [as useReducer] (http://127.0.0.1:3101/_next/static/chunks/ee8a080f-0c941d2381d4f7e6.js:9:40413)\n    at t.useReducer (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:17:7409)",
+    "timestamp": "2026-06-19T04:05:46.648Z"
+  },
+  {
+    "scope": "admin",
+    "kind": "console",
+    "route": "http://127.0.0.1:3101/Admin/listing",
+    "message": "Failed to fetch RSC payload for http://127.0.0.1:3101/Home/rooms/660100000000000000001011. Falling back to browser navigation. TypeError: Failed to fetch\n    at fetchServerResponse (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:44692)\n    at http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:60616\n    at Object.task (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:31721)\n    at PromiseQueue.processNext (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:32445)\n    at PromiseQueue.enqueue (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:31849)\n    at prefetchReducer (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:60579)\n    at reducer (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:69850)\n    at http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:75208\n    at Object.Nf [as useReducer] (http://127.0.0.1:3101/_next/static/chunks/ee8a080f-0c941d2381d4f7e6.js:9:40413)\n    at t.useReducer (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:17:7409)",
+    "timestamp": "2026-06-19T04:05:46.648Z"
+  },
+  {
+    "scope": "admin",
+    "kind": "console",
+    "route": "http://127.0.0.1:3101/Admin/listing",
+    "message": "Failed to fetch RSC payload for http://127.0.0.1:3101/Home/rooms/660100000000000000001012. Falling back to browser navigation. TypeError: Failed to fetch\n    at fetchServerResponse (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:44692)\n    at http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:60616\n    at Object.task (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:31721)\n    at PromiseQueue.processNext (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:32445)\n    at PromiseQueue.enqueue (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:31849)\n    at prefetchReducer (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:60579)\n    at reducer (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:69850)\n    at http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:75208\n    at Object.Nf [as useReducer] (http://127.0.0.1:3101/_next/static/chunks/ee8a080f-0c941d2381d4f7e6.js:9:40413)\n    at t.useReducer (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:17:7409)",
+    "timestamp": "2026-06-19T04:05:46.649Z"
+  },
+  {
+    "scope": "admin",
+    "kind": "console",
+    "route": "http://127.0.0.1:3101/Admin/listing",
+    "message": "Failed to fetch RSC payload for http://127.0.0.1:3101/Home/user/660100000000000000000005. Falling back to browser navigation. TypeError: Failed to fetch\n    at fetchServerResponse (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:44692)\n    at http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:60616\n    at Object.task (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:31721)\n    at PromiseQueue.processNext (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:32445)\n    at PromiseQueue.enqueue (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:31849)\n    at prefetchReducer (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:60579)\n    at reducer (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:69850)\n    at http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:75208\n    at Object.Nf [as useReducer] (http://127.0.0.1:3101/_next/static/chunks/ee8a080f-0c941d2381d4f7e6.js:9:40413)\n    at t.useReducer (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:17:7409)",
+    "timestamp": "2026-06-19T04:05:46.649Z"
+  },
+  {
+    "scope": "admin",
+    "kind": "console",
+    "route": "http://127.0.0.1:3101/Admin/listing",
+    "message": "Failed to fetch RSC payload for http://127.0.0.1:3101/Home/rooms/660100000000000000001010. Falling back to browser navigation. TypeError: Failed to fetch\n    at fetchServerResponse (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:44692)\n    at http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:60616\n    at Object.task (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:31721)\n    at PromiseQueue.processNext (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:32445)\n    at PromiseQueue.enqueue (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:31849)\n    at prefetchReducer (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:60579)\n    at reducer (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:69850)\n    at http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:1:75208\n    at Object.Nf [as useReducer] (http://127.0.0.1:3101/_next/static/chunks/ee8a080f-0c941d2381d4f7e6.js:9:40413)\n    at t.useReducer (http://127.0.0.1:3101/_next/static/chunks/490-2e4bc2a6d3f5ef09.js:17:7409)",
+    "timestamp": "2026-06-19T04:05:46.649Z"
+  }
+]
