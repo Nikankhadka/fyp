@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LuxeStay - Property Details</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+                "secondary-fixed-dim": "#bfc8c8",
+                "outline": "#6c7a78",
+                "surface-container-low": "#eff4ff",
+                "error-container": "#ffdad6",
+                "on-secondary": "#ffffff",
+                "background": "#f8f9ff",
+                "surface-bright": "#f8f9ff",
+                "on-secondary-fixed": "#151d1d",
+                "on-secondary-container": "#5b6465",
+                "on-surface": "#0d1c2e",
+                "primary-fixed": "#79f6ed",
+                "tertiary-fixed": "#d9e3f9",
+                "tertiary": "#555f71",
+                "on-error-container": "#93000a",
+                "on-tertiary": "#ffffff",
+                "on-tertiary-fixed-variant": "#3d4759",
+                "inverse-surface": "#223144",
+                "surface-container": "#e5eeff",
+                "surface-container-lowest": "#ffffff",
+                "on-error": "#ffffff",
+                "primary-container": "#20b2aa",
+                "on-primary-fixed-variant": "#00504c",
+                "error": "#ba1a1a",
+                "on-primary-container": "#003e3b",
+                "surface-container-highest": "#d4e4fc",
+                "primary-fixed-dim": "#59dad1",
+                "on-primary-fixed": "#00201e",
+                "secondary": "#576060",
+                "surface-dim": "#ccdbf4",
+                "surface-tint": "#006a65",
+                "on-primary": "#ffffff",
+                "on-tertiary-container": "#2d3748",
+                "inverse-primary": "#59dad1",
+                "surface-variant": "#d4e4fc",
+                "secondary-fixed": "#dbe4e4",
+                "on-secondary-fixed-variant": "#404849",
+                "inverse-on-surface": "#eaf1ff",
+                "outline-variant": "#bbc9c7",
+                "surface": "#f8f9ff",
+                "on-surface-variant": "#3c4948",
+                "on-background": "#0d1c2e",
+                "secondary-container": "#d8e1e1",
+                "surface-container-high": "#dce9ff",
+                "tertiary-container": "#96a0b5",
+                "on-tertiary-fixed": "#121c2c",
+                "tertiary-fixed-dim": "#bdc7dc",
+                "primary": "#006a65"
+        },
+        "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+        },
+        "spacing": {
+                "gutter": "24px",
+                "base": "8px",
+                "container-max": "1280px",
+                "margin-mobile": "20px",
+                "margin-desktop": "48px"
+        },
+        "fontFamily": {
+                "headline-md": [
+                        "Inter"
+                ],
+                "headline-xl": [
+                        "Inter"
+                ],
+                "body-lg": [
+                        "Inter"
+                ],
+                "headline-lg": [
+                        "Inter"
+                ],
+                "headline-lg-mobile": [
+                        "Inter"
+                ],
+                "body-md": [
+                        "Inter"
+                ],
+                "label-sm": [
+                        "Inter"
+                ],
+                "body-sm": [
+                        "Inter"
+                ],
+                "label-md": [
+                        "Inter"
+                ]
+        },
+        "fontSize": {
+                "headline-md": [
+                        "24px",
+                        {
+                                "lineHeight": "32px",
+                                "fontWeight": "600"
+                        }
+                ],
+                "headline-xl": [
+                        "48px",
+                        {
+                                "lineHeight": "56px",
+                                "letterSpacing": "-0.02em",
+                                "fontWeight": "700"
+                        }
+                ],
+                "body-lg": [
+                        "18px",
+                        {
+                                "lineHeight": "28px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "headline-lg": [
+                        "32px",
+                        {
+                                "lineHeight": "40px",
+                                "letterSpacing": "-0.01em",
+                                "fontWeight": "600"
+                        }
+                ],
+                "headline-lg-mobile": [
+                        "28px",
+                        {
+                                "lineHeight": "34px",
+                                "fontWeight": "600"
+                        }
+                ],
+                "body-md": [
+                        "16px",
+                        {
+                                "lineHeight": "24px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "label-sm": [
+                        "12px",
+                        {
+                                "lineHeight": "14px",
+                                "fontWeight": "500"
+                        }
+                ],
+                "body-sm": [
+                        "14px",
+                        {
+                                "lineHeight": "20px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "label-md": [
+                        "14px",
+                        {
+                                "lineHeight": "16px",
+                                "letterSpacing": "0.01em",
+                                "fontWeight": "600"
+                        }
+                ]
+        }
+},
+    },
+  }
+</script>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="bg-surface/80 dark:bg-surface-container-high/80 text-primary dark:text-primary-fixed-dim font-body-md text-body-md docked full-width top-0 sticky border-b border-surface-container-highest dark:border-outline-variant shadow-sm flex justify-between items-center w-full px-gutter py-4 backdrop-blur-md z-50">
+<div class="flex items-center gap-4">
+<span class="text-headline-md font-headline-md font-black text-primary dark:text-inverse-primary">LuxeStay</span>
+</div>
+<div class="hidden md:flex flex-1 justify-end items-center gap-6">
+<nav class="flex items-center gap-6">
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-colors cursor-pointer active:scale-95 duration-150 px-3 py-2 rounded-lg" href="#">Switch to hosting</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-colors cursor-pointer active:scale-95 duration-150 p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">language</span>
+</button>
+<div class="flex items-center gap-2 border border-outline-variant rounded-full p-2 hover:shadow-md transition-shadow cursor-pointer bg-surface-container-lowest">
+<span class="material-symbols-outlined text-on-surface-variant">menu</span>
+<span class="material-symbols-outlined text-on-surface-variant" style="font-variation-settings: 'FILL' 1;">account_circle</span>
+</div>
+</div>
+</div>
+</header>
+<main class="flex-1 max-w-container-max mx-auto w-full px-gutter py-10">
+<!-- Breadcrumbs -->
+<nav class="flex items-center gap-2 text-body-sm text-on-surface-variant mb-6">
+<a class="hover:underline" href="#">Home</a>
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+<a class="hover:underline" href="#">Country</a>
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+<span class="text-on-surface font-semibold">Region</span>
+</nav>
+<!-- Title Section -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-6">
+<div>
+<h1 class="font-headline-lg text-headline-lg mb-2">Modern Minimalist Villa with Ocean Views</h1>
+<div class="flex items-center gap-4 text-body-md">
+<div class="flex items-center gap-1 font-semibold">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">star</span>
+                        4.98
+                    </div>
+<span class="text-on-surface-variant underline cursor-pointer">124 reviews</span>
+<span class="text-on-surface-variant">•</span>
+<span class="text-on-surface-variant underline cursor-pointer">Coastal Region, Country</span>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="flex items-center gap-2 text-body-md font-semibold hover:bg-surface-container-low px-4 py-2 rounded-lg transition-colors">
+<span class="material-symbols-outlined">ios_share</span>
+                    Share
+                </button>
+<button class="flex items-center gap-2 text-body-md font-semibold hover:bg-surface-container-low px-4 py-2 rounded-lg transition-colors">
+<span class="material-symbols-outlined">favorite_border</span>
+                    Save
+                </button>
+</div>
+</div>
+<!-- Bento Grid Gallery -->
+<div class="grid grid-cols-1 md:grid-cols-4 grid-rows-2 gap-2 h-[400px] md:h-[500px] rounded-xl overflow-hidden mb-10 relative">
+<div class="md:col-span-2 md:row-span-2 relative group cursor-pointer">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="A wide shot of a luxurious modern villa living room featuring minimalist furniture, expansive floor-to-ceiling windows overlooking a bright blue ocean, bathed in soft, natural morning light. The interior aesthetic blends high-end professional design with warm, inviting textures, utilizing a color palette of crisp whites, soft greys, and vibrant ocean blues. The mood is serene, aspirational, and perfectly clean." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVDZu9K5UYdYCDZZpgEOBAr1X-PmwN07Zd5hff8yBSFilbaBp6NNFNRQR1mwAI8H4Hp9szkbcFTFxCZ0sAOjXqaCuhZ6YG1yPQPdhuZDY4Uu8OcBZ9mnMZFBBwTkTU3kgqx61FjzCTfOWshahOeca6ymSLTPJAbhxeCCFV94dn7vJQifLWGn8GojuNFDUJW8TtqqJgxtaYid9S6pe6wAD07NtGONmXfjNSowW19KVSBxAB-PrblXc5hdPloVUnsKpF2QZqaIantJc"/>
+<div class="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors"></div>
+</div>
+<div class="hidden md:block relative group cursor-pointer">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="A detailed close-up of a premium minimalist bedroom within a high-end villa. The shot features a neatly made king-size bed with crisp white linens, a sleek wooden nightstand, and soft ambient lighting from a modern bedside lamp. The aesthetic is clean, professional, and luxurious, emphasizing comfort and high-quality materials in a bright, airy setting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwX7q8iQiN_ctTpQ73xGY1RP-QRDeRv2tTEk4UCj8QhLWrWne5MlKjKtE6pHPunn-wu1OLG8VkljiCCWe756O2pt0G3X6zkPwnuw2guRgq_ZNSsqnzleY9ZHu2ewwuQydgS-bETK7_vbYgh5aIo3-8COM6J-5FV8Wo7SivdrWYv46pCF553084ZgsQdaimANkFJQvK-vowwdyNIbDlWf2kAFKyly-s19UEFHrbIqabdVeOKNt8B3nO2Cjomvr_YVBvNMRW-Ul_vZE"/>
+<div class="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors"></div>
+</div>
+<div class="hidden md:block relative group cursor-pointer">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="An elegant, modern outdoor patio setting of a luxury villa. The image shows a pristine wooden deck with sleek, minimalist lounge chairs facing a sparkling infinity pool. The lighting is bright and sunny, highlighting the clean lines of the architecture and the vibrant turquoise water. The overall feeling is upscale, relaxing, and impeccably maintained." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJzyjiqQs6ajkx-gdrhUqZ9L3KTynngTHS3a3SrADVH29t_-GOLuQhSo4g9JGEc4TU_bqmC0Gc2CIEpKfJc2DomQ82SPlEkDgeteJBbXmYvQPkZqWSdsZ4cvFgSg86jiUyIJkj2_DYKjSGsMMKEE2vvrzYxLUFtid5Z1vQy_ZKUjET6UHPxcVLeGseUAFruWRLtQM7MbM3gWAnUY2APK07RzYTgO6Hu1WVg2EhM08CKsjc2yeqCr9MQssNsj6ukFNZORJ89pjd5ao"/>
+<div class="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors"></div>
+</div>
+<div class="hidden md:block relative group cursor-pointer">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="A pristine, highly modern kitchen interior in a luxury home. The shot highlights a large marble island, sleek handle-less white cabinetry, and high-end stainless steel appliances. Natural light floods in from adjacent large windows, creating a bright, hygienic, and aspirational cooking space. The styling is perfectly uncluttered, reflecting a premium professional interior design standard." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB_Kp-f_pYGacFSFpd_MjgvwRkpxAGwZ5GRadBU1oyESyPshlzqR_1L_z30aeavNTrMiaiP_f9i7_mwULZhHOS-RyqzEQAliAaz8TkYHmyu2MDU_KKH0Lmsj8pD6_D_RW47MhzlmrLPvyhON_qmzROKkq-ZrQgELq_sUnI_1WLuHE6l2RlXSlB8br2s_zo2lg1GTl1Rt12xS4s1aAm8ta9nnBKB0JtjvheoHDkX61rr-EV8l92NfYcpXwjblDK4PYAL_NOn6gV0_Rk"/>
+<div class="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors"></div>
+</div>
+<div class="hidden md:block relative group cursor-pointer">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="A luxurious modern bathroom featuring a freestanding white soaking tub positioned next to a large frosted glass window. The room utilizes clean geometric lines, large-format grey stone tiles, and brushed nickel fixtures. The lighting is soft and flattering, creating a spa-like, serene atmosphere indicative of a high-end, professionally managed property." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCe3xZyyE2ecJX276WHgLfw4VKlUVmmh6BPE3n-VlQEkaE58W0zc-r4KcZXcUPC9meosxquAHD7gUWjSwiI2GkWEspkI3jFEDuT5EZ1isxen9bpA1S_hsZynF3YOVl5sjsC7t02GnSHO1tDXFC-im-sEUOeaoCuSY8cHh33pLFqx3JJ-nf79flNVS9AaQo3WjBdlhgxtLcNQVoxgFQ14jjQZNQsSQAXJ-G-sHFS1ouFgYGmok1W5DpLMgJtNQf07gOpwmni1XHfdLE"/>
+<div class="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors"></div>
+<button class="absolute bottom-4 right-4 bg-surface-container-lowest text-on-surface px-4 py-2 rounded-lg font-semibold text-body-sm shadow-sm border border-outline-variant flex items-center gap-2 hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-sm">grid_view</span>
+                    Show all photos
+                </button>
+</div>
+</div>
+<div class="flex flex-col md:flex-row gap-10">
+<!-- Main Content (70%) -->
+<div class="w-full md:w-[70%] flex flex-col gap-10">
+<!-- Host Info -->
+<div class="flex justify-between items-center pb-6 border-b border-surface-container-highest">
+<div>
+<h2 class="font-headline-md text-headline-md mb-1">Entire villa hosted by Sarah</h2>
+<p class="text-body-md text-on-surface-variant">8 guests • 4 bedrooms • 5 beds • 4.5 baths</p>
+</div>
+<div class="relative">
+<img class="w-14 h-14 rounded-full object-cover" data-alt="A professional, warm headshot of a smiling female host in her 30s, standing in a well-lit modern home interior. She is wearing casual but polished clothing. The lighting is bright and inviting, conveying trust, reliability, and approachability. The background is slightly blurred to keep the focus on her friendly expression." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBXHKvif7u_bLGUnohTs8EHDruMDBf7kMnP4NL14eVxYNsjultblc9W0eHbt1HwpMMjCoxbw3desLoxYDKGbK_brtq8tGxgNeDoKYkN5cHL7UxBDJop3y8bYZJRoFZyXLuElfh8ay_8ZzXIpucMPO88vE4nSr11xC1QdpZS_7T_9xFdCizOxsjZLVKl38aW6Qk--DUa496Sv8S4SbJPecrAxMCC87mGAHoeeGv_HTXWxoo6GTpT1iQwnYiB-J6mTQBTVKghdkqyPnw"/>
+<div class="absolute bottom-0 right-0 bg-primary text-on-primary rounded-full p-0.5 border-2 border-surface-container-lowest">
+<span class="material-symbols-outlined text-[10px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+</div>
+</div>
+<!-- Description -->
+<div class="pb-6 border-b border-surface-container-highest">
+<p class="text-body-md text-on-surface leading-relaxed line-clamp-4">
+                        Experience unparalleled luxury in this stunning modern minimalist villa. Perched on a cliffside, it offers breathtaking panoramic views of the ocean from almost every room. The open-plan living area features floor-to-ceiling glass doors that seamlessly blend indoor and outdoor living, leading out to an expansive deck with a private infinity pool. Designed with meticulous attention to detail, the interior boasts high-end finishes, bespoke furnishings, and state-of-the-art smart home technology. Whether you're relaxing in the sun-drenched lounge, cooking in the gourmet kitchen, or unwinding in the spa-like master suite, every moment here is designed for pure relaxation.
+                    </p>
+<button class="text-primary font-semibold text-body-md mt-4 hover:underline flex items-center gap-1">
+                        Show more <span class="material-symbols-outlined text-sm">chevron_right</span>
+</button>
+</div>
+<!-- Amenities -->
+<div class="pb-6 border-b border-surface-container-highest">
+<h3 class="font-headline-md text-headline-md mb-6">What this place offers</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-8">
+<div class="flex items-center gap-4 text-body-md">
+<span class="material-symbols-outlined text-2xl text-on-surface-variant">pool</span>
+<span>Private infinity pool</span>
+</div>
+<div class="flex items-center gap-4 text-body-md">
+<span class="material-symbols-outlined text-2xl text-on-surface-variant">wifi</span>
+<span>Fast Wi-Fi (500 Mbps)</span>
+</div>
+<div class="flex items-center gap-4 text-body-md">
+<span class="material-symbols-outlined text-2xl text-on-surface-variant">kitchen</span>
+<span>Chef's kitchen</span>
+</div>
+<div class="flex items-center gap-4 text-body-md">
+<span class="material-symbols-outlined text-2xl text-on-surface-variant">local_parking</span>
+<span>Free driveway parking</span>
+</div>
+<div class="flex items-center gap-4 text-body-md">
+<span class="material-symbols-outlined text-2xl text-on-surface-variant">ac_unit</span>
+<span>Central air conditioning</span>
+</div>
+<div class="flex items-center gap-4 text-body-md">
+<span class="material-symbols-outlined text-2xl text-on-surface-variant">balcony</span>
+<span>Ocean view patio</span>
+</div>
+</div>
+<button class="mt-8 border border-outline-variant px-6 py-3 rounded-lg font-semibold text-body-md hover:bg-surface-container-low transition-colors">
+                        Show all 32 amenities
+                    </button>
+</div>
+</div>
+<!-- Booking Panel (30%) -->
+<div class="w-full md:w-[30%] relative">
+<div class="sticky top-28 border border-outline-variant rounded-xl p-6 shadow-md bg-surface-container-lowest">
+<div class="flex items-end justify-between mb-6">
+<div>
+<span class="font-headline-md text-headline-md font-bold">$450</span>
+<span class="text-body-md text-on-surface-variant"> night</span>
+</div>
+<div class="flex items-center gap-1 text-body-sm font-semibold">
+<span class="material-symbols-outlined text-sm text-primary" style="font-variation-settings: 'FILL' 1;">star</span>
+                            4.98 <span class="text-on-surface-variant font-normal">(124 reviews)</span>
+</div>
+</div>
+<div class="border border-outline-variant rounded-lg overflow-hidden mb-4">
+<div class="flex border-b border-outline-variant">
+<div class="flex-1 p-3 border-r border-outline-variant cursor-pointer hover:bg-surface-container-low transition-colors">
+<div class="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant mb-1">Check-in</div>
+<div class="text-body-sm">Add date</div>
+</div>
+<div class="flex-1 p-3 cursor-pointer hover:bg-surface-container-low transition-colors">
+<div class="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant mb-1">Checkout</div>
+<div class="text-body-sm">Add date</div>
+</div>
+</div>
+<div class="p-3 cursor-pointer hover:bg-surface-container-low transition-colors flex justify-between items-center">
+<div>
+<div class="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant mb-1">Guests</div>
+<div class="text-body-sm">1 guest</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">expand_more</span>
+</div>
+</div>
+<button class="w-full bg-primary hover:bg-primary-container text-on-primary font-semibold text-body-md py-4 rounded-lg transition-colors mb-4">
+                        Reserve
+                    </button>
+<div class="text-center text-body-sm text-on-surface-variant mb-6">You won't be charged yet</div>
+<div class="space-y-4 text-body-md mb-6 border-b border-outline-variant pb-6">
+<div class="flex justify-between">
+<span class="underline text-on-surface-variant cursor-pointer hover:text-on-surface">$450 x 5 nights</span>
+<span>$2,250</span>
+</div>
+<div class="flex justify-between">
+<span class="underline text-on-surface-variant cursor-pointer hover:text-on-surface">Cleaning fee</span>
+<span>$150</span>
+</div>
+<div class="flex justify-between">
+<span class="underline text-on-surface-variant cursor-pointer hover:text-on-surface">LuxeStay service fee</span>
+<span>$320</span>
+</div>
+</div>
+<div class="flex justify-between font-semibold text-body-lg">
+<span>Total before taxes</span>
+<span>$2,720</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest dark:bg-surface-container text-secondary dark:text-secondary-fixed font-body-sm text-body-sm full-width bottom border-t border-surface-container-highest dark:border-outline-variant flat mt-auto">
+<div class="max-w-container-max mx-auto px-gutter py-10 flex flex-col md:flex-row justify-between gap-10">
+<div>
+<div class="text-headline-md font-headline-md text-primary mb-4 font-bold text-lg">LuxeStay</div>
+<div class="text-on-surface-variant">© 2024 LuxeStay Inc. All rights reserved.</div>
+</div>
+<div class="flex flex-wrap gap-6 text-on-surface-variant">
+<a class="hover:underline decoration-primary transition-all" href="#">Support</a>
+<a class="hover:underline decoration-primary transition-all" href="#">Community</a>
+<a class="hover:underline decoration-primary transition-all" href="#">Hosting</a>
+<a class="hover:underline decoration-primary transition-all" href="#">About</a>
+<a class="hover:underline decoration-primary transition-all" href="#">Privacy</a>
+<a class="hover:underline decoration-primary transition-all" href="#">Terms</a>
+<a class="hover:underline decoration-primary transition-all" href="#">Sitemap</a>
+</div>
+</div>
+</footer>
+</body></html>

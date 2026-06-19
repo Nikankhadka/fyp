@@ -94,6 +94,27 @@ export const validateBooking=async(req:Request,res:Response,next:NextFunction)=>
     }
 }
 
+export const validatePayPalBooking=async(req:Request,res:Response,next:NextFunction)=>{
+    try{
+        const paypalBookingSchema=joi.object({
+            orderId:joi.string().trim().required(),
+            startDate:joi.date().required(),
+            endDate:joi.date().min(joi.ref('startDate')).required(),
+            guest:joi.number().integer().min(1).required(),
+            bill:joi.string().required(),
+        })
+
+        const{error,value}=paypalBookingSchema.validate(req.body,{abortEarly:false})
+        if(error) return res.status(400).json({success:false,error:error.message})
+
+        req.body=value
+        next()
+
+    }catch(err){
+        return res.status(400).json({success:false,error:'Invalid payment booking request'})
+    }
+}
+
 
 
 export const validateKyc=async(req:Request,res:Response,next:NextFunction)=>{

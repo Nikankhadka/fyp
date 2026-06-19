@@ -1,12 +1,12 @@
 'use client'
 
 import { useState } from "react"
-import { inputStyle } from "../styles/variants"
 import { ErrorText } from "./random"
 import {useForm,SubmitHandler} from 'react-hook-form'
 import Api from "../api/client/axios"
 import { toast } from "react-hot-toast"
 import { useRouter } from "next/navigation"
+import { Button, Field } from "./ui/primitives"
 
 export default function PasswordReset(){
     
@@ -25,27 +25,35 @@ export default function PasswordReset(){
         })
     }
     return(
-       
-            <div className="w-full sm:w-[560px] border-2 p-3 shadow-lg rounded-lg border-gray-200">
-                <h1 className="text-lg sm:text-xl font-semibold ">Forgot Password ?</h1>
-                <p className="text-sm mt-5 text-themeColor ">Please Enter Valid Email to Reset password!</p>
-                <hr className="border-gray-300  my-5" />
+        <div className="w-full rounded-lg border border-outline-variant bg-white p-4 shadow-lg sm:w-[560px]">
+            <h1 className="text-xl font-semibold text-onSurface">Forgot Password?</h1>
+            <p className="mt-2 text-sm text-primary">Enter your email to reset your password.</p>
+            <hr className="my-4 border-outline-variant" />
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
                 <div>
-                <label className="text-sm my-2 sm:text-ld font-semibold">Email</label>
-                <div className="flex justify-center items-center">
-                
-                <input type="email" className={`${inputStyle}`}  {...register('email',{
-            required: true,
-            pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-          })}/>
-                <button className="text-sm font-semibold underline" onClick={handleSubmit(onSubmit)}>Reset password</button>
+                    <label className="block text-sm font-semibold text-onSurface">Email</label>
+                    <Field
+                        type="email"
+                        className="mt-1"
+                        {...register('email',{
+                            required: true,
+                            pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                        })}
+                    />
+                    {errors?.email && (
+                        <ErrorText text="Please Enter Valid Email/Formatted Email" />
+                    )}
                 </div>
 
-        {errors?.email && (
-          <ErrorText text="Please Enter Valid Email/Formatted Email" />
-        )}
+                <div className="flex items-center justify-between border-t border-outline-variant pt-4">
+                    <Button type="button" tone="ghost" onClick={() => router.back()}>
+                        Cancel
+                    </Button>
+                    <Button type="submit">
+                        Reset Password
+                    </Button>
                 </div>
-            </div>
-        
+            </form>
+        </div>
     )
 }

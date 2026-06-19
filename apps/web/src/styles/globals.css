@@ -2,22 +2,50 @@
 @tailwind utilities;
 @tailwind components;
 
-/* this is global style property  */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     scroll-behavior: smooth;
-    color:black;
-    letter-spacing:0.5px;
-    /* font-family: 'Poppins', sans-serif; */
-    
-  }
+}
 
+body {
+  font-family: var(--font-nunito-sans), 'Nunito Sans', system-ui, -apple-system, sans-serif;
+  background-color: #f8f9ff;
+  color: #0d1c2e;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
-  .react-tel-input .form-control{
+.react-tel-input .form-control{
     @apply  py-4 
+}
+
+@layer base {
+  :root {
+    --background: 240 100% 99%;
+    --foreground: 210 56% 12%;
+    --primary: 177 100% 21%;
+    --primary-foreground: 0 0% 100%;
+    --primary-container: 177 69% 41%;
+    --surface: 240 100% 99%;
+    --surface-container: 222 100% 95%;
+    --surface-container-lowest: 0 0% 100%;
+    --outline: 174 7% 45%;
+    --outline-variant: 174 10% 76%;
   }
 
-
+  .dark {
+    --background: 216 33% 13%;
+    --foreground: 210 56% 92%;
+    --primary: 177 57% 60%;
+    --primary-foreground: 177 100% 13%;
+    --primary-container: 177 69% 41%;
+    --surface: 216 33% 13%;
+    --surface-container: 216 30% 18%;
+    --surface-container-lowest: 216 33% 10%;
+    --outline: 174 7% 55%;
+    --outline-variant: 174 10% 30%;
+  }
+}
 

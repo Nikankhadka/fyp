@@ -28,6 +28,8 @@ ENV NODE_ENV=production
 COPY apps/api/package.json ./
 COPY --from=builder /app/dist ./dist
 COPY apps/api/src/utils/swagger.yml ./dist/utils/swagger.yml
+COPY apps/web/public/seed ./public-seed
+COPY apps/web/public/house4.jpg apps/web/public/prop1.jpg ./
 COPY --from=deps /app/node_modules ./node_modules
 
 EXPOSE 2900

@@ -1,4 +1,4 @@
-import getReservations, { getPropertyBookings } from '../../../../api/server/property/getReservation'
+import { getPropertyBookings } from '../../../../api/server/property/getReservation'
 
 import { getPropertyById } from '../../../../api/server/property/getProperty'
 import ClientComp from '../../../../components/clientComp'
@@ -38,7 +38,7 @@ export default async function Room({ params }: { params: IParams }) {
     reviewsList
   ])
 
-  const updatedReservations = reservations.map(reservation => {
+  const updatedReservations = (reservations || []).map(reservation => {
     const newStartDate = new Date(reservation.startDate!)
     newStartDate.setDate(newStartDate.getDate() - 1)
     return {
@@ -47,8 +47,6 @@ export default async function Room({ params }: { params: IParams }) {
     }
   })
 
-  console.log('property population',property)
-  
   return (
     <ClientComp>
       <RoomClient

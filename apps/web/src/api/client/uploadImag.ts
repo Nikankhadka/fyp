@@ -1,49 +1,97 @@
+import { cloudinaryCloudName } from '../../configs/constant'
+import { localServer } from '../../configs/constant'
 
-
-import {
-  cloudinaryCloudName,
-  cloudinaryUploadPreset,
-} from '../../configs/constant'
-
-interface imageUpload{
-    imgId:string
-    imgUrl:string
+interface UploadSignature {
+  signature: string
+  timestamp: number
+  apiKey: string
+  cloudName: string
+  folder: string
 }
 
+interface ImageUpload {
+  imgId: string
+  imgUrl: string
+}
 
-export async function uploadImage(image:any):Promise<imageUpload>{
-    try{
-    if (!cloudinaryCloudName || !cloudinaryUploadPreset) {
-      throw new Error('Cloudinary upload is not configured')
+async function getUploadSignature(folder = 'meroghar'): Promise<UploadSignature> {
+  try {
+    const response = await fetch(`${localServer}/cloudinary/v1/signature`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+      body: JSON.stringify({ folder }),
+    })
+
+    const result = await response.json()
+
+    if (!result.success) {
+      throw new Error(result.error || 'Failed to get signed upload parameters')
     }
-        
-    //there might be multiple image upload so
+
+    return result.data
+  } catch (error) {
+    console.error('Failed to request upload signature:', error)
+    throw error
+  }
+}
+
+export async function uploadImage(image: File): Promise<ImageUpload> {
+  try {
+    if (!cloudinaryCloudName) {
+      throw new Error('Cloudinary is not configured')
+    }
+
+    const signature = await getUploadSignature()
+
     const imageData = new FormData()
-    //first upload image
-    imageData.append('file',image)
-    imageData.append('cloud_name', cloudinaryCloudName)
-    imageData.append('upload_preset', cloudinaryUploadPreset)
+    imageData.append('file', image)
+    imageData.append('api_key', signature.apiKey)
+    imageData.append('timestamp', signature.timestamp.toString())
+    imageData.append('signature', signature.signature)
+    imageData.append('folder', signature.folder)
 
     const res = await fetch(
-      `https://api.cloudinary.com/v1_1/${cloudinaryCloudName}/image/upload`,
+      `https://api.cloudinary.com/v1_1/${signature.cloudName}/image/upload`,
       {
         method: 'POST',
         body: imageData,
       }
     )
+
     const response = await res.json()
-    return{
-        imgId:response.public_id,
-        imgUrl:response.secure_url ?? response.url
+
+    if (response.error) {
+      throw new Error(response.error.message || 'Upload failed')
     }
 
-    }catch(e){
-        console.log(e)
-        throw e;
+    return {
+      imgId: response.public_id,
+      imgUrl: response.secure_url ?? response.url,
     }
+  } catch (error) {
+    console.error('Image upload failed:', error)
+    throw error
+  }
 }
 
 export async function deleteImage(imgId: string): Promise<boolean> {
-  console.warn(`Cloudinary delete is disabled in demo mode for asset ${imgId}.`)
-  return false
+  try {
+    const response = await fetch(`${localServer}/cloudinary/v1/destroy`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+      body: JSON.stringify({ publicId: imgId }),
+    })
+
+    const result = await response.json()
+    return result.success === true
+  } catch (error) {
+    console.error('Image deletion failed:', error)
+    return false
+  }
 }

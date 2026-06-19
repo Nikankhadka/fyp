@@ -1,6 +1,7 @@
 import { getAllUsers } from "../../../api/server/user/getUser";
 import AdminTable from "../../../components/admin/table";
 import ClientComp from "../../../components/clientComp";
+import { EmptyState } from "../../../components/ui/primitives";
 
 export default  async function UsersList(){
 
@@ -8,14 +9,14 @@ export default  async function UsersList(){
     if(users.length===0){
         return(
          
-            <h1 className="text-lg md:text-xl font-semibold md:font-bold text-center"> No Users To Display !!!</h1>
+            <EmptyState title="No users to display" description="User records will appear here after accounts are created." />
           
         )
       }
 
 
     return(
-        <main className="mx-auto w-[98%]">
+        <main className="w-full">
             <ClientComp>
                 <AdminTable use="user" users={users} properties={[]} bookings={[]} />
             </ClientComp>

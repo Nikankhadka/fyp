@@ -74,7 +74,9 @@ const refreshTokenS=async(req:NextRequest,res:NextResponse)=>{
       //token has expired
       if (!jsonData.success){
         //clear cookie in client side since token is refresh is failed the old token will be unauthorized
-        await res.cookies.delete('accessToken').delete('refreshToken').delete('session')
+        res.cookies.delete('accessToken')
+        res.cookies.delete('refreshToken')
+        res.cookies.delete('session')
         return NextResponse.redirect(new URL('/Home/login', req.url))
       }
        

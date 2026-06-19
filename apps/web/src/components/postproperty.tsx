@@ -1,15 +1,11 @@
 'use client'
-
 import { useForm, useFieldArray, SubmitHandler } from 'react-hook-form'
-
 import { ErrorText } from './random'
 import { PropertyForm} from '../interface/form'
-
 import { Images } from '../interface/request'
 import { PostPropery, UpdatePropery } from '../api/client/property'
-import { AiOutlinePlus, AiOutlineMinus } from 'react-icons/ai'
+import { Plus, Trash2, Camera } from 'lucide-react'
 import { amenities, propertyOptions } from '../configs/constant'
-const inputStyle ='text-md my-1 h-10 w-[95%]  rounded-md border-2  border-gray-400 p-1 text-gray-700 hover:bg-hoverColor focus:border-themeColor'
 import { useState, useEffect } from 'react'
 import useCountry from '../store/useCountry'
 import { ICountry} from 'country-state-city'
@@ -21,8 +17,7 @@ import { Property } from '../interface/response'
 import useRandom from '../store/randomStore'
 import { uploadImage } from '../api/client/uploadImag'
 import Image from 'next/image'
-
-//checck image function
+import { Button, Field, SelectField, TextArea, PageHeader, Surface } from './ui/primitives'
 
 interface postProperty {
   propertyData?: Partial<Property>
@@ -119,13 +114,23 @@ export default function PostPropertyForm({
       //there might be multiple image upload so
       const imageData = new FormData()
       //since there might be multiple images
-      for (const image of formdata.images) {
-        const uploadedImg = await uploadImage(image[0])
+      try {
+        for (const image of formdata.images) {
+          if (!(image?.[0] instanceof File)) {
+            throw new Error('Choose an image before posting the property')
+          }
 
-        await images.push({
-          imgId: uploadedImg.imgId,
-          imgUrl: uploadedImg.imgUrl,
-        })
+          const uploadedImg = await uploadImage(image[0])
+
+          await images.push({
+            imgId: uploadedImg.imgId,
+            imgUrl: uploadedImg.imgUrl,
+          })
+        }
+      } catch (e: any) {
+        toast.error(e?.message || 'Property image upload failed')
+        modal.setLoading(false)
+        return modal.onClose()
       }
 
       let RequestBody: PropertyForm={
@@ -176,18 +181,19 @@ export default function PostPropertyForm({
         formdata
       let images: Images[] = []
       //since there might be multiple images
-      for (const image of formdata.images) {
-        try {
-          //if its able to crrate url itsfile if its not then obj
-          const imgurl = URL.createObjectURL(image[0])
-          console.log('uploaded img')
-          const { imgId, imgUrl } = await uploadImage(image[0])
-          images.push({ imgId: imgId, imgUrl: imgUrl })
-        } catch (e) {
-          console.log(e)
-          console.log('object')
-          images.push(image)
+      try {
+        for (const image of formdata.images) {
+          if (image?.[0] instanceof File) {
+            const { imgId, imgUrl } = await uploadImage(image[0])
+            images.push({ imgId: imgId, imgUrl: imgUrl })
+          } else {
+            images.push(image)
+          }
         }
+      } catch (e: any) {
+        toast.error(e?.message || 'Property image upload failed')
+        modal.setLoading(false)
+        return modal.onClose()
       }
 
       let RequestBody: PropertyForm = {
@@ -248,92 +254,87 @@ export default function PostPropertyForm({
   }
 
   return (
-    <main className="my-2 flex w-full flex-col items-center justify-center  p-3">
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="mx-auto flex  w-full flex-col items-center p-3 lg:w-full"
-      >
-        {isUpdate && (
-          <p className="text-lg font-semibold text-themeColor">
-            Adding New Images will replace previous images{' '}
-          </p>
-        )}
-        <div className="w-full p-2">
-          {fields.map((field, index) => {
-            return (
-              <div
-                className="my-1 flex  w-full flex-col items-center gap-2 "
-                key={field.id}
-              >
-                
-                {/* initially the value default does not read file casuing to return empty string */}
-                <div  className={
-                    imageUrl(index) == ''
-                      ? 'hidden'
-                      : 'relative h-[200px] w-full rounded-lg sm:h-[270px] md:h-[320px] md:w-[80%] lg:h-[400px]'
-                  }>
-                <Image
-                  fill={true}
-                  src={imageUrl(index)!}
-                  alt='Image Here'
+    <main className="my-2 w-full p-3">
+      <PageHeader
+        title={isUpdate ? 'Update Property' : 'Post Property'}
+        description={isUpdate ? 'Edit your property listing details.' : 'Add a new rental property to your listings.'}
+      />
+
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <Surface>
+          <div className="space-y-4">
+            {fields.map((field, index) => {
+              return (
+                <div className="flex w-full flex-col items-center gap-3" key={field.id}>
+                  <div className={
+                      imageUrl(index) == ''
+                        ? 'hidden'
+                        : 'relative h-[200px] w-full rounded-lg sm:h-[270px] md:h-[320px] md:w-[80%] lg:h-[400px]'
+                    }>
+                  <Image
+                    fill={true}
+                    src={imageUrl(index)!}
+                    alt='Image Here'
+                   
+                  />
+                  </div>
                  
-                />
-                </div>
-               
 
-                {/* for input and label */}
-                <div className="flex  w-full flex-col items-start justify-around rounded-lg border-2 border-gray-300 bg-white p-[6px] shadow-md md:w-[60%] md:flex-row md:items-center">
-                  <label className="my-1 block text-sm font-semibold">
-                    Upload Image{' '}
-                  </label>
-                  <input
-                    type="file"
-                    key={field.id}
-                    {...register(`images.${index}` as const, {
-                      required: isUpdate ? false : true,
-                    })}
-                  ></input>
+                  <div className="flex w-full flex-col items-start justify-around gap-3 sm:flex-row sm:items-center">
+                    <label className="flex w-full cursor-pointer flex-col items-center justify-center rounded-md border border-dashed border-neutral-300 bg-neutral-50 px-4 py-5 text-center transition hover:bg-neutral-100 sm:max-w-sm">
+                      <Camera className="mb-2 h-5 w-5 text-primary" aria-hidden="true" />
+                      <span className="text-sm font-semibold text-neutral-800">
+                        Upload image
+                      </span>
+                      <input
+                        type="file"
+                        className="sr-only"
+                        key={field.id}
+                        {...register(`images.${index}` as const, {
+                          required: isUpdate ? false : true,
+                        })}
+                      />
+                    </label>
 
-                  {/* donot render this button for 1st index */}
-
-                  {index != 0 && (
-                    <button
-                      type="button"
-                      onClick={() => remove(index)}
-                      className="rounded-lg border-2 border-gray-400 hover:bg-red-300"
-                    >
-                      <AiOutlineMinus className="h-6 w-6 fill-red-500 stroke-themeColor" />
-                    </button>
+                    {index != 0 && (
+                      <Button
+                        type="button"
+                        tone="danger"
+                        onClick={() => remove(index)}
+                      >
+                        <Trash2 className="mr-2 h-4 w-4" aria-hidden="true" />
+                        Remove
+                      </Button>
+                    )}
+                  </div>
+                  {errors?.images?.[index] && (
+                    <ErrorText text="Please Upload image for the Field" />
                   )}
                 </div>
-                {errors?.images?.[index] && (
-                  <p className="block w-[95%] text-center text-sm text-red-700">
-                    Please Upload image for the Field
-                  </p>
-                )}
-              </div>
-            )
-          })}
+              )
+            })}
 
-          <button
-            type="button"
-            onClick={() => append({ image: 'newImage' })}
-            className="my-2 rounded-lg border-2 border-gray-400 hover:bg-hoverColor  "
-          >
-            <AiOutlinePlus className="h-6 w-6 fill-themeColor stroke-themeColor" />
-          </button>
-        </div>
+            <Button
+              type="button"
+              tone="secondary"
+              onClick={() => append({ image: 'newImage' })}
+            >
+              <Plus className="mr-2 h-4 w-4" aria-hidden="true" />
+              Add Image
+            </Button>
+          </div>
+        </Surface>
 
-        <div className="w-full rounded-lg border-2 border-gray-200 bg-white p-4 shadow-lg">
-          <div className="my-2 grid w-full grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-            <div className="w-full">
-              <label className=" my-1 block text-sm font-semibold">
+        <Surface>
+          <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div>
+              <label className="block text-sm font-semibold text-neutral-800">
                 Property Title
               </label>
-              <input
+              <Field
                 type="text"
                 placeholder="PropertyName"
-                className={inputStyle}
+                className="mt-1"
                 {...register('name', { required: true })}
               />
               {errors.name && (
@@ -341,44 +342,43 @@ export default function PostPropertyForm({
               )}
             </div>
 
-            <div className="w-full">
-              <label className="my-1 block text-sm font-semibold">
+            <div>
+              <label className="block text-sm font-semibold text-neutral-800">
                 Property Type
               </label>
-              <select
-                className={inputStyle}
+              <SelectField
+                className="mt-1"
                 {...register('propertyType', { required: true })}
               >
                 {propertyOptions.map((type,index) => (
                   <option key={index} value={type}>{type}</option>
                 ))}
-              </select>
+              </SelectField>
 
               {errors.propertyType && (
                 <ErrorText text="Select Property Type Pls" />
               )}
             </div>
 
-            <div className="w-full">
-              <label className="my-1 block text-sm font-semibold">Usd Rate/Night</label>
-              <input
+            <div>
+              <label className="block text-sm font-semibold text-neutral-800">Usd Rate/Night</label>
+              <Field
                 type="number"
                 placeholder="Price"
-                className={inputStyle}
+                className="mt-1"
                 {...register('rate', { required: true, minLength: 1, min:{value:0,message:"Please enter non negative no."} })}
               />
               {errors.rate && <ErrorText text="Please Enter Valid Price" />}
             </div>
           </div>
-          {/* div for city and area  */}
 
-          <div className="my-2 grid w-full grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-            <div className="w-full">
-              <label className="my-1 block text-sm font-semibold">
-                Country{' '}
+          <div className="mt-4 grid w-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div>
+              <label className="block text-sm font-semibold text-neutral-800">
+                Country 
               </label>
-              <select
-                className={inputStyle}
+              <SelectField
+                className="mt-1"
                 {...register('country', { required: true })}
               >
                 <option value={defaultValues.country}>
@@ -389,17 +389,17 @@ export default function PostPropertyForm({
                 {countries.map((country, index) => (
                   <option key={index} value={index}>{country.name}</option>
                 ))}
-              </select>
+              </SelectField>
 
               {errors?.country && (
                 <ErrorText text="Please Select Valid Country" />
               )}
             </div>
 
-            <div className="w-full">
-              <label className="my-1 block text-sm font-semibold">State </label>
-              <select
-                className={inputStyle}
+            <div>
+              <label className="block text-sm font-semibold text-neutral-800">State </label>
+              <SelectField
+                className="mt-1"
                 {...register('state', { required: true })}
               >
                 <option value={defaultValues.state}>
@@ -412,16 +412,16 @@ export default function PostPropertyForm({
                   .map((state, index) => (
                     <option key={index} value={index}>{state.name}</option>
                   ))}
-              </select>
+              </SelectField>
               {errors?.state && (
                 <ErrorText text="Please Select Valid State" />
               )}
             </div>
 
-            <div className="w-full">
-              <label className="my-1 block text-sm font-semibold">City</label>
-              <select
-                className={inputStyle}
+            <div>
+              <label className="block text-sm font-semibold text-neutral-800">City</label>
+              <SelectField
+                className="mt-1"
                 {...register('city', { required: true })}
               >
                 <option value={defaultValues.city}>
@@ -437,92 +437,77 @@ export default function PostPropertyForm({
                   .map((city,index) => (
                     <option key={index} value={city.name}>{city.name}</option>
                   ))}
-              </select>
+              </SelectField>
               {errors?.city && (
                 <ErrorText text="Please Select Valid City" />
               )}
             </div>
           </div>
-        </div>
+        </Surface>
 
-        <div className="my-4 w-full rounded-lg border-2 border-gray-200 bg-white p-4 shadow-lg">
-          <div className="w-full">
-            <label className="my-1 block text-sm font-semibold">
+        <Surface>
+          <div>
+            <label className="block text-sm font-semibold text-neutral-800">
               Property Description
             </label>
-            <textarea
+            <TextArea
               rows={5}
-              placeholder="Desription"
-              className={inputStyle}
+              placeholder="Description"
+              className="mt-1"
               {...register('discription', { required: true })}
-            ></textarea>
+            />
 
             {errors.discription && (
               <ErrorText text="Please Enter Valid Property Description" />
             )}
           </div>
 
-          <div className="my-2 w-full">
-            <label className="my-1 block text-sm font-semibold">Rules</label>
-            <textarea
+          <div className="mt-4">
+            <label className="block text-sm font-semibold text-neutral-800">Rules</label>
+            <TextArea
               rows={5}
               placeholder="Rules"
-              className={inputStyle}
+              className="mt-1"
               {...register('rules', { required: true })}
-            ></textarea>
+            />
 
             {errors.rules && <ErrorText text="Please Enter Rules/Criteria" />}
           </div>
-        </div>
+        </Surface>
 
-        {/* checkBox */}
-        <div className="w-full ">
-          <div className=" mx-auto rounded-lg border-2  border-gray-200 bg-white p-4 shadow-lg  hover:bg-hoverColor ">
-            <span className="my-1 block text-sm font-semibold">Amenities</span>
-            <div className=" my-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
-              {amenities.map((items, index) => {
-                return (
-                  <div key={index}>
-                    <input
-                      type="checkbox"
-                      value={items}
-                      {...register(`amenities.${index}` as const)}
-                      className="cursor-pointer"
-                    />
-                    <label className="mx-2 text-sm text-gray-600">
-                      {items}
-                    </label>
-                  </div>
-                )
-              })}
-            </div>
+        <Surface>
+          <span className="block text-sm font-semibold text-neutral-800">Amenities</span>
+          <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3">
+            {amenities.map((items, index) => {
+              return (
+                <div key={index} className="flex items-center">
+                  <input
+                    type="checkbox"
+                    value={items}
+                    {...register(`amenities.${index}` as const)}
+                    className="h-4 w-4 cursor-pointer accent-themeColor"
+                  />
+                  <label className="ml-2 text-sm text-neutral-700">
+                    {items}
+                  </label>
+                </div>
+              )
+            })}
           </div>
-        </div>
-      </form>
+        </Surface>
 
-      <hr className="my-5 border-gray-400" />
-
-      <div className="w-full  rounded-lg bg-slate-300 p-4 ">
-        <div className=" mx-auto flex  w-[97%] items-center justify-between">
-          <button
-            type="button"
-            className="text-md font-semibold underline"
-            onClick={(e) => {
+        <div className="flex items-center justify-between border-t border-neutral-200 pt-4">
+          <Button type="button" tone="ghost" onClick={(e) => {
               e.preventDefault()
               list.onList('close')
-            }}
-          >
+            }}>
             Cancel
-          </button>
-          <button
-            type="submit"
-            className="text-md cursor-pointer rounded-md bg-themeColor p-2 px-4 font-semibold text-white transition-all hover:bg-mainColor"
-            onClick={handleSubmit(onSubmit)}
-          >
+          </Button>
+          <Button type="submit">
             Submit
-          </button>
+          </Button>
         </div>
-      </div>
+      </form>
     </main>
   )
 }

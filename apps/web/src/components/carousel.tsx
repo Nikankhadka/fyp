@@ -1,80 +1,83 @@
 'use client'
 
-import {useState} from 'react'
+import { useState } from 'react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import SafeImage from './common/SafeImage'
-interface Props{
-    images:{
-        imgId:string,
-        imgUrl:string
-    }[]
+import { Button } from './ui/primitives'
+import { cn } from '../utils/cn'
+
+interface Props {
+  images: {
+    imgId: string
+    imgUrl: string
+  }[]
 }
 
-export default function Carousel({images}:Props){
+export default function Carousel({ images }: Props) {
+  const [img, setimg] = useState(0)
+  const imageCount = images?.length || 0
+  const canGoPrevious = img > 0
+  const canGoNext = img < imageCount - 1
 
-    const [img,setimg]=useState(0)
-
-    return(
-    <div  className="relative z-10 w-full mx-auto my-2">
-    
-    <div className="relative h-[250px] sm:h-[324px] overflow-hidden rounded-lg md:h-96 ">
-        
-        <div className="duration-700 ease-in-out " >
-            <SafeImage
-              fill
-              src={images?.[img]?.imgUrl}
-              className="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
-              alt="Property image"
-              fallbackText="Property image unavailable"
-            />
-        </div>
-    </div>
-   
-    <div className="absolute  flex space-x-3 -translate-x-1/2 bottom-5 left-1/2">
-        <button type="button" className="w-3 h-3 rounded-full" ></button>
-        
-    </div>
-   
-    <button onClick={() => {
-            if (img == 0) {
-              return console.log('o here')
-            }
-            return setimg(img - 1)
-          }} type="button" className="absolute top-0 left-0  flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none hover:transition-all" >
-       
-        <span className="inline-flex items-center justify-center w-8 h-8 rounded-full sm:w-10 sm:h-10 bg-white/30 dark:bg-gray-800/30 group-hover:bg-white dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
-            <svg className="w-5 h-5 text-white sm:w-6 sm:h-6 dark:text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path></svg>
-            <span className="sr-only">Previous</span>
-        </span>
-    </button>
-
-    <button onClick={() => {
-            if (img === images.length - 1) {
-              return console.log('o here')
-            }
-            return setimg(img + 1)
-          }} type="button" className="absolute top-0 right-0  flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" >
-        <span className="inline-flex items-center justify-center w-8 h-8 rounded-full sm:w-10 sm:h-10 bg-white/30 dark:bg-gray-800/30 group-hover:bg-white dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
-            <svg aria-hidden="true" className="w-5 h-5 text-white sm:w-6 sm:h-6 dark:text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
-            <span className="sr-only">Next</span>
-        </span>
-    </button>
-
-    <div className="absolute bottom-2 flex justify-center w-full">
-      <div className="flex items-center space-x-1">
-        {[...Array(images?.length || 0)].map((_, index) => (
-          <svg
-            key={index}
-            className={`w-2 h-2 ${
-              img === index ? 'fill-white' : 'fill-gray-500'
-            }`}
-            viewBox="0 0 8 8"
-           
-          >
-            <circle cx="4" cy="4" r="3" />
-          </svg>
-        ))}
+  return (
+    <div className="relative z-10 mx-auto my-4 w-full">
+      <div className="relative aspect-[4/3] overflow-hidden rounded-lg border border-outline-variant bg-surface-container sm:aspect-[16/9] md:aspect-[21/9]">
+        <SafeImage
+          fill
+          src={images?.[img]?.imgUrl}
+          className="object-cover"
+          alt="Property image"
+          fallbackText="Property image unavailable"
+        />
       </div>
+
+      {imageCount > 1 && (
+        <>
+          <Button
+            aria-label="Previous property image"
+            disabled={!canGoPrevious}
+            onClick={() => setimg((current) => Math.max(0, current - 1))}
+            type="button"
+            tone="secondary"
+            className="absolute left-3 top-1/2 h-10 w-10 -translate-y-1/2 rounded-full bg-white/90 p-0 shadow-sm"
+          >
+            <ChevronLeft className="h-5 w-5" aria-hidden="true" />
+          </Button>
+
+          <Button
+            aria-label="Next property image"
+            disabled={!canGoNext}
+            onClick={() =>
+              setimg((current) => Math.min(imageCount - 1, current + 1))
+            }
+            type="button"
+            tone="secondary"
+            className="absolute right-3 top-1/2 h-10 w-10 -translate-y-1/2 rounded-full bg-white/90 p-0 shadow-sm"
+          >
+            <ChevronRight className="h-5 w-5" aria-hidden="true" />
+          </Button>
+
+          <div className="absolute bottom-3 flex w-full justify-center">
+            <div className="flex items-center gap-1 rounded-full bg-neutral-950/45 px-2 py-1">
+              {images.map((_, index) => (
+                <button
+                  key={index}
+                  type="button"
+                  aria-label={`Show property image ${index + 1}`}
+                  aria-current={img === index}
+                  onClick={() => setimg(index)}
+                  className={cn(
+                    'h-2 w-2 rounded-full transition',
+                    img === index
+                      ? 'bg-white'
+                      : 'bg-white/45 hover:bg-white/80',
+                  )}
+                />
+              ))}
+            </div>
+          </div>
+        </>
+      )}
     </div>
-</div>
-    )
+  )
 }

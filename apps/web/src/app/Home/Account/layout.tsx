@@ -2,7 +2,7 @@
 
 import { redirect } from 'next/navigation';
 import { checkSession } from '../../../api/server/auth';
-import { PrimaryFooter } from '../../../components/footer';
+import { PageContainer } from '../../../components/ui/primitives';
 
 
 
@@ -19,13 +19,11 @@ export default async function Layout({children}: {children: React.ReactNode}) {
 
   return (
 
-      <main className=' flex flex-col'>
+      <main className="flex flex-col">
         {/* this children represents each page component  that is rendered */}
-        <div className={`mx-auto  rounded-lg  w-[98%] sm:w-[90%] lg:w-[85%]`}  >
+        <PageContainer className="py-6">
           {children}
-        </div>
-
-        <PrimaryFooter />
+        </PageContainer>
       </main>
     
   )

@@ -1,53 +1,38 @@
 
 import '../styles/globals.css'
 import ClientComp from '../components/clientComp';
+import ModalRegistry from '../components/modals/ModalRegistry';
+import { Nunito_Sans } from 'next/font/google'
 
-import { LoginModal } from '../components/modals/loginModal';
-import { RegisterModal } from '../components/modals/registerModal';
+const nunitoSans = Nunito_Sans({ subsets: ['latin'], variable: '--font-nunito-sans' })
 
-import ToasterProvider from '../components/toast/toastProvider';
-import { ConfirmModal } from '../components/modals/confirmModal';
-import { MessageModal } from '../components/modals/rejectReportModal';
-import { BookingModal } from '../components/modals/bookingBillModal';
-import ResetPassword from '../components/modals/forgotpassword';
-import { SearchModal } from '../components/modals/searchModal';
+export const metadata = {
+  title: 'Meroghar - Discover Extraordinary Homes',
+  description: 'Browse verified homes, apartments, cabins, and guest houses across the Meroghar marketplace.',
+  icons: {
+    icon: '/house.png',
+  },
+}
 
 export default async function RootLayout({children}: {children: React.ReactNode}) {
 
 
 
   return (
-    //toggle dark mode by getting dark mode from 
-    <html>
-      <head />
-      {/* body sets the root layout for entire application */}
-      <body className="flex flex-col font-sans">
+    <html className={nunitoSans.variable} lang="en">
+      <body className="flex flex-col font-sans bg-background text-onBackground min-h-screen">
         
 
-        {/* conditionally render navbar  */}
-      
         <ClientComp>
 
-          {/* this component are kind of hassle donot repeat them on other layouts since they have shared state 
-          overlapping will cause modal to bug and close  on click since they are in root layout they are rendered through out the 
-          application */}
-          <ToasterProvider />
-           <LoginModal />
-           <RegisterModal />
-           <ConfirmModal />
-           <MessageModal />
-           <BookingModal />
-           <ResetPassword />
-           <SearchModal/>
+          <ModalRegistry />
           
            
         </ClientComp>
         
-        {/* this children represents each page component  that is rendered */}
         {children}
       
-        
-        
+      
       </body>
     </html>
   )

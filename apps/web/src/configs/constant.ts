@@ -53,8 +53,11 @@ export const paypalClientId =
 export const cloudinaryCloudName =
   process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || ''
 
-export const cloudinaryUploadPreset =
-  process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || ''
+export const googleAuthEnabled =
+  process.env.NEXT_PUBLIC_ENABLE_GOOGLE_AUTH === 'true'
+
+export const facebookAuthEnabled =
+  process.env.NEXT_PUBLIC_ENABLE_FACEBOOK_AUTH === 'true'
 
 const publicApiBaseUrl =
   process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:2900'

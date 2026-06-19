@@ -2,34 +2,36 @@
 'use client'
 
 import Link from 'next/link'
-import {AiOutlineLeft, AiOutlineRight} from 'react-icons/ai'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 import { IBooking, } from '../../interface/response'
-import { RiDeleteBin6Fill } from 'react-icons/ri'
+import { Trash2 } from 'lucide-react'
 import {
+  CheckCircle,
+} from 'lucide-react'
 
-  AiOutlineCheckCircle,
-} from 'react-icons/ai'
-
-import {BiCalendarEdit} from 'react-icons/bi'
-import {BsHouseCheckFill,BsFillHouseSlashFill} from 'react-icons/bs'
+import { House, X } from 'lucide-react'
 import Api from '../../api/client/axios'
 import { toast } from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
 import useConfirm from '../../store/useConfirm'
 import useModal from '../../store/useModal'
-import * as lodash from 'lodash'
 import dayjs from '../../utils/dayjs'
 import Image from 'next/image'
 import { normalizeImageSrc } from '../common/normalizeImageSrc'
+import { Button, StatusBadge } from '../ui/primitives'
 
 
+function capitalize(str?: string): string {
+  if (!str) return ''
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
+}
 
 
 interface Props{
-trips:boolean
-is_Admin?:boolean
-bookings:Partial<IBooking>[]
+ trips:boolean
+ is_Admin?:boolean
+ bookings:Partial<IBooking>[]
   
 }
 
@@ -74,7 +76,7 @@ export default function TripBookingClient({trips,bookings,is_Admin}:Props) {
             return router.refresh();
           })
           .catch(()=>{
-            toast.error("Check In Failed!!");
+            toast.error("Check Out Failed!!");
             return router.refresh();
           })},
          
@@ -109,103 +111,90 @@ export default function TripBookingClient({trips,bookings,is_Admin}:Props) {
       
     
 
-
   return (
     <main>
-     {!is_Admin!&&<div className="block items-center justify-between border-b border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800 sm:flex lg:mt-1.5">
-        <div className="mb-1 mx-auto w-full sm:w-[98%]">
-          <div className="mb-4">
-
-            <h1 className="text-2xl font-semibold text-gray-900 dark:text-white sm:text-2xl">
-             {trips? "Trips !":"Reservations on Your Properties !"}
-            </h1>
-          </div>
-         
-        </div>
-      </div>}
-     
-
         {bookings!.length!>0&&<div>
           {/* only available for kyc verified user */}
           <div className="flex flex-col">
       <div className="overflow-x-auto">
         <div className="inline-block min-w-full align-middle">
-          <div className="overflow-hidden shadow">
-            <table className="min-w-full table-fixed divide-y divide-gray-200 dark:divide-gray-600">
-              <thead className="bg-gray-100 dark:bg-gray-700">
+          <div className="overflow-hidden rounded-lg border border-outline-variant bg-surface-container-lowest">
+            <table className="min-w-full divide-y divide-outline-variant">
+              <thead className="bg-surface-container">
                 <tr>
                 <th
                     scope="col"
-                    className="p-4 text-left text-xs font-bold uppercase text-gray-500 dark:text-gray-400"
+                    className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-onSurface-variant"
                   >
                     S.No
                   </th>
                   <th
                     scope="col"
-                    className="p-4 text-left text-xs font-bold uppercase text-gray-500 dark:text-gray-400"
+                    className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-onSurface-variant"
                   >
                     Property
                   </th>
                   <th
                     scope="col"
-                    className="p-4 text-left text-xs font-bold uppercase text-gray-500 dark:text-gray-400"
+                    className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-onSurface-variant"
                   >
                     Status
                   </th>
                   <th
                     scope="col"
-                    className="p-4 text-left text-xs font-bold uppercase text-gray-500 dark:text-gray-400"
+                    className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-onSurface-variant"
                   >
                    {trips? 'Host':"Tennant"}
                   </th> 
                  {is_Admin&&<th
                     scope="col"
-                    className="p-4 text-left text-xs font-bold uppercase text-gray-500 dark:text-gray-400"
+                    className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-onSurface-variant"
                   >
                    Host
                   </th>}
 
                   <th
                     scope="col"
-                    className="p-4 text-left text-xs font-bold uppercase text-gray-500 dark:text-gray-400"
+                    className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-onSurface-variant"
                   >
                     StartDate
                   </th>
                   <th
                     scope="col"
-                    className="p-4 text-left text-xs font-bold uppercase text-gray-500 dark:text-gray-400"
+                    className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-onSurface-variant"
                   >
                     EndDate
                   </th>
                   <th
                     scope="col"
-                    className="p-4 text-left text-xs font-bold uppercase text-gray-500 dark:text-gray-400"
+                    className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-onSurface-variant"
                   >
                     Amount
                   </th>
                   
                  {!is_Admin&&<th
                     scope="col"
-                    className="p-4 text-left text-xs font-bold uppercase text-gray-500 dark:text-gray-400"
+                    className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-onSurface-variant"
                   >
                     Actions
                   </th>}
                 </tr>
               </thead>
 
+              <tbody className="divide-y divide-outline-variant bg-surface-container-lowest">
         {
           bookings.map((data,index)=>{
             console.log(data);
             const propertyImageSrc = normalizeImageSrc(data.propertyId?.images?.[0]?.imgUrl)
             return(
-              <tbody key={index} className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
-              <tr className="hover:bg-gray-100 dark:hover:bg-gray-700">
+              <tr key={index} className="hover:bg-surface-container-low">
 
-              <td className="max-w-sm overflow-hidden truncate p-4 text-base font-semibold text-gray-900 dark:text-gray-400 xl:max-w-xs">
+              <td className="whitespace-nowrap px-4 py-4 text-sm font-semibold text-onSurface">
                   {index+1}.
                 </td>
                 
-                <Link href={`/Home/rooms/${data.propertyId?._id}` } target='_space' ><td className="mr-12 flex items-center space-x-3 whitespace-nowrap p-4">
+                <td className="whitespace-nowrap px-4 py-4">
+                  <Link href={`/Home/rooms/${data.propertyId?._id}`} target='_blank' className="flex items-center gap-3 hover:underline">
                   {propertyImageSrc ? (
                     <Image
                       alt='propertyimage'
@@ -215,168 +204,148 @@ export default function TripBookingClient({trips,bookings,is_Admin}:Props) {
                       src={propertyImageSrc}
                     />
                   ) : (
-                    <div className="flex h-16 w-20 items-center justify-center rounded-lg bg-gray-100 text-center text-xs text-gray-500">
+                    <div className="flex h-16 w-20 items-center justify-center rounded-lg bg-surface-container text-center text-xs text-onSurface-variant">
                       No image available
                     </div>
                   )}
 
-                  <div className="text-base font-semibold  text-gray-800 dark:text-white">
+                  <div className="text-sm font-semibold text-onSurface">
                     {data.propertyId?.name}
                   </div>
-                </td></Link>
+                  </Link>
+                </td>
 
-                <td className="max-w-sm overflow-hidden truncate p-4 text-base font-semibold text-gray-900 dark:text-gray-400 xl:max-w-xs">
-                  {data.status}
+                <td className="whitespace-nowrap px-4 py-4">
+                  <StatusBadge tone={data.status === 'Booked' ? 'info' : data.status === 'Completed' ? 'success' : 'danger'}>
+                    {data.status}
+                  </StatusBadge>
                 </td>
 
              
-           { !trips&& <td className="max-w-sm overflow-hidden truncate p-4 text-base font-normal text-gray-900 dark:text-gray-400 xl:max-w-xs">
-              <Link href={`/Home/user/${data.userId?._id}`} className='underline'>  {lodash.capitalize(data.userId?.userName)}</Link>  
+           { !trips&& <td className="whitespace-nowrap px-4 py-4 text-sm text-onSurface-variant">
+              <Link href={`/Home/user/${data.userId?._id}`} className='text-primary hover:underline'>  {capitalize(data.userId?.userName)}</Link>  
                </td>}
 
-{            is_Admin||trips&& <td className="max-w-sm overflow-hidden truncate p-4 text-base font-normal text-gray-900 dark:text-gray-400 xl:max-w-xs">
-              <Link href={`/Home/user/${data.hostId?._id}`} className='underline'>  {lodash.capitalize(data.hostId?.userName)}</Link>  
-               </td>}
+{            (is_Admin||trips) && <td className="whitespace-nowrap px-4 py-4 text-sm text-onSurface-variant">
+               <Link href={`/Home/user/${data.hostId?._id}`} className='text-primary hover:underline'>  {capitalize(data.hostId?.userName)}</Link>  
+                </td>}
 
-                <td className="whitespace-nowrap p-4 text-base font-normal text-gray-900 dark:text-white">
+                <td className="whitespace-nowrap px-4 py-4 text-sm text-onSurface-variant">
                   {dayjs(data.startDate).format('DD/MM/YY')}
                 </td>
-                <td className="whitespace-nowrap p-4 text-base font-normal text-gray-900 dark:text-white">
+                <td className="whitespace-nowrap px-4 py-4 text-sm text-onSurface-variant">
                 {dayjs(data.endDate).format('DD/MM/YY')}
                 </td>
-                <td className="whitespace-nowrap p-4 text-base font-normal text-gray-900 dark:text-white">
+                <td className="whitespace-nowrap px-4 py-4 text-sm font-semibold text-onSurface">
                  $ {data.paymentId?.totalAmount}
                 </td>
 
               
-             {!is_Admin&& <td>
-                 {/* for owner */}
-                 {(!trips&&!data.checkInStatus)&&data.status=='Booked'&&<td className="space-x-2 whitespace-nowrap p-4">
-                  <button
-                    type="button"
-                    
-                    className="focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 inline-flex items-center rounded-lg bg-themeColor px-3 py-2 text-center text-sm font-medium text-white hover:bg-mainColor focus:ring-4"
-                   onClick={(e)=>onCheckIn(data._id!)}>
-                    <AiOutlineCheckCircle className="mr-2 h-5 w-5" />
-                    CheckIn
-                  </button>
+              {!is_Admin&& <td className="whitespace-nowrap px-4 py-4">
+                  {/* for owner */}
+                  {(!trips&&!data.checkInStatus)&&data.status=='Booked'&&
+                   <div className="flex items-center gap-2">
+                   <Button
+                      type="button"
+                      className="min-h-8 px-2 py-1 text-xs"
+                     onClick={(e)=>onCheckIn(data._id!)}>
+                      <CheckCircle className="mr-2 h-4 w-4" />
+                      CheckIn
+                    </Button>
 
-                  <button
-                    type="button"
-                    className="ml-2 inline-flex  items-center rounded-lg bg-red-600 px-3 py-2 text-center text-sm font-medium text-white hover:bg-red-700 focus:ring-4 focus:ring-red-300 dark:focus:ring-red-900"
-                   
-                    onClick={(e)=>cancelBooking(data._id!)} >
-                    <RiDeleteBin6Fill className="mr-2 h-5 w-5" />
-                    Cancel Booking
-                  </button>
-                </td>}
+                    <Button
+                      type="button"
+                      tone="danger"
+                      className="min-h-8 px-2 py-1 text-xs"
+                      onClick={(e)=>cancelBooking(data._id!)} >
+                      <Trash2 className="mr-2 h-4 w-4" />
+                      Cancel
+                    </Button>
+                   </div>}
 
-                {/* for tennant */}
-                {trips&&(!data.checkInStatus)&&data.status=='Booked'&&<td className="space-x-2 whitespace-nowrap p-4">
-                {/* <button
-                  type="button"
-                  className="focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 inline-flex items-center rounded-lg bg-themeColor px-3 py-2 text-center text-sm font-medium text-white hover:bg-mainColor focus:ring-4"
-                  
-        
-
-                >
-                  <BiCalendarEdit className="mr-2 h-5 w-5" />
-                  Edit
-                </button> */}
-
-                  <button
-                    type="button"
-                    className="ml-2 inline-flex  items-center rounded-lg bg-red-600 px-3 py-2 text-center text-sm font-medium text-white hover:bg-red-700 focus:ring-4 focus:ring-red-300 dark:focus:ring-red-900"
-                  
-                    onClick={(e)=>cancelBooking(data._id!)}>
-                    <RiDeleteBin6Fill className="mr-2 h-5 w-5" />
-                    Cancel Booking
-                  </button>
-                </td>}
+                  {/* for tenant */}
+                  {trips&&(!data.checkInStatus)&&data.status=='Booked'&&
+                   <div>
+                     <Button
+                       type="button"
+                       tone="danger"
+                       className="min-h-8 px-2 py-1 text-xs"
+                       onClick={(e)=>cancelBooking(data._id!)}>
+                       <Trash2 className="mr-2 h-4 w-4" />
+                       Cancel Booking
+                     </Button>
+                   </div>}
 
 
-                {(!trips&&!data.checkOutStatus&&data.checkInStatus)&&data.status=='Booked'&&<td className="space-x-2 whitespace-nowrap p-4">
-                  <button
-                    type="button"
-                    className="focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 inline-flex items-center rounded-lg bg-themeColor px-3 py-2 text-center text-sm font-medium text-white hover:bg-mainColor focus:ring-4"
-                    
-                    onClick={(e)=>onCheckOut(data._id!)}>
-                    <AiOutlineCheckCircle className="mr-2 h-5 w-5" />
-                    CheckOut
-                  </button>
+                  {(!trips&&!data.checkOutStatus&&data.checkInStatus)&&data.status=='Booked'&&
+                   <div>
+                     <Button
+                       type="button"
+                       className="min-h-8 px-2 py-1 text-xs"
+                       onClick={(e)=>onCheckOut(data._id!)}>
+                       <CheckCircle className="mr-2 h-4 w-4" />
+                       CheckOut
+                     </Button>
+                   </div>}
 
-                
-                </td>}
+                {/* for both client and owner */}
+                {data.checkInStatus&&
+                 <div className='flex items-center gap-x-2 text-sm font-semibold text-onSurface-variant'>
+                  {(trips?data.checkInStatus:data.checkOutStatus)&&<House className='h-5 w-5 text-emerald-600' />}
+                 {data.status=='Completed'&&<p>  Booking Completed!   </p>}
+                 {(trips&&data.checkInStatus&&data.status!="Completed")&& <p>  Checked In!   </p>}
+                 </div>}
 
-              {/* for both client and owner */}
-              {data.checkInStatus&&<td className="space-x-2 text-sm font-semibold text-gray-600 whitespace-nowrap p-4">
-                
-                <div className='flex items-center gap-x-2'>
-                {(trips?data.checkInStatus:data.checkOutStatus)&&<BsHouseCheckFill className='h-6 w-6' />}
-               {data.status=='Completed'&&<p>  Booking Completed!   </p>}
-               {(trips&&data.checkInStatus&&data.status!="Completed")&& <p>  Checked In!   </p>}
-                </div>
-              
-                
-                </td>}
-
-              {
-                (data.status=='tenantCancelled'||data.status=="ownerCancelled")&&<td className="space-x-2 text-sm font-semibold text-gray-600 whitespace-nowrap p-4">
-                
-                  <div className='flex items-center gap-x-2'>
-                   <BsFillHouseSlashFill className='h-6 w-6' />
+                {
+                  (data.status=='tenantCancelled'||data.status=="ownerCancelled")&&
+                  <div className='flex items-center gap-x-2 text-sm font-semibold text-onSurface-variant'>
+                   <X className='h-5 w-5 text-red-600' />
                   <p>Booking Cancelled!   </p>
-               
-                  </div>
-                
-                  
-                  </td>
-                }
+                 </div>}
 
-              </td>}
-               
+                </td>}
+                
 
               </tr>
-            </tbody>
             )
           })
         }
+        </tbody>
 
             </table>
           </div>
         </div>
       </div>
     </div>
-        
+         
             
          
-
-                
-             
-            
+ 
          </div>}
        
 
-
       
 
+      
+ 
+
       {/* paginatioon footer */}
-      {bookings!.length!>5&&<div className="sticky bottom-0 right-0 w-full  border-t border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800 sm:flex sm:justify-between">
+      {bookings!.length!>5&&<div className="sticky bottom-0 right-0 w-full border-t border-outline-variant bg-surface-container-lowest p-4 sm:flex sm:justify-between">
         <div className="flex items-center space-x-3">
           <Link
             href="#"
-            className="bg-themeColor hover:bg-mainColor focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 inline-flex flex-1 items-center justify-center rounded-lg px-3 py-2 text-center text-sm font-medium text-white focus:ring-4"
+            className="inline-flex flex-1 items-center justify-center rounded-md bg-primary px-3 py-2 text-center text-sm font-medium text-primary-on hover:bg-primary/90"
           >
-          <AiOutlineLeft className="mr-1 -ml-1 h-3 w-3 " strokeWidth='3'/>
+          <ChevronLeft className="mr-1 h-4 w-4" />
             Previous
           </Link>
           <Link
             href="#"
-            className="bg-themeColor hover:bg-mainColor focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 inline-flex flex-1 items-center justify-center rounded-lg px-3 py-2 text-center text-sm font-medium text-white focus:ring-4"
+            className="inline-flex flex-1 items-center justify-center rounded-md bg-primary px-3 py-2 text-center text-sm font-medium text-primary-on hover:bg-primary/90"
           >
             
             Next
-            <AiOutlineRight className="ml-1 -mr-1 h-3 w-3 " strokeWidth='3'/>
+            <ChevronRight className="ml-1 h-4 w-4" />
           </Link>
         </div>
       </div>}

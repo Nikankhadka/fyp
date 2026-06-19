@@ -1,422 +1,390 @@
 'use client'
 
-import { useEffect, useState } from "react"
-import { FetchedMe, IBooking, Property } from "../../interface/response"
-import Api from "../../api/client/axios"
-import TripBookingClient from "../listing/TripsReservationClient"
-import {BsFillHouseCheckFill,BsFillHouseSlashFill} from 'react-icons/bs'
-import{FaUserCheck,FaUserTimes} from 'react-icons/fa'
-import Link from "next/link"
-import * as lodash from 'lodash'
-import useReject from "../../store/useReject"
-import useModal from "../../store/useModal"
-import { toast } from "react-hot-toast"
-import { useRouter } from "next/navigation"
-import useConfirm from "../../store/useConfirm"
-import Image from "next/image"
-import { normalizeImageSrc } from "../common/normalizeImageSrc"
+import Image from 'next/image'
+import Link from 'next/link'
+import { useEffect, useState } from 'react'
+import { toast } from 'react-hot-toast'
+import { Ban, CheckCircle2, Search, Undo2 } from 'lucide-react'
 
-interface AdminTable{
-    use?:string,
-    bookings?:Partial<IBooking>[],
-    users?:Partial<FetchedMe>[],
-    properties?:Partial<Property>[]
+import Api from '../../api/client/axios'
+import { FetchedMe, IBooking, Property } from '../../interface/response'
+import useConfirm from '../../store/useConfirm'
+import useModal from '../../store/useModal'
+import useReject from '../../store/useReject'
+import { normalizeImageSrc } from '../common/normalizeImageSrc'
+import TripBookingClient from '../listing/TripsReservationClient'
+import {
+  Button,
+  Field,
+  PageHeader,
+  StatusBadge,
+} from '../ui/primitives'
+import {
+  DataTable,
+  Table,
+  TableBody,
+  TableCell,
+  TableEmpty,
+  TableHead,
+  TableHeaderCell,
+  TableRow,
+} from '../ui/data-table'
+
+interface AdminTableProps {
+  use?: string
+  bookings?: Partial<IBooking>[]
+  users?: Partial<FetchedMe>[]
+  properties?: Partial<Property>[]
 }
 
+const EMPTY_USERS: Partial<FetchedMe>[] = []
+const EMPTY_PROPERTIES: Partial<Property>[] = []
+const EMPTY_BOOKINGS: Partial<IBooking>[] = []
 
-export default function AdminTable({use,users,properties,bookings}:AdminTable) {
+const titleCase = (value: string) =>
+  value
+    .split(' ')
+    .filter(Boolean)
+    .map((part) => `${part.charAt(0).toUpperCase()}${part.slice(1)}`)
+    .join(' ')
 
-        
-        const [stateUsers,setStateUsers]=useState(users)
-        const [stateProperties,setStateProperties]=useState(properties)
-        const [search,setSearch]=useState('')
-        const modal=useModal()
-        const reject=useReject()
-        const confirm=useConfirm()
-        const router=useRouter()
-       
-        
-      
-      
+export default function AdminTable({
+  use,
+  users = EMPTY_USERS,
+  properties = EMPTY_PROPERTIES,
+  bookings = EMPTY_BOOKINGS,
+}: AdminTableProps) {
+  const [stateUsers, setStateUsers] = useState(users)
+  const [stateProperties, setStateProperties] = useState(properties)
+  const [search, setSearch] = useState('')
+  const modal = useModal()
+  const reject = useReject()
+  const confirm = useConfirm()
 
+  useEffect(() => {
+    if (use !== 'user') return
+    setStateUsers(users)
+  }, [use, users])
 
-     
-     
+  useEffect(() => {
+    if (use !== 'property') return
+    setStateProperties(properties)
+  }, [use, properties])
 
+  useEffect(() => {
+    if (use === 'booking') return
 
-        useEffect(()=>{
-
-
-            const onSearch=async()=>{
-                if(use=='user'){
-                 return  Api.get(`/admin/v1/allUsers/?search=${search}`,{withCredentials:true}).then((res)=>setStateUsers(res.data.users))
-                  .catch((e)=>{
-                    setStateUsers(users)
-                  })
-                }
-
-                //for product search
-               return  Api.get(`/admin/v1/allProperties/?search=${search}`,{withCredentials:true}).then((res)=>setStateProperties(res.data.properties))
-                .catch((e)=>{
-                  setStateProperties(properties)
-                })
-            }
-
-
-            const debouncedSearch = lodash.debounce(onSearch, 300); // Adjust the debounce delay as needed
-
-            debouncedSearch();
-            return () => {
-              debouncedSearch.cancel(); // Cancel the debounced function on cleanup
-            };
-
-     },[search])
-
-        
-
-
-
-    const banUnbanUser=(id:string,ban:boolean)=>{
-            console.log('ban',id)
-            // first set content
-            if(ban){
-              reject.setbtn('BanUser');
-              reject.onContent({
-                  onReject:(message:string)=>{
-                      Api.patch(`/admin/v1/banUnbanUser/${id}`,{ban,message},{withCredentials:true})
-                      .then((res)=>{
-                        toast.success("User successfullyt Banned")
-                        modal.onClose()
-                       return  window.location.reload()
-                       
-                      }).catch((e)=>{
-                        toast.error("User Banned Failed!")
-                      })
-                  }
-              })
-
-              return modal.onOpen('reject')
-          }
-
-          //for unban
-          confirm.onContent({
-            header:"Are You Sure to UnBan User",
-            actionBtn:"UnBan User",
-            onAction:()=>{
-              Api.patch(`/admin/v1/banUnbanUser/${id}`,{ban},{withCredentials:true})
-                      .then((res)=>{
-                        toast.success("User successfully unBanned")
-                        modal.onClose()
-                        return  window.location.reload()
-                      }).catch((e)=>{
-                        toast.error("User unBanned Failed!")
-                    })
-            }
+    const controller = new AbortController()
+    const timeout = window.setTimeout(async () => {
+      try {
+        if (use === 'user') {
+          const res = await Api.get(`/admin/v1/allUsers/?search=${search}`, {
+            withCredentials: true,
+            signal: controller.signal,
           })
-           
-
-        return modal.onOpen("confirm")
-
-          
-        
-    }
-
-
-    const banUnbanProperty=(id:string,ban:boolean)=>{
-      console.log('ban',id)
-      // first set content
-      if(ban){
-        reject.setbtn('BanProperty');
-        reject.onContent({
-            onReject:(message:string)=>{
-                Api.patch(`/admin/v1/banUnbanProperty/${id}`,{ban,message},{withCredentials:true})
-                .then((res)=>{
-                  toast.success("Property successfully Banned")
-                  modal.onClose()
-                  return  window.location.reload()
-                
-                }).catch((e)=>{
-                  toast.error("Property Banned Failed!")
-                })
-            }
-        })
-
-        return modal.onOpen('reject')
-    }
-
-    //for unban
-    confirm.onContent({
-      header:"Are You Sure to UnBan Property",
-      actionBtn:"UnBan Property",
-      onAction:()=>{
-        Api.patch(`/admin/v1/banUnbanProperty/${id}`,{ban},{withCredentials:true})
-                .then((res)=>{
-                  toast.success("Property successfully unBanned")
-                   modal.onClose()
-                   return  window.location.reload()
-                }).catch((e)=>{
-                  toast.error("Property unBanned Failed!")
-              })
-      }
-    })
-     
-
-  return modal.onOpen("confirm")
-
-    
-  
-}
-
-
-
-    if(use=='booking'){
-        return(
-            <TripBookingClient trips={false} is_Admin={true} bookings={bookings!} />
-        )
-    }
-
-
-
-
-  return (
-    <main>
-      <div className="mx-auto mb-1  w-[96%] p-2">
-        <div className="mb-4">
-          <h1 className="text-xl font-semibold text-gray-900 dark:text-white sm:text-2xl sm:font-bold">
-            {use=='user'&&'Total Users'}
-            {use=='property'&&'Total Properties'}
-            {use=='booking'&&'Total Bookings'}
-          </h1>
-        </div>
-
-       { use!=='booking'&&<div className="block items-center justify-between dark:divide-gray-700 sm:flex md:divide-x md:divide-gray-100">
-            <div className="mb-4 flex items-center sm:mb-0">
-              <form className="sm:pr-3">
-                <label className="sr-only">Search</label>
-                <div className="relative mt-1 w-48 sm:w-64 xl:w-96">
-                  <input
-                    type="text"
-                  
-                    onChange={(e)=>setSearch(e.target.value)}
-                    className="focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 sm:text-sm"
-                    placeholder="Search "
-                  />
-                </div>
-              </form>
-            </div>
-
-          </div>}
-      </div>
-
-      <hr className="my-4 border-gray-400" />
-
-
-        {/* for Actual Table Content  */}
-      <div className="flex flex-col">
-      <div className="overflow-x-auto">
-        <div className="inline-block min-w-full align-middle">
-          <div className="overflow-hidden shadow">
-            <table className="min-w-full table-fixed divide-y divide-gray-200 dark:divide-gray-600">
-              <thead className="bg-gray-100 dark:bg-gray-700">
-                <tr>
-                <th
-                    scope="col"
-                    className="p-4 text-left text-xs font-bold uppercase text-gray-500 dark:text-gray-400"
-                  >
-                    S.No
-                  </th>
-
-                  <th
-                    scope="col"
-                    className="p-4 text-left text-xs font-bold uppercase text-gray-500 dark:text-gray-400"
-                  >
-                    {use=='user'&&'userName'}
-                    {use=='property'&& 'Property Name'}
-                    
-                  </th>
-
-                  <th
-                    scope="col"
-                    className="p-4 text-left text-xs font-bold uppercase text-gray-500 dark:text-gray-400"
-                  >
-                    Status
-                  </th>
-                  <th
-                    scope="col"
-                    className="p-4 text-left text-xs font-bold uppercase text-gray-500 dark:text-gray-400"
-                  >
-                   {use=='user'&&'About'}
-                    {use=='property'&& 'Host'}
-                 
-                  </th>
-                  <th
-                    scope="col"
-                    className="p-4 text-left text-xs font-bold uppercase text-gray-500 dark:text-gray-400"
-                  >
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-
-        {
-        
-        use=='property'&& stateProperties!.map((data,index)=>{
-            console.log(data);
-            const propertyImageSrc = normalizeImageSrc(data.images?.[0]?.imgUrl)
-            return(
-              <tbody key={index} className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
-              <tr className="hover:bg-gray-100 dark:hover:bg-gray-700">
-
-              <td className="max-w-sm overflow-hidden truncate p-4 text-base font-semibold text-gray-900 dark:text-gray-400 xl:max-w-xs">
-                  {index+1}.
-                </td>
-                
-                <Link href={`/Home/rooms/${data._id}` } target='_space' ><td className="mr-12 flex items-center space-x-3 whitespace-nowrap p-4">
-                  {propertyImageSrc ? (
-                    <Image
-                      alt="RoomImage"
-                      height={64}
-                      width={80}
-                      className="rounded-lg"
-                      src={propertyImageSrc}
-                    />
-                  ) : (
-                    <div className="flex h-16 w-20 items-center justify-center rounded-lg bg-gray-100 text-center text-xs text-gray-500">
-                      No image available
-                    </div>
-                  )}
-
-                  <div className="text-base font-semibold  text-gray-800 dark:text-white">
-                    {data.name}
-                  </div>
-                </td></Link>
-
-                <td className="max-w-sm overflow-hidden truncate p-4 text-base font-semibold text-gray-900 dark:text-gray-400 xl:max-w-xs">
-                  {data.isBanned?.status? "Banned":"Active"}
-                </td>
-
-             
-              <td className="max-w-sm overflow-hidden truncate p-4 text-base font-normal text-gray-900 dark:text-gray-400 xl:max-w-xs">
-              <Link href={`/Home/user/${typeof(data.userId)=='object'?data!.userId!._id!:''}`} className='underline'>  {lodash.capitalize(typeof(data.userId)=='object'?data!.userId!.userName!:'')}</Link>  
-               </td>
-
-               
-
-              
-                {/* for owner */}
-                <td className="space-x-2 whitespace-nowrap p-4">
-                 { !data.isBanned?.status&&<button
-                    type="button"
-                    className="ml-2 inline-flex  items-center rounded-lg bg-red-600 px-3 py-2 text-center text-sm font-medium text-white hover:bg-red-700 focus:ring-4 focus:ring-red-300 dark:focus:ring-red-900"
-                   onClick={(e)=>banUnbanProperty(data._id!,true)}
-                 >
-                <BsFillHouseSlashFill className="mr-2 h-5 w-5" />
-                    BanProperty
-                  </button>}
-
-                  {data.isBanned?.status&&<button
-                    type="button"
-                    onClick={(e)=>banUnbanProperty(data._id!,false)}
-                    className="focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 inline-flex items-center rounded-lg bg-themeColor px-3 py-2 text-center text-sm font-medium text-white hover:bg-mainColor focus:ring-4"
-                    >
-                <BsFillHouseCheckFill className="mr-2 h-5 w-5" />
-                  UnBan Property
-                  </button>}
-                </td>
-
-                
-              </tr>
-            </tbody>
-            )
-          })
-
+          setStateUsers(res.data.users)
+          return
         }
 
-          {
-            use=='user'&& stateUsers!.map((data,index)=>{
-                console.log(data);
-                const profileImageSrc = normalizeImageSrc(data.profileImg?.imgUrl)
-                return(
-                  <tbody key={index} className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
-                  <tr className="hover:bg-gray-100 dark:hover:bg-gray-700">
-    
-                  <td className="max-w-sm overflow-hidden truncate p-4 text-base font-semibold text-gray-900 dark:text-gray-400 xl:max-w-xs">
-                      {index+1}.
-                    </td>
-                    
-                    <Link href={`/Home/user/${data._id}` } target='_space' ><td className="mr-12 flex items-center space-x-3 whitespace-nowrap p-4">
-                      {profileImageSrc ? (
-                        <Image
-                          alt='ProfileImage'
-                          height={48}
-                          width={48}
-                          className="rounded-full"
-                          src={profileImageSrc}
-                        />
-                      ) : (
-                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 text-center text-[10px] text-gray-500">
-                          No image
-                        </div>
-                      )}
-    
-                      <div className="text-base font-semibold  text-gray-800 dark:text-white">
-                        {data.userName}
-                      </div>
-                    </td></Link>
-    
-                    <td className="max-w-sm overflow-hidden truncate p-4 text-base font-semibold text-gray-900 dark:text-gray-400 xl:max-w-xs">
-                      {data.isBanned?.status? "Banned":"Active"}
-                    </td>
-    
-                 
-                  <td className="max-w-sm overflow-hidden truncate p-4 text-base font-normal text-gray-900 dark:text-gray-400 xl:max-w-xs">
-                    {data.about==''? '.........................................':data.about }
-                   </td>
-    
-                   
-    
-                  
-                    {/* for owner */}
-                    <td className="space-x-2 whitespace-nowrap p-4">
-                      {data.isBanned?.status&&<button
-                        type="button"
-                        onClick={(e)=>banUnbanUser(data._id!,false)}
-                        className="focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 inline-flex items-center rounded-lg bg-themeColor px-3 py-2 text-center text-sm font-medium text-white hover:bg-mainColor focus:ring-4"
-                     >
-                        <FaUserCheck className="mr-2 h-5 w-5" />
-                        UnBanUser
-                      </button>}
-    
-                   { !data.isBanned?.status&&<button
-                        type="button"
-                        className="ml-2 inline-flex  items-center rounded-lg bg-red-600 px-3 py-2 text-center text-sm font-medium text-white hover:bg-red-700 focus:ring-4 focus:ring-red-300 dark:focus:ring-red-900"
-                        onClick={(e)=>banUnbanUser(data._id!,true)}
-                        >
-                    <FaUserTimes className="mr-2 h-5 w-5" />
-                      Ban User
-                      </button>}
-                    </td>
-    
-                    
-                  </tr>
-                </tbody>
-                )
-              })
-          }
-         
+        if (use === 'property') {
+          const res = await Api.get(`/admin/v1/allProperties/?search=${search}`, {
+            withCredentials: true,
+            signal: controller.signal,
+          })
+          setStateProperties(res.data.properties)
+        }
+      } catch (error: any) {
+        if (error?.code === 'ERR_CANCELED') return
+        setStateUsers(users)
+        setStateProperties(properties)
+      }
+    }, 300)
 
+    return () => {
+      controller.abort()
+      window.clearTimeout(timeout)
+    }
+  }, [properties, search, use, users])
 
-       
+  const pageTitle = use === 'user'
+    ? 'Users'
+    : use === 'property'
+      ? 'Properties'
+      : 'Bookings'
 
-            </table>
-          </div>
+  const pageDescription = use === 'user'
+    ? 'Search, review, ban, and unban marketplace users.'
+    : use === 'property'
+      ? 'Search property inventory and apply admin moderation actions.'
+      : 'Review booking activity across guests and hosts.'
+
+  const banUnbanUser = (id: string, ban: boolean) => {
+    if (ban) {
+      reject.setbtn('Ban User')
+      reject.onContent({
+        onReject: (message: string) => {
+          Api.patch(`/admin/v1/banUnbanUser/${id}`, { ban, message }, { withCredentials: true })
+            .then(() => {
+              toast.success('User successfully banned')
+              modal.onClose()
+              window.location.reload()
+            })
+            .catch(() => {
+              toast.error('User ban failed')
+            })
+        },
+      })
+
+      return modal.onOpen('reject')
+    }
+
+    confirm.onContent({
+      header: 'Are you sure you want to unban this user?',
+      actionBtn: 'Unban User',
+      onAction: () => {
+        Api.patch(`/admin/v1/banUnbanUser/${id}`, { ban }, { withCredentials: true })
+          .then(() => {
+            toast.success('User successfully unbanned')
+            modal.onClose()
+            window.location.reload()
+          })
+          .catch(() => {
+            toast.error('User unban failed')
+          })
+      },
+    })
+
+    return modal.onOpen('confirm')
+  }
+
+  const banUnbanProperty = (id: string, ban: boolean) => {
+    if (ban) {
+      reject.setbtn('Ban Property')
+      reject.onContent({
+        onReject: (message: string) => {
+          Api.patch(`/admin/v1/banUnbanProperty/${id}`, { ban, message }, { withCredentials: true })
+            .then(() => {
+              toast.success('Property successfully banned')
+              modal.onClose()
+              window.location.reload()
+            })
+            .catch(() => {
+              toast.error('Property ban failed')
+            })
+        },
+      })
+
+      return modal.onOpen('reject')
+    }
+
+    confirm.onContent({
+      header: 'Are you sure you want to unban this property?',
+      actionBtn: 'Unban Property',
+      onAction: () => {
+        Api.patch(`/admin/v1/banUnbanProperty/${id}`, { ban }, { withCredentials: true })
+          .then(() => {
+            toast.success('Property successfully unbanned')
+            modal.onClose()
+            window.location.reload()
+          })
+          .catch(() => {
+            toast.error('Property unban failed')
+          })
+      },
+    })
+
+    return modal.onOpen('confirm')
+  }
+
+  if (use === 'booking') {
+    return <TripBookingClient trips={false} is_Admin={true} bookings={bookings} />
+  }
+
+  return (
+    <main className="w-full">
+      <PageHeader title={pageTitle} description={pageDescription} />
+
+      <div className="mb-5 max-w-md">
+        <label className="sr-only">Search {pageTitle}</label>
+        <div className="relative">
+          <Search className="pointer-events-none absolute left-3 top-3 h-5 w-5 text-onSurface-variant/50" />
+          <Field
+            type="search"
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            className="pl-10"
+            placeholder={`Search ${pageTitle.toLowerCase()}`}
+          />
         </div>
       </div>
-    </div>
 
+      <DataTable>
+        <Table>
+          <TableHead>
+            <TableRow className="hover:bg-surface-container">
+              <TableHeaderCell className="w-20">S.No</TableHeaderCell>
+              <TableHeaderCell>{use === 'user' ? 'User' : 'Property'}</TableHeaderCell>
+              <TableHeaderCell>Status</TableHeaderCell>
+              <TableHeaderCell>{use === 'user' ? 'About' : 'Host'}</TableHeaderCell>
+              <TableHeaderCell className="text-right">Actions</TableHeaderCell>
+            </TableRow>
+          </TableHead>
 
+          <TableBody>
+            {use === 'property' && stateProperties.length === 0 && (
+              <TableEmpty
+                colSpan={5}
+                title="No properties found"
+                description="Search results and property records will appear here."
+              />
+            )}
 
+            {use === 'property' &&
+              stateProperties.map((data, index) => {
+                const propertyImageSrc = normalizeImageSrc(data.images?.[0]?.imgUrl)
+                const hostName =
+                  typeof data.userId === 'object' ? data.userId.userName || 'Host' : 'Host'
+                const hostId =
+                  typeof data.userId === 'object' ? data.userId._id || '' : ''
 
+                return (
+                  <TableRow key={data._id || index}>
+                    <TableCell className="font-semibold">{index + 1}.</TableCell>
+                    <TableCell>
+                      <Link
+                        href={`/Home/rooms/${data._id}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="flex items-center gap-3 font-semibold text-onSurface hover:text-primary"
+                      >
+                        {propertyImageSrc ? (
+                          <Image
+                            alt="Room"
+                            height={64}
+                            width={80}
+                            className="h-16 w-20 rounded-md object-cover"
+                            src={propertyImageSrc}
+                          />
+                        ) : (
+                          <div className="flex h-16 w-20 items-center justify-center rounded-md bg-surface-container text-center text-xs text-onSurface-variant">
+                            No image
+                          </div>
+                        )}
+                        <span className="max-w-[220px] truncate">{data.name}</span>
+                      </Link>
+                    </TableCell>
+                    <TableCell>
+                      <StatusBadge tone={data.isBanned?.status ? 'danger' : 'success'}>
+                        {data.isBanned?.status ? 'Banned' : 'Active'}
+                      </StatusBadge>
+                    </TableCell>
+                    <TableCell>
+                      {hostId ? (
+                        <Link href={`/Home/user/${hostId}`} className="font-semibold text-primary underline">
+                          {titleCase(hostName)}
+                        </Link>
+                      ) : (
+                        <span>{titleCase(hostName)}</span>
+                      )}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {data.isBanned?.status ? (
+                        <Button
+                          type="button"
+                          tone="primary"
+                          onClick={() => banUnbanProperty(data._id!, false)}
+                        >
+                          <Undo2 className="mr-2 h-4 w-4" />
+                          Unban
+                        </Button>
+                      ) : (
+                        <Button
+                          type="button"
+                          tone="danger"
+                          onClick={() => banUnbanProperty(data._id!, true)}
+                        >
+                          <Ban className="mr-2 h-4 w-4" />
+                          Ban
+                        </Button>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                )
+              })}
+
+            {use === 'user' && stateUsers.length === 0 && (
+              <TableEmpty
+                colSpan={5}
+                title="No users found"
+                description="Search results and user records will appear here."
+              />
+            )}
+
+            {use === 'user' &&
+              stateUsers.map((data, index) => {
+                const profileImageSrc = normalizeImageSrc(data.profileImg?.imgUrl)
+
+                return (
+                  <TableRow key={data._id || index}>
+                    <TableCell className="font-semibold">{index + 1}.</TableCell>
+                    <TableCell>
+                      <Link
+                        href={`/Home/user/${data._id}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="flex items-center gap-3 font-semibold text-onSurface hover:text-primary"
+                      >
+                        {profileImageSrc ? (
+                          <Image
+                            alt="Profile"
+                            height={48}
+                            width={48}
+                            className="h-12 w-12 rounded-full object-cover"
+                            src={profileImageSrc}
+                          />
+                        ) : (
+                          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-surface-container text-center text-[10px] text-onSurface-variant">
+                            No image
+                          </div>
+                        )}
+                        <span className="max-w-[220px] truncate">{data.userName}</span>
+                      </Link>
+                    </TableCell>
+                    <TableCell>
+                      <StatusBadge tone={data.isBanned?.status ? 'danger' : 'success'}>
+                        {data.isBanned?.status ? 'Banned' : 'Active'}
+                      </StatusBadge>
+                    </TableCell>
+                    <TableCell className="max-w-md truncate text-onSurface-variant">
+                      {data.about || 'No profile summary provided'}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {data.isBanned?.status ? (
+                        <Button
+                          type="button"
+                          tone="primary"
+                          onClick={() => banUnbanUser(data._id!, false)}
+                        >
+                          <CheckCircle2 className="mr-2 h-4 w-4" />
+                          Unban
+                        </Button>
+                      ) : (
+                        <Button
+                          type="button"
+                          tone="danger"
+                          onClick={() => banUnbanUser(data._id!, true)}
+                        >
+                          <Ban className="mr-2 h-4 w-4" />
+                          Ban
+                        </Button>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                )
+              })}
+          </TableBody>
+        </Table>
+      </DataTable>
     </main>
   )
 }

@@ -1,6 +1,7 @@
 import { getAllProperties } from "../../../api/server/property/getProperty";
 import AdminTable from "../../../components/admin/table";
 import ClientComp from "../../../components/clientComp";
+import { EmptyState } from "../../../components/ui/primitives";
 
 export default  async function PropertyList(){
 
@@ -8,14 +9,14 @@ export default  async function PropertyList(){
     if(properties.length===0){
         return(
          
-            <h1 className="text-lg md:text-xl font-semibold md:font-bold text-center"> No Properties To Display !!!</h1>
+            <EmptyState title="No properties to display" description="Approved and moderated properties will appear here." />
           
         )
       }
 
 
     return(
-        <main className="mx-auto w-[98%]">
+        <main className="w-full">
             <ClientComp>
                 <AdminTable use="property" users={[]} properties={properties} bookings={[]} />
             </ClientComp>

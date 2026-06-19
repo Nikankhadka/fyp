@@ -2,79 +2,70 @@
 
 import useModal from "../../store/useModal"
 
-
-
-import Modal from "./modal"
-
-import { inputStyle } from "../../styles/variants"
-import { useForm,  } from 'react-hook-form'
-import { ErrorText } from "../random"
-
 import useReject from "../../store/useReject"
 
 import { useRouter } from "next/navigation"
+import { useForm } from 'react-hook-form'
+import { Button, TextArea, Field } from "../ui/primitives"
+import { DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog"
+import Modal from "./modal"
+
 interface formProps{
     message:string
 }
 
-
 export function MessageModal(){
     const confirmModal=useModal()
-      const {
+    const {
         register,
         handleSubmit,
-        watch,
         formState: { errors },
-        control,
-      } = useForm<formProps>()
-      const reject=useReject();
-    
+    } = useForm<formProps>()
+    const reject=useReject()
+
     if(confirmModal.isOpen=='reject'){
-        
-    
-    return(
-        <>
-        <Modal isOpen={confirmModal.isOpen}>
-          <div className="bg-white w-full p-4 rounded-lg shadow-lg border-2 border-gray-300 md:w-[550px]">
+        return(
+            <Modal isOpen={confirmModal.isOpen}>
+              <div className="w-full rounded-md border border-neutral-200 bg-white p-6 shadow-xl md:w-[550px]">
 
-          <div className='w-full my-4'>
-        <label className='block my-1 text-sm font-semibold'>Message</label>
-            <input
-            type="textarea"
-            placeholder="message"
-            className={inputStyle}
-            {...register('message', { required: true, minLength:1 })}
-          />
-          {errors.message && ( <ErrorText text='Please Enter Accept/Reject Message for clarity'/>)}
-        </div>
+              <DialogHeader>
+                <DialogTitle>{reject.btn}</DialogTitle>
+                <DialogDescription>
+                  Add a clear message so the user understands the decision.
+                </DialogDescription>
+              </DialogHeader>
 
+              <div className='my-4'>
+                <label htmlFor="message" className="mb-1 block text-sm font-semibold">
+                  Message
+                </label>
+                <TextArea
+                  id="message"
+                  placeholder="message"
+                  {...register('message', { required: true, minLength: 1 })}
+                />
+                {errors.message && (
+                  <p className="mt-1 text-sm text-red-700">
+                    Please enter an accept/reject message for clarity.
+                  </p>
+                )}
+              </div>
 
+                <div className="mt-4 flex items-center justify-end gap-3">
+                    <Button tone="secondary" type="button" onClick={() => confirmModal.onClose()}>
+                      Cancel
+                    </Button>
 
-            <hr className="border-gray-400"/>
-            <div className=" mt-4 flex items-center justify-around">
-                <button className="font-sm font-semibold underline" 
-                onClick={(e)=>{
-                    e.preventDefault();
-                    confirmModal.onClose()
-                }}>Cancel</button>
+                    <Button tone="danger" type='button' onClick={handleSubmit(async(data) => {
+                        reject.action.onReject(data.message)
+                    })}>
+                      {reject.btn}
+                    </Button>
+                </div>
 
-
-                <button type='submit' onClick={handleSubmit(async(data)=>{
-
-                  //only meessage needs to be passed since id is already access while rendering the model 
-                  //and action for the model has beeen set before rendering the modal
-                    reject.action.onReject(data.message)
-                  
-                  
-                })} className={`py-2 px-4 text-white font-semibold rounded-lg ${'bg-red-500 hover:bg-red-700'}`}>{reject.btn}</button>
-            </div>
-
-          </div>
-        </Modal>
-        
-        </>
-    )}
-    return null;
+              </div>
+            </Modal>
+        )
+    }
+    return null
 }
-
-

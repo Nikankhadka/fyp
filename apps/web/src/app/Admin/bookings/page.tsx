@@ -1,6 +1,7 @@
 import { getAllBookings } from "../../../api/server/property/getReservation";
 import AdminTable from "../../../components/admin/table";
 import ClientComp from "../../../components/clientComp";
+import { EmptyState, PageHeader } from "../../../components/ui/primitives";
 
 export default async function Bookings(){
 
@@ -10,18 +11,14 @@ export default async function Bookings(){
     if(bookings.length===0){
         return(
          
-            <h1 className="text-lg md:text-xl font-semibold md:font-bold text-center"> No Bookings To Display !!!</h1>
+            <EmptyState title="No bookings to display" description="Booking records will appear here when guests reserve properties." />
           
         )
       }
 
     return(
-        <main className="w-[98%] mx-auto">
-
-           <h1 className="text-left mb-6 text-lg md:text-2xl font-semibold md:font-bold ">Total Bookings !!!</h1>
-
-
-
+        <main className="w-full">
+           <PageHeader title="Bookings" description="Review booking activity across guests and hosts." />
             <ClientComp>
                 <AdminTable use="booking" bookings={bookings} />
             </ClientComp>

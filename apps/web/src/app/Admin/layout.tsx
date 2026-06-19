@@ -20,7 +20,7 @@ export default async function Layout({children}: {children: React.ReactNode}) {
 
   return (
 
-      <main className=' flex flex-col'>
+      <main className="min-h-screen bg-surface">
       
 
         <ClientComp>
@@ -28,9 +28,9 @@ export default async function Layout({children}: {children: React.ReactNode}) {
         </ClientComp>
       
         {/* this children represents each page component  that is rendered */}
-        <main  className=" ml-0 my-24  md:ml-[230px] md:my-10 lg:ml-[260px]">
-        {children}
-        </main>
+        <div className="w-full px-4 pb-10 pt-24 md:ml-[220px] md:w-[calc(100%-220px)] md:px-6 md:pt-8 lg:ml-64 lg:w-[calc(100%-16rem)]">
+          {children}
+        </div>
         
 
         <ClientComp>  
