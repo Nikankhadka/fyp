@@ -60,12 +60,19 @@ function FilterSection({
 
 export function SearchModal() {
   const modal = useModal()
-  const countryhook = useCountry()
+  const countries = useCountry((state) => state.Countries)
+  const loadCountries = useCountry((state) => state.loadCountries)
+  const getCountryData = useCountry((state) => state.getCountryData)
+  const getStateData = useCountry((state) => state.getStateData)
+  const getStates = useCountry((state) => state.getStates)
+  const getCities = useCountry((state) => state.getCities)
   const router = useRouter()
 
   useEffect(() => {
-    void countryhook.loadCountries()
-  }, [countryhook])
+    if (countries.length === 0) {
+      void loadCountries()
+    }
+  }, [countries.length, loadCountries])
 
   const {
     register,
@@ -89,8 +96,8 @@ export function SearchModal() {
 
   const selectedCountryIndex = Number.parseInt(watch('country'), 10)
   const selectedStateIndex = Number.parseInt(watch('state'), 10)
-  const states = countryhook.getStates(selectedCountryIndex)
-  const cities = countryhook.getCities(selectedCountryIndex, selectedStateIndex)
+  const states = getStates(selectedCountryIndex)
+  const cities = getCities(selectedCountryIndex, selectedStateIndex)
 
   const onSubmit: SubmitHandler<SearchForm> = (formdata) => {
     const selectedAmenities = (formdata.amenities || []).filter(Boolean)
@@ -114,11 +121,11 @@ export function SearchModal() {
     }
 
     if (formdata.country !== '') {
-      query.country = countryhook.getCountryData(Number.parseInt(formdata.country, 10)).name
+      query.country = getCountryData(Number.parseInt(formdata.country, 10)).name
     }
 
     if (formdata.country !== '' && formdata.state !== '') {
-      query.state = countryhook.getStateData(
+      query.state = getStateData(
         Number.parseInt(formdata.country, 10),
         Number.parseInt(formdata.state, 10),
       ).name
@@ -250,7 +257,7 @@ export function SearchModal() {
                 Country
                 <SelectField className="mt-1" {...register('country')}>
                   <option value="">Any country</option>
-                  {countryhook.Countries.map((country, index) => (
+                  {countries.map((country, index) => (
                     <option key={country.isoCode} value={index}>
                       {country.name}
                     </option>
