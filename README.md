@@ -300,8 +300,8 @@ docker compose -f infra/docker/compose.dev.yml down -v
 
 Production is split by platform:
 
-- Web: Vercel, using the `apps/web` project root.
-- API: Render Docker web service, using `apps/api/Dockerfile`.
+- Web: Vercel, using the `apps/web` project root: `https://fyp-web-inky.vercel.app`.
+- API: Render Docker web service, using `apps/api/Dockerfile`: `https://fyp-yfyb.onrender.com`.
 - Database: remote MongoDB Atlas through `MONGODB_URI`; no production MongoDB container is required.
 
 Before deploying, rotate any credentials that have been shared in local files or chat history, including MongoDB, Cloudinary, JWT/session, mail, OAuth, and PayPal secrets. Do not commit real `.env` files.
@@ -321,9 +321,9 @@ Required Render env:
 NODE_ENV=production
 PORT=2900
 MONGODB_URI=<mongodb-atlas-uri>
-API_BASE_URL=https://<render-api-url>
-WEB_APP_URL=https://<vercel-web-url>
-CORS_ORIGINS=https://<vercel-web-url>
+API_BASE_URL=https://fyp-yfyb.onrender.com
+WEB_APP_URL=https://fyp-web-inky.vercel.app
+CORS_ORIGINS=https://fyp-web-inky.vercel.app
 sessionSecret=<rotated-secret>
 saltRounds=10
 accessToken=<rotated-secret>
@@ -353,8 +353,8 @@ Output: Next.js default
 Required Vercel env:
 
 ```env
-API_BASE_URL=https://<render-api-url>
-NEXT_PUBLIC_API_BASE_URL=https://<render-api-url>
+API_BASE_URL=https://fyp-yfyb.onrender.com
+NEXT_PUBLIC_API_BASE_URL=https://fyp-yfyb.onrender.com
 NEXT_PUBLIC_DEMO_PAYMENT_MODE=true
 NEXT_PUBLIC_ENABLE_GOOGLE_AUTH=false
 NEXT_PUBLIC_ENABLE_FACEBOOK_AUTH=false
