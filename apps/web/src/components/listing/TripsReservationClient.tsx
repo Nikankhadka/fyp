@@ -16,6 +16,7 @@ import { toast } from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
 import useConfirm from '../../store/useConfirm'
 import useModal from '../../store/useModal'
+import { revalidateBookingUpdated } from '../../api/server/revalidate'
 import dayjs from '../../utils/dayjs'
 import Image from 'next/image'
 import { normalizeImageSrc } from '../common/normalizeImageSrc'
@@ -39,27 +40,27 @@ export default function TripBookingClient({trips,bookings,is_Admin}:Props) {
   const router=useRouter();
   const confirm=useConfirm();
   const modal=useModal()
-  console.log(trips);
 
 
       const onCheckIn=(id:string)=>{
         //first set content for the store
         confirm.onContent({
           header:"Are you Sure You want to Check In!",
-          onAction:()=>{ Api.patch(`/property/v1/booking/confirmCheckIn/${id}`,{},{withCredentials:true}).then(()=>{
-            console.log("user checkedIn");
+          onAction:()=>{ Api.patch(`/property/v1/booking/confirmCheckIn/${id}`,{},{withCredentials:true}).then(async ()=>{
             toast.success("Checked In Successfully!");
+             await revalidateBookingUpdated()
              modal.onClose()
             return router.refresh();
           })
-          .catch(()=>{
+          .catch(async ()=>{
             toast.error("Check In Failed/Check In repeated!!");
+            await revalidateBookingUpdated()
             return router.refresh();
           })},
           actionBtn:"Check In"
         });
 
-        //now open confirm modal 
+        //now open confirm modal
         modal.onOpen("confirm");
       }
 
@@ -69,20 +70,21 @@ export default function TripBookingClient({trips,bookings,is_Admin}:Props) {
         confirm.onContent({
           header:"Are you Sure You want to Check Out!",
           actionBtn:"Check Out",
-          onAction:()=>{ Api.patch(`/property/v1/booking/confirmCheckOut/${id}`,{},{withCredentials:true}).then(()=>{
-            console.log("user checkedIn");
+          onAction:()=>{ Api.patch(`/property/v1/booking/confirmCheckOut/${id}`,{},{withCredentials:true}).then(async ()=>{
             toast.success("Checked Out Successfully!");
+            await revalidateBookingUpdated()
             modal.onClose()
             return router.refresh();
           })
-          .catch(()=>{
+          .catch(async ()=>{
             toast.error("Check Out Failed!!");
+            await revalidateBookingUpdated()
             return router.refresh();
           })},
-         
+
         });
 
-        //now open confirm modal 
+        //now open confirm modal
         modal.onOpen("confirm");
       }
 
@@ -95,13 +97,13 @@ export default function TripBookingClient({trips,bookings,is_Admin}:Props) {
           header:"Are you Sure to Cancel Booking!",
           actionBtn:"Delete",
           onAction:()=>{
-            Api.patch(`property/v1/booking/cancelBooking/${id}`,{},{withCredentials:true}).then((res)=>{
+            Api.patch(`property/v1/booking/cancelBooking/${id}`,{},{withCredentials:true}).then(async (res)=>{
                toast.success("booking cancelled Successfully");
+               await revalidateBookingUpdated()
                router.refresh();
                return modal.onClose()
             }).catch((e)=>{
-              console.log(e);
-              return toast.error("failed to cancel booking")
+               return toast.error("failed to cancel booking")
             })
           }
         })

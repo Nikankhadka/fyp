@@ -6,7 +6,7 @@ import { getAccessToken } from '../auth';
 import { api } from '@/api/api';
 
 
-//get user 
+//get user
 export async function getUser(userId:string):Promise<Partial<FetchedMe>>{
     try{
         const userData = await fetch(
@@ -14,13 +14,12 @@ export async function getUser(userId:string):Promise<Partial<FetchedMe>>{
             {
               method: 'GET',
               credentials: 'include',
-              cache:'no-store'
+              next: { revalidate: 60, tags: [`user-${userId}`] },
             }
           ).then(res=>res.json())
     
         if(!userData.success) throw new Error("failed to fetch user information")
-        
-        console.log("userProfile Data",userData);
+
         return userData.userData;
 
         
@@ -42,14 +41,12 @@ export async function getMe():Promise<FetchedMe>{
             method: 'GET',
             credentials: 'include',
             headers: { cookie: getAccessToken()},
-            cache:'no-store',
-            next:{revalidate:10}
+            next: { revalidate: 10, tags: ['me'] },
           }
         ).then(res=>res.json())
-  
+
       if(!userData.success) throw new Error("failed to fetch user information")
-      
-      console.log("userAccount Data",userData);
+
       return userData.userData;
 
       
@@ -70,13 +67,12 @@ export async function getAllUsers(page:number,limit:number,):Promise<Partial<Fet
             method: 'GET',
             credentials: 'include',
             headers: { cookie: getAccessToken()},
-            cache:'no-store'
+            next: { revalidate: 10, tags: ['all-users'] },
           }
         ).then(res=>res.json())
   
       if(!userData.success) throw new Error("failed to fetch users information")
-      
-      console.log("userAccount Data",userData);
+
       return userData.users;
 
       
@@ -99,13 +95,12 @@ export async function getUserKyc(userId:string):Promise<FetchedMe>{
             method: 'GET',
             credentials: 'include',
             headers: { cookie: getAccessToken()},
-            cache:'no-store'
+            next: { revalidate: 10, tags: [`user-${userId}`] },
           }
         ).then(res=>res.json())
-  
+
       if(!userData.success) throw new Error("failed to fetch user information")
-      
-      console.log("userAccount Data",userData);
+
       return userData.userData;
 
       
@@ -138,13 +133,12 @@ export async function getKycs(page:number,limit:number):Promise<kycRequests[]>{
             method: 'GET',
             credentials: 'include',
             headers: { cookie: getAccessToken()},
-            cache:'no-store'
+            next: { revalidate: 10, tags: ['kyc-requests'] },
           }
         ).then(res=>res.json())
   
       if(!kycRequests.success) throw new Error("failed to fetch user information")
-      
-      console.log("Kyc requests",kycRequests);
+
       return kycRequests.kycRequests;
 
       

@@ -10,13 +10,12 @@ export async function getReviews(propertyId:string,page:number,limit:number):Pro
               method: 'GET',
               credentials: 'include',
               headers: { cookie: getAccessToken()},
-              cache:'no-store'
+              next: { revalidate: 60, tags: [`reviews-${propertyId}`] },
             }
           ).then(res=>res.json())
     
           if(!res.success) throw new Error(`${res.error}`)
         
-        console.log("my properties",res);
         return res.reviews;
   
         

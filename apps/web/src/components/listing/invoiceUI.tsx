@@ -1,13 +1,12 @@
 'use client'
 
-import { createRef, useEffect } from 'react'
-import html2canvas from 'html2canvas'
+import { useEffect, useRef } from 'react'
 import Image from 'next/image'
 import useBookingStore from '../../store/bookingStore'
-import { jsPDF } from 'jspdf'
 import toast from 'react-hot-toast'
 import Api from '../../api/client/axios'
 import { useRouter } from 'next/navigation'
+import { revalidateBookingCreated } from '../../api/server/revalidate'
 import dayjs from '../../utils/dayjs'
 import { Surface } from '../ui/primitives'
 
@@ -41,7 +40,7 @@ const Invoice = (props: InvoiceProps) => {
     } = props
 
     const bookingStore = useBookingStore()
-    const billref = createRef<HTMLDivElement>()
+    const billref = useRef<HTMLDivElement>(null)
     const router = useRouter()
 
     useEffect(() => {
@@ -49,7 +48,12 @@ const Invoice = (props: InvoiceProps) => {
 
         const action = async () => {
             const element = billref.current
-            const canvas = await html2canvas(element!)
+            if (!element) return
+            const [{ default: html2canvas }, { jsPDF }] = await Promise.all([
+                import('html2canvas'),
+                import('jspdf'),
+            ])
+            const canvas = await html2canvas(element)
             const data = canvas.toDataURL('image/png')
 
             const pdf = new jsPDF()
@@ -74,13 +78,17 @@ const Invoice = (props: InvoiceProps) => {
             }
 
             try {
-                const newBooking = await Api.post(`/property/v1/booking/${bookingStore.propertyData._id}`, body, { withCredentials: true })
+                const propertyId = bookingStore.propertyData._id
+                const newBooking = await Api.post(`/property/v1/booking/${propertyId}`, body, { withCredentials: true })
                 if (!newBooking.data.success) {
                     toast.error(newBooking.data.error)
                     return bookingStore.setError(true)
                 }
 
                 toast.success('Booking successful/bill has been sent')
+                if (typeof propertyId === 'string') {
+                    await revalidateBookingCreated(propertyId)
+                }
                 return router.refresh()
             } catch {
                 toast.error('This booking conflicts with an existing booking/Error occurred.')

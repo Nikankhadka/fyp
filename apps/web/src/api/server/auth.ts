@@ -10,19 +10,16 @@ export const authCheck=async(is_Admin:boolean)=>{
   try{
     const cookieStore = cookies();
     const session = cookieStore.get('session')?.value
-    console.log('sessioninpage',session)
     if(!session){
         return redirect('/')
     }
     const sessionObj=await JSON.parse(session!)
-    console.log("poagesobj",sessionObj)
     if(sessionObj.is_Admin!==is_Admin) {
-      console.log(is_Admin)
         if(is_Admin)  return redirect('/Admin');
         return redirect('/')
     }
   }catch(e){
-    console.log(e)
+    console.error(e)
   }
 }
 
@@ -51,7 +48,6 @@ export const checkSession=async():Promise<sessionData>=>{
 
    
     const sessionObj=await JSON.parse(session!)
-    console.log("session checked session obj: ",sessionObj)
 
     // role mismatched so unauthorized throw custom un authorized erorr 
     // if(sessionObj.is_Admin!==is_Admin){

@@ -7,7 +7,7 @@ RUN corepack enable
 FROM base AS deps
 COPY apps/api/package.json apps/api/pnpm-lock.yaml ./
 RUN apk add --no-cache --virtual .build-deps python3 make g++ \
-  && pnpm install --no-frozen-lockfile \
+  && pnpm install --frozen-lockfile \
   && npm rebuild bcrypt --build-from-source \
   && apk del .build-deps
 

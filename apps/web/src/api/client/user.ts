@@ -1,5 +1,6 @@
-import { KycData, PropertyForm } from "../../interface/form";
+import type { KycData } from "../../interface/form";
 import Api from "./axios";
+import { revalidateKyc } from "../server/revalidate";
 
 
 
@@ -11,8 +12,7 @@ export async function checkPhone(PhoneNumber:string):Promise<boolean>{
      return false
     }
     return true;
-    }catch(e){
-        console.log(e)
+    }catch{
         return false;
     }
     
@@ -26,8 +26,7 @@ export async function postPhone(PhoneNumber:string):Promise<boolean>{
      return false
     }
     return true;
-    }catch(e){
-        console.log(e)
+    }catch{
         return false
     }
     
@@ -40,9 +39,9 @@ export async function postKyc(kycData:KycData):Promise<boolean>{
         if(!res.data.success){
             return false
            }
+           await revalidateKyc()
            return true;
-    }catch(e){
-        console.log(e)
+    }catch{
         return false;
     }
 }

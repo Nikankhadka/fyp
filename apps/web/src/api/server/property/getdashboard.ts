@@ -18,7 +18,7 @@ export default async function getDashBoardData(): Promise<dashData> {
       method: 'GET',
       credentials: 'include',
       headers: { cookie: getAccessToken() },
-      cache: 'no-store',
+      next: { revalidate: 60, tags: ['dashboard'] },
     }).then((res) => res.json())
 
     if (!res.success) throw new Error(res.error)

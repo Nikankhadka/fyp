@@ -10,10 +10,12 @@ import { getMyProperties } from "../../../api/server/property/getProperty";
 
 
 export default async function AccountSetting(){
-  const {session,userData}=await checkSession();
+  const { session, userData } = await checkSession()
 
-  const user= await getMe();
-  const listings=await getMyProperties(userData.docId,1,5)
+  const [user, listings] = await Promise.all([
+    getMe(),
+    getMyProperties(userData.docId, 1, 5),
+  ])
 
     return(
     

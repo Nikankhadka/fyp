@@ -29,8 +29,7 @@ export default async function getReservations(propertyId:string,user:string,page
   
       //here depending on the api call there will be id or 
       if(propertyId!=''&&user==''){
-        
-        console.log('onlydates')
+
         const reservations=await Api.get(`/property/v1/booking/${propertyId}`,{withCredentials:false});
         if(reservations.data.success){
             return reservations.data.reservations;
@@ -69,13 +68,12 @@ export default async function getReservations(propertyId:string,user:string,page
               method: 'GET',
               credentials: 'include',
               headers: { cookie: getAccessToken()},
-              cache:'no-store'
+              next: { revalidate: 5, tags: [`bookings-${id}`] },
             }
           ).then(res=>res.json())
     
           if(!res.success) throw new Error(`${res.error}`)
         
-        console.log("my properties",res);
         return res.reservations;
   
         
@@ -95,13 +93,12 @@ export default async function getReservations(propertyId:string,user:string,page
               method: 'GET',
               credentials: 'include',
               headers: { cookie: getAccessToken()},
-              cache:'no-store'
+              next: { revalidate: 0, tags: ['my-bookings'] },
             }
           ).then(res=>res.json())
     
           if(!res.success) throw new Error(`${res.error}`)
         
-        console.log("my properties",res);
         return res.reservations;
   
         
@@ -121,13 +118,12 @@ export async function getOnBookings(page:number,limit:number):Promise<Partial<IB
               method: 'GET',
               credentials: 'include',
               headers: { cookie: getAccessToken()},
-              cache:'no-store'
+              next: { revalidate: 0, tags: ['on-bookings'] },
             }
           ).then(res=>res.json())
     
         if(!res.success) throw new Error(`${res.error}`)
         
-        console.log("my properties",res);
         return res.reservations;
   
         
@@ -150,13 +146,12 @@ export async function getOnBookings(page:number,limit:number):Promise<Partial<IB
               method: 'GET',
               credentials: 'include',
               headers: { cookie: getAccessToken()},
-              cache:'no-store'
+              next: { revalidate: 10, tags: ['all-bookings'] },
             }
           ).then(res=>res.json())
     
         if(!bookings.success) throw new Error("failed to fetch bookings information")
-        
-        console.log("userAccount Data",bookings);
+
         return bookings.bookings;
   
         

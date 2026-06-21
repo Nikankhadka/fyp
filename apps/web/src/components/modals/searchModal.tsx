@@ -1,6 +1,6 @@
 'use client'
 
-import { type ReactNode } from 'react'
+import { type ReactNode, useEffect } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 import { Home, MapPin, RotateCcw, Search, SlidersHorizontal, Star } from 'lucide-react'
@@ -62,6 +62,10 @@ export function SearchModal() {
   const modal = useModal()
   const countryhook = useCountry()
   const router = useRouter()
+
+  useEffect(() => {
+    void countryhook.loadCountries()
+  }, [countryhook])
 
   const {
     register,

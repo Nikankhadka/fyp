@@ -7,7 +7,7 @@ import { BookProperty } from '../../../../components/listing/BookProperty'
 import Review from '../../../../components/review'
 import Wish from '../../../../components/Svg/wishSvg'
 import { FetchedMe, IReview, Property } from '../../../../interface/response'
-import { Reservation } from './page'
+import type { Reservation } from './page'
 import ReviewInput from '../../../../components/reviewInput'
 import SafeImage from '../../../../components/common/SafeImage'
 import {

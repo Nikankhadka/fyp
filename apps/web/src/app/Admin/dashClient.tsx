@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { Users, Building2, CalendarCheck } from 'lucide-react'
-import { dashData } from '../../api/server/property/getdashboard'
+import type { dashData } from '../../api/server/property/getdashboard'
 import SafeImage from '../../components/common/SafeImage'
 import { Surface, StatusBadge } from '../../components/ui/primitives'
 

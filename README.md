@@ -296,6 +296,93 @@ Stop and remove volumes:
 docker compose -f infra/docker/compose.dev.yml down -v
 ```
 
+### Production Deployment
+
+Production is split by platform:
+
+- Web: Vercel, using the `apps/web` project root.
+- API: Render Docker web service, using `apps/api/Dockerfile`.
+- Database: remote MongoDB Atlas through `MONGODB_URI`; no production MongoDB container is required.
+
+Before deploying, rotate any credentials that have been shared in local files or chat history, including MongoDB, Cloudinary, JWT/session, mail, OAuth, and PayPal secrets. Do not commit real `.env` files.
+
+Render API settings:
+
+```text
+Runtime: Docker
+Dockerfile Path: apps/api/Dockerfile
+Docker Context: .
+Health Check Path: /health
+```
+
+Required Render env:
+
+```env
+NODE_ENV=production
+PORT=2900
+MONGODB_URI=<mongodb-atlas-uri>
+API_BASE_URL=https://<render-api-url>
+WEB_APP_URL=https://<vercel-web-url>
+CORS_ORIGINS=https://<vercel-web-url>
+sessionSecret=<rotated-secret>
+saltRounds=10
+accessToken=<rotated-secret>
+refreshToken=<rotated-secret>
+accessTokenExpire=1800s
+refreshTokenExpire=7d
+mailSecret=<rotated-secret>
+CLOUDINARY_CLOUD_NAME=<cloud-name>
+CLOUDINARY_API_KEY=<api-key>
+CLOUDINARY_API_SECRET=<api-secret>
+PAYPAL_CLIENT_ID=<paypal-client-id-or-empty>
+PAYPAL_CLIENT_SECRET=<paypal-secret-or-empty>
+PAYPAL_API_URL=https://api-m.sandbox.paypal.com
+SEED_UPLOAD_TO_CLOUDINARY=false
+SEED_ASSET_ROOT=/app/public-seed
+```
+
+Vercel web settings:
+
+```text
+Root Directory: apps/web
+Install Command: pnpm install --frozen-lockfile
+Build Command: pnpm build
+Output: Next.js default
+```
+
+Required Vercel env:
+
+```env
+API_BASE_URL=https://<render-api-url>
+NEXT_PUBLIC_API_BASE_URL=https://<render-api-url>
+NEXT_PUBLIC_DEMO_PAYMENT_MODE=true
+NEXT_PUBLIC_ENABLE_GOOGLE_AUTH=false
+NEXT_PUBLIC_ENABLE_FACEBOOK_AUTH=false
+NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=<cloud-name>
+NEXT_PUBLIC_PAYPAL_CLIENT_ID=<paypal-client-id-or-empty>
+```
+
+Local production-container smoke:
+
+```bash
+docker build -f apps/api/Dockerfile -t meroghar-api:local .
+docker build -f apps/web/Dockerfile -t meroghar-web:local .
+
+docker run --rm --name meroghar-api-local --env-file apps/api/.env -e NODE_ENV=production -p 2900:2900 meroghar-api:local
+docker run --rm --name meroghar-web-local \
+  -e API_BASE_URL=http://host.docker.internal:2900 \
+  -e NEXT_PUBLIC_API_BASE_URL=http://localhost:2900 \
+  -p 3000:3000 meroghar-web:local
+```
+
+Verify:
+
+```bash
+curl http://localhost:2900/health
+curl -I http://localhost:3000/Home
+curl http://localhost:3000/backend/health
+```
+
 ## Database Seeding
 
 The seed script lives at `apps/api/src/scripts/seedDemoData.ts`.

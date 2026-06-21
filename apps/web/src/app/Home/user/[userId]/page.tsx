@@ -11,12 +11,15 @@ type Params = {
 
 export default async function UserProfile({ params: { userId } }: Params) {
   
-  const { session, userData } = await checkSession()
+  // getMyProperties only depends on the route param, so it can run in
+  // parallel with the (instant) cookie-based checkSession.
+  const [{ session, userData }, listings] = await Promise.all([
+    checkSession(),
+    getMyProperties(userId, 1, 5),
+  ])
 
 
   //fetch user properties for the id 
-  const listings=await getMyProperties(userId,1,5)
-
   if(userData.docId==userId){
     const myInfo=await getMe();
     return (

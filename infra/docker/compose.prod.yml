@@ -1,23 +1,4 @@
 services:
-  mongo:
-    build:
-      context: ../..
-      dockerfile: services/mongo/Dockerfile
-    container_name: fyp-mongo
-    env_file:
-      - ./env/mongo.prod.env.example
-    restart: unless-stopped
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongo_data:/data/db
-    healthcheck:
-      test: ["CMD-SHELL", "mongosh --quiet mongodb://localhost:27017/admin --eval 'db.adminCommand({ ping: 1 }).ok' | grep 1"]
-      interval: 15s
-      timeout: 5s
-      retries: 10
-      start_period: 15s
-
   api:
     build:
       context: ../..
@@ -29,9 +10,6 @@ services:
     restart: unless-stopped
     ports:
       - "2900:2900"
-    depends_on:
-      mongo:
-        condition: service_healthy
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://localhost:2900/health >/dev/null 2>&1 || exit 1"]
       interval: 20s
@@ -44,6 +22,9 @@ services:
       context: ../..
       dockerfile: apps/web/Dockerfile
       target: runner
+      args:
+        API_BASE_URL: http://api:2900
+        NEXT_PUBLIC_API_BASE_URL: http://localhost:2900
     container_name: fyp-web
     env_file:
       - ./env/web.prod.env.example
@@ -59,6 +40,3 @@ services:
       timeout: 5s
       retries: 10
       start_period: 30s
-
-volumes:
-  mongo_data:

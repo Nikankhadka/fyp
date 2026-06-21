@@ -1,61 +1,58 @@
-// this file is going to contain api call for property 
+// this file is going to contain api call for property
 
-import { PropertyForm } from "../../interface/form";
+import type { PropertyForm } from "../../interface/form";
 import Api from "./axios";
+import {
+  revalidateBookingCreated,
+  revalidatePropertyCreated,
+  revalidatePropertyUpdated,
+} from "../server/revalidate";
 
 
 
-export async function PostPropery(body:Partial<PropertyForm>):Promise<boolean>{
-    try{
-    const res=await Api.post("/property/v1/createProperty",body,{withCredentials:true});
-    if(!res.data.success){
-     throw new Error(res.data.error)
+export async function PostPropery(body: Partial<PropertyForm>): Promise<boolean> {
+  try {
+    const res = await Api.post("/property/v1/createProperty", body, { withCredentials: true });
+    if (!res.data.success) {
+      throw new Error(res.data.error)
     }
+    await revalidatePropertyCreated()
     return true;
-    }catch(e){
-        console.log(e)
-        throw e;
-    }
-    
+  } catch (e) {
+    throw e;
+  }
 }
 
 
-export async function UpdatePropery(id:string,body:Partial<PropertyForm>):Promise<boolean>{
-    try{
-    const res=await Api.patch(`/property/v1/updateProperty/${id}`,body,{withCredentials:true});
-    if(!res.data.success){
-     throw new Error(res.data.error)
+export async function UpdatePropery(id: string, body: Partial<PropertyForm>): Promise<boolean> {
+  try {
+    const res = await Api.patch(`/property/v1/updateProperty/${id}`, body, { withCredentials: true });
+    if (!res.data.success) {
+      throw new Error(res.data.error)
     }
+    await revalidatePropertyUpdated(id)
     return true;
-    }catch(e){
-        console.log(e)
-        throw e;
-    }
-    
+  } catch (e) {
+    throw e;
+  }
 }
 
 
-
-
-
-
-
-interface Booking{
-    startDate:Date,
-    endDate:Date,
-    guest:string
+interface Booking {
+  startDate: Date,
+  endDate: Date,
+  guest: string
 }
 
-export async function PostBooking(propertyId:string,body:Booking):Promise<boolean>{
-    try{
-    const res=await Api.post(`/property/v1/booking/${propertyId}`,body,{withCredentials:true});
-    if(!res.data.success){
-     throw new Error(res.data.error)
+export async function PostBooking(propertyId: string, body: Booking): Promise<boolean> {
+  try {
+    const res = await Api.post(`/property/v1/booking/${propertyId}`, body, { withCredentials: true });
+    if (!res.data.success) {
+      throw new Error(res.data.error)
     }
+    await revalidateBookingCreated(propertyId)
     return true;
-    }catch(e){
-        console.log(e)
-        throw e;
-    }
-    
+  } catch (e) {
+    throw e;
+  }
 }

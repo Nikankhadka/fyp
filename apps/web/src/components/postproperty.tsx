@@ -8,7 +8,7 @@ import { Plus, Trash2, Camera } from 'lucide-react'
 import { amenities, propertyOptions } from '../configs/constant'
 import { useState, useEffect } from 'react'
 import useCountry from '../store/useCountry'
-import { ICountry} from 'country-state-city'
+import type { ICountry} from 'country-state-city'
 import useConfirm from '../store/useConfirm'
 import useModal from '../store/useModal'
 import { toast } from 'react-hot-toast'
@@ -29,7 +29,6 @@ export default function PostPropertyForm({
   propertyData,
 }: postProperty) {
   
-  console.log('propertty data on updatye',propertyData,isUpdate)
   let defaultValues: PropertyForm = {
     images:['default'],
     name: '',
@@ -81,8 +80,8 @@ export default function PostPropertyForm({
   const router = useRouter()
 
   useEffect(() => {
-    setCountries(countryhook.Countries)
-  }, [])
+    void countryhook.loadCountries().then(setCountries)
+  }, [countryhook])
 
   // every change detected is recorded here we want to fetch the image information only
   const imagesS = watch('images')

@@ -1,5 +1,4 @@
 import { cloudinaryCloudName } from '../../configs/constant'
-import { localServer } from '../../configs/constant'
 
 interface UploadSignature {
   signature: string
@@ -16,7 +15,7 @@ interface ImageUpload {
 
 async function getUploadSignature(folder = 'meroghar'): Promise<UploadSignature> {
   try {
-    const response = await fetch(`${localServer}/cloudinary/v1/signature`, {
+    const response = await fetch('/backend/cloudinary/v1/signature', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -79,7 +78,7 @@ export async function uploadImage(image: File): Promise<ImageUpload> {
 
 export async function deleteImage(imgId: string): Promise<boolean> {
   try {
-    const response = await fetch(`${localServer}/cloudinary/v1/destroy`, {
+    const response = await fetch('/backend/cloudinary/v1/destroy', {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',

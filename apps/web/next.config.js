@@ -7,6 +7,22 @@ const apiBaseUrl =
 const nextConfig = {
   output: 'standalone',
 
+  experimental: {
+    // Per-icon code splitting for lucide-react named imports.
+    optimizePackageImports: ['lucide-react'],
+    serverActions: true,
+    // Trace sharp and its prebuilt native binaries (@img/sharp-* and
+    // @img/sharp-libvips-*) into the standalone server output so Next.js image
+    // optimization works in production. pnpm symlinks these under .pnpm, so the
+    // default nft trace misses them.
+    outputFileTracingIncludes: {
+      '/': [
+        './node_modules/.pnpm/sharp@*/node_modules/sharp/**/*',
+        './node_modules/.pnpm/@img+sharp-*/node_modules/@img/**/*',
+      ],
+    },
+  },
+
   // Optimize for development
   reactStrictMode: true,
   swcMinify: true, // Use SWC for minification (faster than Terser)

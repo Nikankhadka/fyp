@@ -15,7 +15,6 @@ import SafeImage from "../common/SafeImage"
 import { demoPaymentMode, paypalClientId } from "../../configs/constant"
 import dynamic from "next/dynamic"
 import { Button } from "../ui/primitives"
-import { localServer } from "../../configs/constant"
 
 const PayPalCheckout = dynamic(() => import('./PayPalCheckout'), {
     ssr: false,
@@ -115,7 +114,7 @@ export function BookingModal(){
     const handlePayPalSuccess = async (orderId: string) => {
         try {
             const bill = await createPaymentBill(orderId)
-            const response = await fetch(`${localServer}/payment/v1/verify-paypal/${_id}`, {
+            const response = await fetch(`/backend/payment/v1/verify-paypal/${_id}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { memo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'react-hot-toast'
 import {
@@ -17,7 +17,7 @@ import {
 
 import { verifyProperty } from '../../api/client/admin'
 import Api from '../../api/client/axios'
-import { IBooking, Payment, Property } from '../../interface/response'
+import type { IBooking, Payment, Property } from '../../interface/response'
 import useConfirm from '../../store/useConfirm'
 import useModal from '../../store/useModal'
 import useRandom from '../../store/randomStore'
@@ -58,12 +58,19 @@ function getListingStatus(data: Partial<Property>) {
   return { label: 'Rejected', tone: 'danger' as const, icon: XCircle }
 }
 
-export default function Card({ use, data, wish = false, user = '', index }: CardProps) {
+function CardComponent({ use, data, wish = false, user = '', index }: CardProps) {
   const [img, setImg] = useState(0)
-  const modal = useModal()
-  const confirm = useConfirm()
-  const reject = useReject()
-  const list = useRandom()
+  // Only select the stable action setters — these never change identity, so
+  // the card never re-renders when unrelated store state (e.g. modal isOpen)
+  // changes. Previously each bare useStore() returned the whole store object
+  // and re-rendered every card on any state change.
+  const onOpenModal = useModal((s) => s.onOpen)
+  const onCloseModal = useModal((s) => s.onClose)
+  const onConfirmContent = useConfirm((s) => s.onContent)
+  const setRejectBtn = useReject((s) => s.setbtn)
+  const onRejectContent = useReject((s) => s.onContent)
+  const setListIndex = useRandom((s) => s.setIndex)
+  const onList = useRandom((s) => s.onList)
   const router = useRouter()
 
   if (!data) {
@@ -96,28 +103,28 @@ export default function Card({ use, data, wish = false, user = '', index }: Card
   }
 
   const verifyListing = () => {
-    confirm.onContent({
+    onConfirmContent({
       header: 'Verify this property listing?',
       actionBtn: 'Verify',
       onAction: async () => {
         const res = await verifyProperty(_id!, { isVerified: true })
         if (res) {
           toast.success(`Property ${_id!} verified successfully`)
-          modal.onClose()
+          onCloseModal()
           return router.refresh()
         }
 
         toast.error('Failed to verify property')
-        return modal.onClose()
+        return onCloseModal()
       },
     })
 
-    modal.onOpen('confirm')
+    onOpenModal('confirm')
   }
 
   const rejectListing = () => {
-    reject.setbtn('Reject')
-    reject.onContent({
+    setRejectBtn('Reject')
+    onRejectContent({
       onReject: async (message: string) => {
         const res = await verifyProperty(_id!, {
           isVerified: false,
@@ -126,20 +133,20 @@ export default function Card({ use, data, wish = false, user = '', index }: Card
 
         if (res) {
           toast.success('Property post rejected')
-          modal.onClose()
+          onCloseModal()
           return router.refresh()
         }
 
         toast.error('Property rejection failed')
-        return modal.onClose()
+        return onCloseModal()
       },
     })
 
-    modal.onOpen('reject')
+    onOpenModal('reject')
   }
 
   const deleteListing = () => {
-    confirm.onContent({
+    onConfirmContent({
       header: 'Delete this property listing?',
       actionBtn: 'Delete',
       onAction: () => {
@@ -148,17 +155,17 @@ export default function Card({ use, data, wish = false, user = '', index }: Card
         })
           .then(() => {
             toast.success(`Property ${_id!} deleted successfully`)
-            modal.onClose()
+            onCloseModal()
             return router.refresh()
           })
           .catch(() => {
             toast.error('Failed to delete property. It may be booked currently.')
-            return modal.onClose()
+            return onCloseModal()
           })
       },
     })
 
-    modal.onOpen('confirm')
+    onOpenModal('confirm')
   }
 
   return (
@@ -170,6 +177,9 @@ export default function Card({ use, data, wish = false, user = '', index }: Card
               fill
               src={images?.[img]?.imgUrl}
               alt={name ? `${name} property` : 'Property'}
+              sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+              quality={65}
+              priority={index === 0}
               className="object-cover transition duration-300 group-hover:scale-[1.02]"
               fallbackText="Property image unavailable"
             />
@@ -289,8 +299,8 @@ export default function Card({ use, data, wish = false, user = '', index }: Card
               type="button"
               onClick={(e) => {
                 e.preventDefault()
-                list.setIndex(index!)
-                list.onList('edit')
+                setListIndex(index!)
+                onList('edit')
               }}
             >
               <Edit3 className="mr-2 h-4 w-4" />
@@ -306,3 +316,7 @@ export default function Card({ use, data, wish = false, user = '', index }: Card
     </article>
   )
 }
+
+const Card = memo(CardComponent)
+
+export default Card

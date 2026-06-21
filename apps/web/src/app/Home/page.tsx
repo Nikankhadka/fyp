@@ -5,16 +5,16 @@ import { getProperties } from "../../api/server/property/getProperty"
 import { getFavourites } from "../../api/server/property/getwishlist"
 import { HomeClient } from "./HomeClient"
 
-export const dynamic = 'force-dynamic'
-
 interface HomeProps{
   searchParams:SearchForm
 }
 
 
 export default async function Home({searchParams}:HomeProps){
-    const properties=await getProperties(1,10,searchParams)
-    const {session,userData}=await checkSession()
+    const [properties, { session, userData }] = await Promise.all([
+      getProperties(1, 8, searchParams),
+      checkSession(),
+    ])
 
 
   if(!session||userData.is_Admin)return(

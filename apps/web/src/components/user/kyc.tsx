@@ -18,7 +18,7 @@ import { toast } from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
 import { PhoneComp } from './phone'
 import useCountry from '../../store/useCountry'
-import { ICountry } from 'country-state-city'
+import type { ICountry } from 'country-state-city'
 import { FetchedMe } from '../../interface/response'
 import Image from 'next/image'
 import { Camera, Save, X } from 'lucide-react'
@@ -88,9 +88,9 @@ export default function Kyc({ setopenKyc,userData }: kycprops) {
     }
   }
 
-useEffect(()=>{
-        setCountries(country.Countries)
-},[])
+ useEffect(()=>{
+        void country.loadCountries().then(setCountries)
+},[country])
 
   const onSubmit: SubmitHandler<form> = async (formdata) => {
 

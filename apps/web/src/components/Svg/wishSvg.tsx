@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import { toast } from 'react-hot-toast'
 import Api from '../../api/client/axios'
 import useModal from '../../store/useModal'
+import { revalidateWishlist } from '../../api/server/revalidate'
 import { cn } from '../../utils/cn'
 
 interface WishProps {
@@ -42,9 +43,10 @@ export default function Wish({ active, id, user, className }: WishProps) {
             {},
             { withCredentials: true },
           )
-            .then((res) => {
+            .then(async (res) => {
               toast.success('Property Added to wishList')
               setIsActive(true)
+              await revalidateWishlist(id)
               return router.refresh()
             })
             .catch((e) => {
@@ -54,9 +56,10 @@ export default function Wish({ active, id, user, className }: WishProps) {
 
         if (isActive) {
           Api.delete(`/property/v1/wishList/${id}`, { withCredentials: true })
-            .then((res) => {
+            .then(async (res) => {
               toast.success('Property Removed from Favourites!!')
               setIsActive(false)
+              await revalidateWishlist(id)
               return router.refresh()
             })
             .catch((e) => {

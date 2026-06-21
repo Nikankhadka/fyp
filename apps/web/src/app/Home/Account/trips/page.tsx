@@ -1,4 +1,4 @@
-//wil contain my reservations information 
+//wil contain my reservations information
 
 import { checkSession } from "../../../../api/server/auth";
 import { getMyBookings } from "../../../../api/server/property/getReservation";
@@ -8,51 +8,48 @@ import TripBookingClient from "../../../../components/listing/TripsReservationCl
 import { EmptyState, LinkButton, PageHeader } from "../../../../components/ui/primitives";
 
 
-export default async function MyTrips(){
-    
-    const {session,userData}=await checkSession()
-    const trips=await getMyBookings(1,10);
-   
-   
+export default async function MyTrips() {
+  const { session } = await checkSession()
 
-
-    if(!session){
-        return(
-          
-            <main className="w-full">
-            <ClientComp>
-                <NoAuth  Header="My Trips" header2="Log in to view your Trips/Reservations" header3="You can  View,Edit,Cancel your Trips once Logged In"/>
-            </ClientComp>
-            </main>
-           
+  if (!session) {
+    return (
+      <main className="w-full">
+        <ClientComp>
+          <NoAuth
+            Header="My Trips"
+            header2="Log in to view your Trips/Reservations"
+            header3="You can  View,Edit,Cancel your Trips once Logged In"
+          />
+        </ClientComp>
+      </main>
     )
-    }
+  }
 
-//fetch trip/bookings made by me
-    return(
-        <main className="w-full">
-            <PageHeader
-              title="Trips"
-              description="Review your booked stays and manage upcoming reservations."
-            />
-            {
-             trips.length==0&&
-              <EmptyState
-                title="No trips found"
-                description="Start browsing stays and your upcoming trips will appear here."
-                action={<LinkButton href="/Home" tone="secondary">Start searching</LinkButton>}
-              />
+  //fetch trip/bookings made by me (only after the session guard so we
+  // don't waste a credentialed network call for logged-out visitors)
+  const trips = await getMyBookings(1, 10)
 
-            }
-            
-            {
-             trips.length!=0&&<div className="">
-                                 <ClientComp>
-                                     <TripBookingClient trips={true} bookings={trips!} />
-                                 </ClientComp>
-                             </div>
+  return (
+    <main className="w-full">
+      <PageHeader
+        title="Trips"
+        description="Review your booked stays and manage upcoming reservations."
+      />
+      {trips.length == 0 && (
+        <EmptyState
+          title="No trips found"
+          description="Start browsing stays and your upcoming trips will appear here."
+          action={<LinkButton href="/Home" tone="secondary">Start searching</LinkButton>}
+        />
+      )}
 
-            }
-        </main>
-    )
+      {trips.length != 0 && (
+        <div className="">
+          <ClientComp>
+            <TripBookingClient trips={true} bookings={trips!} />
+          </ClientComp>
+        </div>
+      )}
+    </main>
+  )
 }

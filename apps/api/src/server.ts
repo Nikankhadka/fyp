@@ -20,6 +20,7 @@ import { corsOrigins } from "./configs/constant";
 // import helmet from 'helmet'
 
 //helemt
+app.set("trust proxy", 1);
 app.use(helmet());
 
 //app level middleware setup
@@ -110,7 +111,7 @@ const port = Number(process.env.PORT || 2900);
 const startServer = async () => {
   try {
     await dbConnect();
-    app.listen(port, () => console.log(`server started at port ${port}`));
+    app.listen(port, "0.0.0.0", () => console.log(`server started at port ${port}`));
   } catch (error) {
     console.error("Failed to start server:", error);
     process.exit(1);

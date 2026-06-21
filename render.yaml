@@ -1,0 +1,71 @@
+services:
+  - type: web
+    name: meroghar-api
+    runtime: docker
+    plan: free
+    region: oregon
+    dockerfilePath: apps/api/Dockerfile
+    dockerContext: .
+    healthCheckPath: /health
+    autoDeploy: true
+    buildFilter:
+      paths:
+        - apps/api/**
+        - apps/web/public/**
+        - pnpm-lock.yaml
+        - pnpm-workspace.yaml
+        - package.json
+        - render.yaml
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "2900"
+      - key: MONGODB_URI
+        sync: false
+      - key: API_BASE_URL
+        sync: false
+      - key: WEB_APP_URL
+        sync: false
+      - key: CORS_ORIGINS
+        sync: false
+      - key: sessionSecret
+        sync: false
+      - key: saltRounds
+        value: "10"
+      - key: accessToken
+        sync: false
+      - key: refreshToken
+        sync: false
+      - key: accessTokenExpire
+        value: "1800s"
+      - key: refreshTokenExpire
+        value: "7d"
+      - key: googleClientId
+        sync: false
+      - key: googleClientSecret
+        sync: false
+      - key: facebookClientId
+        sync: false
+      - key: facebookClientSecret
+        sync: false
+      - key: user
+        sync: false
+      - key: pass
+        sync: false
+      - key: mailSecret
+        sync: false
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: PAYPAL_CLIENT_ID
+        sync: false
+      - key: PAYPAL_CLIENT_SECRET
+        sync: false
+      - key: PAYPAL_API_URL
+        value: https://api-m.sandbox.paypal.com
+      - key: SEED_UPLOAD_TO_CLOUDINARY
+        value: "false"

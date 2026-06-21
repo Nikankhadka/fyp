@@ -3,11 +3,11 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { Flag, Pencil, Star, Trash2 } from 'lucide-react'
-import { useState } from 'react'
+import { memo, useState } from 'react'
 import { toast } from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
 import ReviewInput from './reviewInput'
-import { IReview } from '../interface/response'
+import type { IReview } from '../interface/response'
 import useConfirm from '../store/useConfirm'
 import useModal from '../store/useModal'
 import Api from '../api/client/axios'
@@ -20,11 +20,12 @@ interface Props {
   currentUser: string
 }
 
-export default function Review({ reviewData, currentUser }: Props) {
+function ReviewComponent({ reviewData, currentUser }: Props) {
   const [Edit, setEdit] = useState('')
   const profileImageSrc = normalizeImageSrc(reviewData.userId.profileImg?.imgUrl)
-  const confirm = useConfirm()
-  const modal = useModal()
+  const onConfirmContent = useConfirm((s) => s.onContent)
+  const onOpenModal = useModal((s) => s.onOpen)
+  const onCloseModal = useModal((s) => s.onClose)
   const router = useRouter()
 
   return (
@@ -86,21 +87,21 @@ export default function Review({ reviewData, currentUser }: Props) {
                         .then((res) => {
                           toast.success('Review Deleted Successfully!!')
                           router.refresh()
-                          return modal.onClose()
+                          return onCloseModal()
                         })
                         .catch((e) => {
                           toast.error('Failed to Delete Review')
-                          return modal.onClose()
+                          return onCloseModal()
                         })
                     }
 
-                    confirm.onContent({
+                    onConfirmContent({
                       header: 'Are You Sure to delete Review',
                       actionBtn: 'Delete',
                       onAction: onDelete,
                     })
 
-                    modal.onOpen('confirm')
+                    onOpenModal('confirm')
                   }}
                 >
                   <Trash2 className="h-4 w-4" aria-hidden="true" />
@@ -149,3 +150,7 @@ export default function Review({ reviewData, currentUser }: Props) {
     </Surface>
   )
 }
+
+const Review = memo(ReviewComponent)
+
+export default Review

@@ -12,13 +12,12 @@ export async function getFavourites(page:number,limit:number):Promise<wishlist>{
               method: 'GET',
               credentials: 'include',
               headers: { cookie: getAccessToken()},
-              cache:'no-store'
+              next: { revalidate: 0, tags: ['wishlist'] },
             }
           ).then(res=>res.json())
     
           if(!res.success) throw new Error(`${res.error}`)
         
-        console.log("my properties",res);
         return res.wishList;
   
         

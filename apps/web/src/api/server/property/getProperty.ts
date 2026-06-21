@@ -15,13 +15,12 @@ export async function getPropertyRequests(
         method: 'GET',
         credentials: 'include',
         headers: { cookie: getAccessToken() },
-        cache: 'no-store',
+        next: { revalidate: 10, tags: ['property-requests'] },
       }
     ).then((res) => res.json())
 
     if (!res.success) throw new Error('failed to fetch Property Requests')
 
-    console.log('Kyc requests', res)
     return res.propertyRequests
   } catch (e) {
     throw e
@@ -41,13 +40,12 @@ export async function getMyProperties(
         method: 'GET',
         credentials: 'include',
         headers: { cookie: getAccessToken() },
-        cache: 'no-store',
+        next: { revalidate: 0, tags: [`my-properties-${userId}`] },
       }
     ).then((res) => res.json())
 
     if (!res.success) throw new Error('failed to fetch Property Requests')
 
-    console.log('my properties', res)
     return res.propertyData
   } catch (e) {
     throw e
@@ -58,17 +56,15 @@ export async function getPropertyById(
   id: string
 ): Promise<{ property: Partial<Property>; user: string; inWishList: boolean }> {
   try {
-    console.log(getAccessToken())
     const res = await fetch(`${api}/property/v1/getProperty/${id}`, {
       method: 'GET',
       credentials: 'include',
       headers: { cookie: getAccessToken() },
-      cache: 'no-store',
+      next: { revalidate: 60, tags: [`property-${id}`, 'properties'] },
     }).then((res) => res.json())
 
     if (!res.success) throw new Error('failed to fetch Property data')
 
-    console.log('my properties', res)
     return res.propertyData
   } catch (e) {
     throw e
@@ -101,23 +97,32 @@ export async function getProperties(
 
     url.search = params.toString()
 
-    console.log('Query params and data url', url.toString())
+    // Cache the unfiltered/default home view (no search filters); keep
+    // filtered queries fully dynamic so search results stay fresh.
+    const hasFilters = Object.entries(queryParams ?? {}).some(
+      ([key, value]) =>
+        key !== 'page' &&
+        key !== 'limit' &&
+        value != null &&
+        value !== '' &&
+        !(Array.isArray(value) && value.length === 0)
+    )
+    const cacheOpts = hasFilters
+      ? { cache: 'no-store' as const }
+      : ({ revalidate: 60, tags: ['properties'] } as const)
 
-    console.log(getAccessToken())
     const res = await fetch(url.toString(), {
       method: 'GET',
       credentials: 'include',
       headers: { cookie: getAccessToken() },
-      cache: 'no-store',
+      ...cacheOpts,
     }).then((res) => res.json())
 
-    console.log('response', res)
     if (!res.success) throw new Error('failed to fetch Property data')
 
-    console.log('my properties', res)
     return res.propertyData
   } catch (e) {
-    console.log(e)
+    console.error(e)
     throw e
   }
 }
@@ -135,14 +140,13 @@ export async function getAllProperties(
         method: 'GET',
         credentials: 'include',
         headers: { cookie: getAccessToken() },
-        cache: 'no-store',
+        next: { revalidate: 10, tags: ['all-properties'] },
       }
     ).then((res) => res.json())
 
     if (!propertyData.success)
       throw new Error('failed to fetch property information')
 
-    console.log('properties Data', propertyData)
     return propertyData.properties
   } catch (e) {
     throw e

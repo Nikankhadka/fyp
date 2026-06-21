@@ -2,11 +2,23 @@
 
 import dynamic from 'next/dynamic'
 import ToasterProvider from '../toast/toastProvider'
-import { LoginModal } from './loginModal'
-import { RegisterModal } from './registerModal'
-import { ConfirmModal } from './confirmModal'
-import { MessageModal } from './rejectReportModal'
 
+const LoginModal = dynamic(
+  () => import('./loginModal').then((mod) => mod.LoginModal),
+  { ssr: false },
+)
+const RegisterModal = dynamic(
+  () => import('./registerModal').then((mod) => mod.RegisterModal),
+  { ssr: false },
+)
+const ConfirmModal = dynamic(
+  () => import('./confirmModal').then((mod) => mod.ConfirmModal),
+  { ssr: false },
+)
+const MessageModal = dynamic(
+  () => import('./rejectReportModal').then((mod) => mod.MessageModal),
+  { ssr: false },
+)
 const BookingModal = dynamic(
   () => import('./bookingBillModal').then((mod) => mod.BookingModal),
   { ssr: false },

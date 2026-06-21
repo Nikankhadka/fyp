@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Building2, Home, House } from 'lucide-react'
-import { SessionUser } from '../../api/server/auth'
+import type { SessionUser } from '../../api/server/auth'
 import Card from '../../components/card/card'
 import { Button, EmptyState, PageContainer } from '../../components/ui/primitives'
 import { propertyOptions } from '../../configs/constant'
@@ -112,6 +112,7 @@ export function HomeClient({ properties, wishList, userData }: HomeProps) {
                 wish={inWishList}
                 data={property}
                 user={getUserType(property)}
+                index={index}
               />
             )
           })}

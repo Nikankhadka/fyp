@@ -10,9 +10,11 @@ import { checkSession } from "../../../api/server/auth";
 
 
 export default async function AccountSetting(){
-  const session=await checkSession();
-  const userData= await getMe();
- 
+  const [session, userData] = await Promise.all([
+    checkSession(),
+    getMe(),
+  ])
+  
 
     return(
     

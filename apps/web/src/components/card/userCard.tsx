@@ -1,8 +1,9 @@
 'use client'
 
 import Link from "next/link"
+import { memo } from "react"
 import { BadgeCheck, XCircle } from "lucide-react"
-import { kycRequests } from "../../api/server/user/getUser"
+import type { kycRequests } from "../../api/server/user/getUser"
 import useModal from "../../store/useModal"
 import useConfirm from "../../store/useConfirm"
 import { verifyKyc } from "../../api/client/admin"
@@ -22,19 +23,22 @@ function capitalize(str?: string): string {
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
 }
 
-export default function UserCard({userData}:UserProps){
-  const modal=useModal();
-  const confirm=useConfirm()
-  //store 
-  const reject=useReject()
-  const router=useRouter()
+function UserCardComponent({userData}:UserProps){
+  // Select only stable action setters so the card never re-renders on
+  // unrelated store state changes.
+  const onOpenModal = useModal((s) => s.onOpen)
+  const onCloseModal = useModal((s) => s.onClose)
+  const onConfirmContent = useConfirm((s) => s.onContent)
+  const setRejectBtn = useReject((s) => s.setbtn)
+  const onRejectContent = useReject((s) => s.onContent)
+  const router = useRouter()
   const{userName,userId,_id,profileImg,about}=userData
   const profileImageSrc = normalizeImageSrc(profileImg?.imgUrl)
 
 
     return(
     <main className="mx-auto w-full rounded-lg border border-outline-variant bg-surface-container-lowest p-4 duration-300 hover:shadow-xl sm:w-[80%]">
-     
+
       <Link href={`/Home/user/${_id}`} target="_blank" rel="noopener noreferrer">
       <div className="mt-2 mb-4 w-fit">
         {profileImageSrc ? (
@@ -56,32 +60,31 @@ export default function UserCard({userData}:UserProps){
       <div className="mt-3 text-sm font-semibold text-onSurface">{capitalize(userName)}</div>
       <p className="mt-1 text-sm font-semibold text-onSurface-variant">{about}</p>
 
-      
+
 
         <div className="mt-4 flex items-center gap-x-2">
           <Button
             type="button"
             onClick={(e)=>{
               e.preventDefault();
-              console.log('verify')
 
-              confirm.onContent({
+              onConfirmContent({
                 header:'Are You Sure To Verify?',
                 actionBtn:"Verify",
                 onAction:async()=>{
                   const res=await verifyKyc(_id,{isVerified:true});
                   if(res){
                     toast.success(`User ${userId} verified successfully`);
-                     modal.onClose();
+                     onCloseModal();
                     return router.refresh();
                   }
 
                   toast.error("Failed to verify User");
-                  return modal.onClose()
+                  return onCloseModal()
                 }
               })
 
-              modal.onOpen('confirm')
+              onOpenModal('confirm')
 
             }}
           >
@@ -93,34 +96,32 @@ export default function UserCard({userData}:UserProps){
             tone="danger"
             onClick={(e)=>{
               e.preventDefault();
-              console.log('reject')
 
-              //set btn name 
-              reject.setbtn('Reject')
+              //set btn name
+              setRejectBtn('Reject')
 
-              reject.onContent({
+              onRejectContent({
                 onReject:async(message:string)=>{
                   try{
                     const res=await verifyKyc(_id,{isVerified:false,message});
                     if(res){
                       toast.success("User kyc Rejected");
-                      modal.onClose();
+                      onCloseModal();
                       return router.refresh();
                     }
                     toast.error("Kyc rejection Failed!");
-                    return modal.onClose();
-                  }catch(e){
-                    console.log(e)
+                    return onCloseModal();
+                  }catch{
                    return  toast.error("Kyc rejection Failed!");
                   }
-                
+
                 }
               })
 
 
 
 
-              modal.onOpen("reject")
+              onOpenModal("reject")
             }}
           >
             <XCircle className="mr-2 h-4 w-4" />
@@ -130,3 +131,7 @@ export default function UserCard({userData}:UserProps){
     </main>
     )
 }
+
+const UserCard = memo(UserCardComponent)
+
+export default UserCard
