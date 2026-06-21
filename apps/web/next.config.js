@@ -1,10 +1,70 @@
 /** @type {import('next').NextConfig} */
-const apiBaseUrl =
-  process.env.API_BASE_URL ||
-  process.env.NEXT_PUBLIC_API_BASE_URL ||
-  (process.env.NODE_ENV === 'production'
-    ? 'https://fyp-yfyb.onrender.com'
-    : 'http://localhost:2900')
+const productionApiBaseUrl = 'https://fyp-yfyb.onrender.com'
+const localApiBaseUrl = 'http://localhost:2900'
+
+function isPrivateApiHost(hostname) {
+  const normalizedHost = hostname.toLowerCase()
+
+  if (
+    normalizedHost === 'localhost' ||
+    normalizedHost === '0.0.0.0' ||
+    normalizedHost === '::1' ||
+    normalizedHost === 'api' ||
+    normalizedHost.endsWith('.local')
+  ) {
+    return true
+  }
+
+  if (/^127\./.test(normalizedHost) || /^10\./.test(normalizedHost)) {
+    return true
+  }
+
+  if (/^192\.168\./.test(normalizedHost)) {
+    return true
+  }
+
+  const private172Match = normalizedHost.match(/^172\.(\d{1,2})\./)
+  if (private172Match) {
+    const secondOctet = Number(private172Match[1])
+    return secondOctet >= 16 && secondOctet <= 31
+  }
+
+  return false
+}
+
+function normalizeApiBaseUrl(value, fallback) {
+  const trimmedValue = value?.trim()
+
+  if (!trimmedValue) {
+    return fallback
+  }
+
+  try {
+    const url = new URL(trimmedValue)
+
+    if (process.env.NODE_ENV === 'production' && isPrivateApiHost(url.hostname)) {
+      console.warn(
+        `Ignoring private production API URL "${trimmedValue}". Falling back to ${productionApiBaseUrl}.`,
+      )
+      return productionApiBaseUrl
+    }
+
+    return url.origin
+  } catch {
+    console.warn(
+      `Ignoring invalid API URL "${trimmedValue}". Falling back to ${fallback}.`,
+    )
+    return fallback
+  }
+}
+
+const defaultApiBaseUrl =
+  process.env.NODE_ENV === 'production' ? productionApiBaseUrl : localApiBaseUrl
+
+const apiBaseUrl = normalizeApiBaseUrl(
+  process.env.API_BASE_URL || process.env.NEXT_PUBLIC_API_BASE_URL,
+  defaultApiBaseUrl,
+)
 
 const nextConfig = {
   output: 'standalone',
