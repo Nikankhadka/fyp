@@ -2,7 +2,9 @@
 const apiBaseUrl =
   process.env.API_BASE_URL ||
   process.env.NEXT_PUBLIC_API_BASE_URL ||
-  'http://localhost:2900'
+  (process.env.NODE_ENV === 'production'
+    ? 'https://fyp-yfyb.onrender.com'
+    : 'http://localhost:2900')
 
 const nextConfig = {
   output: 'standalone',

@@ -17,8 +17,8 @@ CMD ["pnpm", "dev"]
 
 FROM deps AS builder
 ENV NODE_ENV=production
-ARG API_BASE_URL=http://host.docker.internal:2900
-ARG NEXT_PUBLIC_API_BASE_URL=http://localhost:2900
+ARG API_BASE_URL=https://fyp-yfyb.onrender.com
+ARG NEXT_PUBLIC_API_BASE_URL=https://fyp-yfyb.onrender.com
 ARG NEXT_PUBLIC_DEMO_PAYMENT_MODE=true
 ARG NEXT_PUBLIC_ENABLE_GOOGLE_AUTH=false
 ARG NEXT_PUBLIC_ENABLE_FACEBOOK_AUTH=false
@@ -53,6 +53,10 @@ FROM node:18-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
+ARG API_BASE_URL=https://fyp-yfyb.onrender.com
+ARG NEXT_PUBLIC_API_BASE_URL=https://fyp-yfyb.onrender.com
+ENV API_BASE_URL=$API_BASE_URL
+ENV NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL
 
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./

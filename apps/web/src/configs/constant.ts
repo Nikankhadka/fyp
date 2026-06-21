@@ -59,8 +59,13 @@ export const googleAuthEnabled =
 export const facebookAuthEnabled =
   process.env.NEXT_PUBLIC_ENABLE_FACEBOOK_AUTH === 'true'
 
+const defaultApiBaseUrl =
+  process.env.NODE_ENV === 'production'
+    ? 'https://fyp-yfyb.onrender.com'
+    : 'http://localhost:2900'
+
 const publicApiBaseUrl =
-  process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:2900'
+  process.env.NEXT_PUBLIC_API_BASE_URL || defaultApiBaseUrl
 
 const serverApiBaseUrl = process.env.API_BASE_URL || publicApiBaseUrl
 
